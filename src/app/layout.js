@@ -22,9 +22,6 @@ export default function RootLayout({ children }) {
             <Toaster />
             {/* <Header /> */}
             {children}
-            <footer className="border-t p-8 text-center text-gray-500 mt-16">
-              &copy;
-            </footer>
           {/* </AppProvider> */}
         </main>
       </body>
