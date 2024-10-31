@@ -1,9 +1,10 @@
-import Image from "next/legacy/image";
+import Image from "next/image";
 import Right from "../icons/Right";
+import MenuItem from "../menu/MenuItem";
 
 export default function Hero() {
     return (
-        <section className="hero">
+        (<section className="hero">
             <div className="py-4">
                 <h1 className="text-4xl font-semibold  leading-12">
                     Dive into <br/>
@@ -25,15 +26,16 @@ export default function Hero() {
                     </button>
                 </div>
             </div>
-
             <div className="relative"> {/* Set a height for the image container */}
-                <Image 
+                <Image
                     src={'/tealerinlogo.png'}
                     layout={'fill'}
                     objectFit={'contain'}
                     alt={'milktea'}
-                />
+                    />
+
+            
             </div>
-        </section>
+        </section>)
     );
 }
