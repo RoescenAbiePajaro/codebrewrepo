@@ -1,12 +1,13 @@
+//jsconfig.json
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "moduleResolution": "node",
+    "include": ["."],
     "paths": {
       "@/app/*": ["./src/app/*"],
       "@/models/*": ["./src/models/*"],
       "@/components/*": ["./src/components/*"]
     }
   },
-  "include": ["src"]
+  
 }
