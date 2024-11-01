@@ -20,10 +20,9 @@ export default function RegisterPage() {
             if (!response.ok){
                 setError(true);
             }
-            if(!response.ok){
-            setCreatingUser(false);
+            setUserCreated(true);
     }
-            setError(true);
+    setCreatingUser(false);
     }
     
     return (
