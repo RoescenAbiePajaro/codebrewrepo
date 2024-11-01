@@ -4,7 +4,7 @@ import MenuItem from "../menu/MenuItem";
 
 export default function Hero() {
     return (
-        (<section className="hero">
+        (<section className="hero mt-4">
             <div className="py-4">
                 <h1 className="text-4xl font-semibold  leading-12">
                     Dive into <br/>
