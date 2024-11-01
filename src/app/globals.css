@@ -2,10 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-section.hero{
+section.hero {
     @apply grid;
     grid-template-columns: .4fr .6fr;
 }
+
 input[type="email"],
 input[type="password"],
 input[type="text"] {
@@ -13,11 +14,29 @@ input[type="text"] {
     @apply block border p-2 border-gray-300 bg-gray-200;
 }
 
-button{
+input[type="email"]:disabled,
+input[type="password"]:disabled,
+input[type="text"]:disabled {
+    @apply bg-gray-300;
+}
+
+button {
     @apply block w-full text-gray-700 font-semibold;
     @apply border border-gray-300 rounded-xl px-6 py-2;
 }
 
-button[type="submit"], .submit{
+button[type="submit"] {
     @apply border-0 bg-green-500 text-white;
+}
+
+button:disabled {
+    @apply cursor-not-allowed bg-green-200; /* Disable styling */
+}
+
+button:disabled:hover {
+    @apply bg-green-200; /* Prevent hover effect */
+}
+
+button:disabled:focus {
+    @apply outline-none; /* Prevent focus outline */
 }
