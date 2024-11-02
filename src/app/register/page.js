@@ -12,19 +12,22 @@ export default function RegisterPage() {
     async function handleFormSubmit(ev) {
         ev.preventDefault();
         setCreatingUser(true);
+        setError(false);
+        setUserCreated(false);
+
         const response = await fetch('/api/register', {
                 method: 'POST',
                 body: JSON.stringify({ email, password }),
                 headers: { 'Content-Type': 'application/json' },
             });
-            if (!response.ok){
-                setError(true);
-            }
+            if(response.ok){
             setUserCreated(true);
+            }
+            else {
+            setError(true);
     }
     setCreatingUser(false);
     }
-    
     return (
         <section className="mt-8">
             <h1 className="text-center text-green-500 text-4xl">
@@ -67,12 +70,20 @@ export default function RegisterPage() {
                     }`}
                 >
                     {creatingUser ? 'Registering...' : 'Register'}
+
                 </button>
-                <div className="my-4 text-center text-gray-500">or login with provider</div>
+                <div className="my-4 text-center text-gray-500">
+                    or login with provider
+                    </div>
                 <button className="flex gap-4 justify-center">
                     <Image src={'/google-icon.png'} alt={''} width={24} height={24} />
                     Login with Google
                 </button>
+
+                <div className="text-center my-4 text-gray-500 border-t pt-4">
+                    Existing account? {''}
+                    <Link className="underline" href={'/login'}>Login here &raquo;</Link>
+                </div>
             </form>
         </section>
     );
