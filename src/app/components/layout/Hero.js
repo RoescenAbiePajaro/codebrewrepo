@@ -17,11 +17,11 @@ export default function Hero() {
                     Where every sip is a celebration of flavor and every product is crafted to perfection.
                 </p>
                 <div className="flex gap-4 mt-6">
-                    <button className="bg-green-500 uppercase flex items-center gap-2 text-white px-4 py-2 rounded-full text-sm">
+                    <button className="bg-green-500 flex uppercaseflex items-center gap-2 text-white px-4 py-2 rounded-full text-sm">
                         Order Here
                         <Right />
                     </button>
-                    <button className="flex gap-2 py-2">
+                    <button className="flex items-center border-0 gap-2 py-2 text-gray-600">
                         Learn More<Right />
                     </button>
                 </div>

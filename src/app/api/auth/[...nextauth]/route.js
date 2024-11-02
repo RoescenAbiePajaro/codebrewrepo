@@ -1,11 +1,8 @@
 import mongoose from "mongoose";
-import User from '@/models/User'
+import {User} from '@/models/User';
 import bcrypt from 'bcrypt';
-
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-
-
 
 const handler = NextAuth({
   secret: process.env.SECRET,
@@ -25,7 +22,6 @@ const handler = NextAuth({
               mongoose.connect(process.env.MONGO_URI);
               const user = await User.findOne({email});
               const passwordOk = user && bcrypt.compareSync(password, user.password);
-              if (user && bcrypt.compareSync(password, user.password))
               
               if (passwordOk)  {
                 return user;
