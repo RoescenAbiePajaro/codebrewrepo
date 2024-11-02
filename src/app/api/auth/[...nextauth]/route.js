@@ -6,7 +6,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 const handler = NextAuth({
   secret: process.env.SECRET,
-
     providers:[
         CredentialsProvider({
             name: "Credentials",
