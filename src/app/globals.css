@@ -17,7 +17,7 @@ input[type="text"] {
 input[type="email"]:disabled,
 input[type="password"]:disabled,
 input[type="text"]:disabled {
-    @apply bg-gray-300;
+    @apply bg-gray-100 border-0 cursor-not-allowed text-gray-500;
 }
 
 button {
@@ -25,13 +25,13 @@ button {
     @apply border border-gray-300 rounded-xl px-6 py-2;
 }
 
-button[type="submit"] {
+button[type="submit"]{
     @apply border-0 bg-green-500 text-white;
 }
 
 button:disabled {
     @apply cursor-not-allowed bg-green-200; /* Disable styling */
-}
+} 
 
 button:disabled:hover {
     @apply bg-green-200; /* Prevent hover effect */
