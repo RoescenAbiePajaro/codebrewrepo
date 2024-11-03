@@ -1,3 +1,4 @@
+import {User} from "@/models/User";
 import {authOptions} from "@/app/api/auth/[...nextauth]/route";
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
@@ -11,10 +12,9 @@ export async function PUT (req){
 
 
     if ('name' in data){
-        const user = await User.findOne({email});
-        user.name = data.name;
-        await user.save();
-        console.log({email:{name:date.name}});
+    
+    await User.updateOne({email}, {name:data.name});
+    
     }
 
     return Response.json(true);
