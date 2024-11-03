@@ -6,8 +6,18 @@ import { useState } from "react";
 
 export default function ProfilePage() {
   const session = useSession();
-  const [userName, setUserName] = useState(session?.data?.user?.name ||'');
+  const [nname, setName] = useState(session?.data?.user?.name ||''); //const [userName, setUserName] = useState(session?.data?.user?.name ||'');
   const { status, data } = session;
+
+  async function handleProfileInfoUpdate(ev) {
+    ev.preventDefault();
+    const response = await fetch('/api/profile', {
+      method: 'PUT',
+      headers:{'Content-Type': 'application/json'},
+      body: JSON.stringify({name:nname}), //body: JSON.stringify({name:userName}),
+    })
+
+  }
 
   if (status === 'loading') {
     return 'Loading...';
@@ -25,7 +35,7 @@ export default function ProfilePage() {
         Profile
       </h1>
 
-      <form className="max-w-xs mx-auto flex flex-col gap-6 items-center">
+      <div className="max-w-xs mx-auto flex flex-col gap-6 items-center">
         <div className="flex flex-col items-center">
           <div className="bg-gray-100 p-2 rounded-lg">
             <Image
@@ -41,22 +51,21 @@ export default function ProfilePage() {
           </button>
         </div>
 
-        <div className="w-full flex flex-col gap-4">
+
+        <form className="grow" onSubmit={handleProfileInfoUpdate}>
           <input
             className="p-2 border rounded-md w-full" type="text"
             placeholder="Put firstname and lastname"
-            value={userName} onChange={ev => setUserName(ev.target.value)}/>
+            value={nname} onChange={ev => setName(ev.target.value)}/>   
           <input 
             type="email" 
             disabled 
             value={data?.user?.email || ''} 
             className="p-2 border rounded-md w-full bg-gray-50"
           />
-          <button type="submit" className="bg-green-500 text-white p-2 rounded-md w-full">
-            Save
-          </button>
-        </div>
-      </form>
+          <button type="submit" className="bg-green-500 text-white p-2 rounded-md w-full"> Save</button>
+        </form>
+      </div>
     </section>
   );
 }
