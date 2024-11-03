@@ -29,7 +29,22 @@ export default function ProfilePage() {
     if (response.ok){
       setSaved(true);
     }
+
   }
+
+async function handleFileChange(ev){
+const files = ev?.target.files;
+if(files?.length === 1 ){
+  const data = new FormData;
+  data.set('file', files[0]);
+  await fetch('/api/upload'  ,{
+    method:'POST',
+    body:data,
+    // headers:{'Content-Type': 'multipart/form-data'}
+});
+}
+}
+
 
   if (status === 'loading') {
     return <div>Loading...</div>;
@@ -72,12 +87,11 @@ export default function ProfilePage() {
                 alt={'avatar'}
               />
               <label>
-              <input type="file" className="hidden"/>
-              <span className="block border rounded-lg p-2 text-center">
-                Edit
+              <input type="file" className="hidden" onChange={handleFileChange}/>
+              <span className="block border rounded-lg border-gray-300 p-2 text-center cursor-pointer">
+                Edit 
               </span>
               </label>
-              <button type="button">Edit</button>
             </div>
           </div>
         </div>
