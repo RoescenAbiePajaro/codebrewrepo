@@ -18,7 +18,6 @@ export default function LoginPage() {
         
         setLoginInProgress(false);
     }
-
     return (
         <section className="mt-8">
             <h1 className="text-center text-green-500 text-4xl mb-4">

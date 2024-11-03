@@ -46,24 +46,24 @@ export default function ProfilePage() {
               alt="User Avatar"
             />
           </div>
-          <button type="button" className="mt-2 text-gray-500">
+          {/* <button type="button" className="mt-2 text-gray-500">
             Edit
-          </button>
+          </button> */}
         </div>
 
 
         <form className="grow" onSubmit={handleProfileInfoUpdate}>
-          <input
+          {/* <input
             className="p-2 border rounded-md w-full" type="text"
             placeholder="Put firstname and lastname"
-            value={nname} onChange={ev => setName(ev.target.value)}/>   
+            value={nname} onChange={ev => setName(ev.target.value)}/>    */}
           <input 
             type="email" 
             disabled 
             value={data?.user?.email || ''} 
             className="p-2 border rounded-md w-full bg-gray-50"
           />
-          <button type="submit" className="bg-green-500 text-white p-2 rounded-md w-full"> Save</button>
+          {/* <button type="submit" className="bg-green-500 text-white p-2 rounded-md w-full"> Save</button> */}
         </form>
       </div>
     </section>

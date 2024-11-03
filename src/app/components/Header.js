@@ -6,8 +6,8 @@ export default function Header() {
     const session = useSession();
     const status = session?.status;
     const userData = session.data?.user;
-    let nname = userData?.nname || userData?.email || 'Guest'; // Provide a fallback name
-
+    let nname = userData?.name || userData?.email || ''; // Provide a fallback name
+ 7
     if (nname && nname.includes(' ')) {
         nname = nname.split(' ')[0]; // Take only the first part of the name
     }
