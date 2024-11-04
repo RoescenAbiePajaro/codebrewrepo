@@ -7,13 +7,14 @@ import InfoBox from "../components/layout/InfoBox";
 import SuccessBox from "../components/layout/SuccesBox";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Link from "next/link";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const [userName, setUserName] = useState('');
   const [image, setImage] = useState('');
   const [saved, setSaved] = useState(false);
-  const [isSaving, setisSaving] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
@@ -25,14 +26,14 @@ export default function ProfilePage() {
   async function handleProfileInfoUpdate(ev) {
     ev.preventDefault();
     setSaved(false);
-    setisSaving(true);
+    setIsSaving(true);
 
     const response = await fetch('/api/profile', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: userName, image }),
     });
-    setisSaving(false);
+    setIsSaving(false);
 
     if (response.ok) {
       setSaved(true);
@@ -83,7 +84,13 @@ export default function ProfilePage() {
   return (
     <section className="mt-8">
       <ToastContainer position="top-center" autoClose={3000} />
-      <h1 className="text-center text-green-500 text-4xl mb-4">Profile</h1>
+
+      <div>
+        <Link href={'/profile'}>Profile</Link>
+        {/* Removed admin-related links */}
+      </div>
+
+      <h1 className="text-center text-green-500 text-4xl mb-4"></h1>
 
       <form className="max-w-md mx-auto" onSubmit={handleProfileInfoUpdate}>
         {saved && <SuccessBox>Profile saved!</SuccessBox>}

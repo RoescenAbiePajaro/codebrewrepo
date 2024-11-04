@@ -43,7 +43,7 @@ return (
           {status === 'unauthenticated' && (
             <>
             <Link href={'/login'}>Login</Link >
-        <Link href={'/register'} className="bg-green-600 rounded-full text-white px-8 py-2">
+        <Link href={'/register'} className="bg-green-600 rounded-full font-semibold text-white px-8 py-2">
           Register
           </Link>
             </>
