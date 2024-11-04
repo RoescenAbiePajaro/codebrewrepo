@@ -7,6 +7,11 @@ const nextConfig = {
                 hostname: '*.googleusercontent.com',
 
             },
+
+            {
+                protocol:'https',
+                hostname: 'tealerinpos.s3.amazonaws.com',
+            },
         ]
     }
 };
