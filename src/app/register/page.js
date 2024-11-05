@@ -52,9 +52,10 @@ export default function RegisterPage() {
 
             {/* Form Container with Shadow */}
             <div className="block max-w-md mx-auto p-8 bg-white shadow-lg rounded-lg mt-8">
-            <h1 className="text-center text-green-500 text-4xl">
-                Register
-            </h1>
+            <h1 className="text-center text-green-600 text-4xl mb-6">
+    Register
+</h1>
+
                 <form onSubmit={handleFormSubmit}>
                     <input
                         type="email"

@@ -11,17 +11,28 @@ import Link from "next/link";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
+  console.log(session);
   const [userName, setUserName] = useState('');
   const [image, setImage] = useState('');
+  const [phone, setPhone] = useState('');
+  const [streetAddress, setStreetAddress] = useState('');
   const [saved, setSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
       setUserName(session.user.name);
       setImage(session.user.image);
-    }
-  }, [session, status]);
+    fetch('/api/profile').then(response => {
+      response.json().then(data => {
+        setPhone(data.phone);
+        setStreetAddress(data.streetAddress);
+        setIsAdmin(data.admin);
+      })
+    });
+  }
+}, [session, status]);
 
   async function handleProfileInfoUpdate(ev) {
     ev.preventDefault();
@@ -31,7 +42,11 @@ export default function ProfilePage() {
     const response = await fetch('/api/profile', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: userName, image }),
+      body: JSON.stringify({ name: userName, 
+        image,
+        phone,
+        streetAddress
+       }),
     });
     setIsSaving(false);
 
@@ -85,10 +100,16 @@ export default function ProfilePage() {
     <section className="mt-8">
       <ToastContainer position="top-center" autoClose={3000} />
 
-      <div>
-        <Link href={'/profile'}>Profile</Link>
-        {/* Removed admin-related links */}
+{/* *******************TOP NAVIGATION***************************************************************** */}
+      <div className="flex gap-2 tabs">
+        <Link  href={'/profile'}>Profile</Link>
+        {isAdmin && 
+        <Link href={'/categories'}>Categories</Link>}
+        <Link href={'/menu-items'}>Menu Items</Link>
+        <Link href={'/users'}>Users</Link>
       </div>
+
+{/* *******************PROFILE PAGE***************************************************************** */}
 
       <h1 className="text-center text-green-500 text-4xl mb-4"></h1>
 
@@ -109,6 +130,7 @@ export default function ProfilePage() {
             )}
             <label className="flex flex-col items-center">
               <input type="file" className="hidden" onChange={handleFileChange} />
+
               <span className="block border rounded-lg border-gray-300 p-2 text-center cursor-pointer">
                 Edit
               </span>
@@ -116,20 +138,33 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="mt-4">
+        <div className="mt-4 ">
+
+          <label className="font-semibold text-sm text-gray-600">First and Last Name</label>
           <input
             type="text"
-            placeholder="First and last name"
+            placeholder="First and last name:"
             value={userName}
             onChange={ev => setUserName(ev.target.value)}
             className="block w-full border p-2 rounded mb-4"
           />
-          <input
-            type="email"
-            disabled={true}
-            value={session.user.email || ''}
-            className="block w-full border p-2 rounded mb-4"
-          />
+
+          <label className="font-semibold text-sm text-gray-600">Email:</label>
+          <input type="email" disabled={true} value={session.user.email} placeholder={'email'}/>
+
+
+          <label className="font-semibold text-sm text-gray-600">Phone Number:</label>
+          <input type="tel" placeholder="Phone Number"
+          value={phone}
+          onChange={ev => setPhone(ev.target.value)}/>
+
+
+          <label className="font-semibold text-sm text-gray-600">Street Address:</label>
+          <input type="text" placeholder="StreetAddress"
+          value={streetAddress}
+          onChange={ev => setStreetAddress(ev.target.value)}/>
+          
+          
           <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
             Save
           </button>
