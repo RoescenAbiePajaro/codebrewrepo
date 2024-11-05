@@ -50,3 +50,7 @@ button:disabled:focus {
 .tabs > *.active {
     @apply bg-green-500 text-white;
 }
+
+.flying-button-parent button{
+    @apply border-primary bg-green-500 text-white rounded-full;
+}
