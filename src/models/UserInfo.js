@@ -10,3 +10,5 @@ const UserInfoSchema = new Schema({
 }, {timestamps: true});
 
 export const UserInfo = models?.UserInfo || model('UserInfo', UserInfoSchema);
+
+
