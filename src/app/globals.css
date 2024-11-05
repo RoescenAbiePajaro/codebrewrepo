@@ -43,6 +43,10 @@ button:disabled:focus {
     @apply outline-none; /* Prevent focus outline */
 }
 
-div .tabs > * {
-    @apply bg-green-500 text-white rounded-full px-4 py-2; 
+.tabs > * {
+    @apply bg-gray-200 text-gray-700 rounded-full px-4 py-2; 
+}
+
+.tabs > *.active {
+    @apply bg-green-500 text-white;
 }

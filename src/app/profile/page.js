@@ -8,6 +8,7 @@ import SuccessBox from "../components/layout/SuccesBox";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Link from "next/link";
+import UserTabs from "../components/layout/UserTabs";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -100,18 +101,11 @@ export default function ProfilePage() {
     <section className="mt-8">
       <ToastContainer position="top-center" autoClose={3000} />
 
-{/* *******************TOP NAVIGATION***************************************************************** */}
-      <div className="flex gap-2 tabs">
-        <Link  href={'/profile'}>Profile</Link>
-        {isAdmin && 
-        <Link href={'/categories'}>Categories</Link>}
-        <Link href={'/menu-items'}>Menu Items</Link>
-        <Link href={'/users'}>Users</Link>
-      </div>
 
+      <UserTabs isAdmin={isAdmin} />
+      <div className="max-w-md mx-auto mt-4"></div>
 {/* *******************PROFILE PAGE***************************************************************** */}
-
-      <h1 className="text-center text-green-500 text-4xl mb-4"></h1>
+<div className="flex gap-4"></div>
 
       <form className="max-w-md mx-auto" onSubmit={handleProfileInfoUpdate}>
         {saved && <SuccessBox>Profile saved!</SuccessBox>}
