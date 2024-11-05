@@ -19,6 +19,7 @@ export default function ProfilePage() {
   const [streetAddress, setStreetAddress] = useState('');
   const [saved, setSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [profileFetched, setProfileFetched] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
@@ -30,6 +31,7 @@ export default function ProfilePage() {
         setPhone(data.phone);
         setStreetAddress(data.streetAddress);
         setIsAdmin(data.admin);
+        setProfileFetched(true);
       })
     });
   }
@@ -85,7 +87,7 @@ export default function ProfilePage() {
     }
   }
 
-  if (status === 'loading') {
+  if (status === 'loading' || !profileFetched) {
     return <div>Loading...</div>;
   }
 
