@@ -12,9 +12,8 @@ import UserTabs from "../components/layout/UserTabs";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
-  console.log(session);
-  const [userName, setUserName] = useState('');
-  const [image, setImage] = useState('');
+  const [userName, setUserName] = useState(session?.user?.name || '');
+  const [image, setImage] = useState(session?.user?.image || '');
   const [phone, setPhone] = useState('');
   const [streetAddress, setStreetAddress] = useState('');
   const [saved, setSaved] = useState(false);
@@ -24,18 +23,22 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
-      setUserName(session.user.name);
-      setImage(session.user.image);
-    fetch('/api/profile').then(response => {
-      response.json().then(data => {
-        setPhone(data.phone);
-        setStreetAddress(data.streetAddress);
-        setIsAdmin(data.admin);
-        setProfileFetched(true);
-      })
-    });
-  }
-}, [session, status]);
+      setUserName(session.user.name || '');
+      setImage(session.user.image || '');
+
+      fetch('/api/profile')
+        .then(response => response.json())
+        .then(data => {
+          setPhone(data.phone || '');
+          setStreetAddress(data.streetAddress || '');
+          setIsAdmin(data.admin || false);
+          setProfileFetched(true);
+        })
+        .catch(error => {
+          console.error("Error fetching profile data:", error);
+        });
+    }
+  }, [session, status]);
 
   async function handleProfileInfoUpdate(ev) {
     ev.preventDefault();
@@ -45,11 +48,7 @@ export default function ProfilePage() {
     const response = await fetch('/api/profile', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: userName, 
-        image,
-        phone,
-        streetAddress
-       }),
+      body: JSON.stringify({ name: userName, image, phone, streetAddress }),
     });
     setIsSaving(false);
 
@@ -103,11 +102,8 @@ export default function ProfilePage() {
     <section className="mt-8">
       <ToastContainer position="top-center" autoClose={3000} />
 
-
       <UserTabs isAdmin={isAdmin} />
       <div className="max-w-md mx-auto mt-4"></div>
-{/* *******************PROFILE PAGE***************************************************************** */}
-<div className="flex gap-4"></div>
 
       <form className="max-w-md mx-auto" onSubmit={handleProfileInfoUpdate}>
         {saved && <SuccessBox>Profile saved!</SuccessBox>}
@@ -126,7 +122,6 @@ export default function ProfilePage() {
             )}
             <label className="flex flex-col items-center">
               <input type="file" className="hidden" onChange={handleFileChange} />
-
               <span className="block border rounded-lg border-gray-300 p-2 text-center cursor-pointer">
                 Edit
               </span>
@@ -134,33 +129,43 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="mt-4 ">
-
+        <div className="mt-4">
           <label className="font-semibold text-sm text-gray-600">First and Last Name</label>
           <input
             type="text"
             placeholder="First and last name:"
-            value={userName}
+            value={userName || ''}
             onChange={ev => setUserName(ev.target.value)}
             className="block w-full border p-2 rounded mb-4"
           />
 
           <label className="font-semibold text-sm text-gray-600">Email:</label>
-          <input type="email" disabled={true} value={session.user.email} placeholder={'email'}/>
-
+          <input
+            type="email"
+            disabled={true}
+            value={session.user.email || ''}
+            placeholder="email"
+            className="block w-full border p-2 rounded mb-4"
+          />
 
           <label className="font-semibold text-sm text-gray-600">Phone Number:</label>
-          <input type="tel" placeholder="Phone Number"
-          value={phone}
-          onChange={ev => setPhone(ev.target.value)}/>
-
+          <input
+            type="tel"
+            placeholder="Phone Number"
+            value={phone || ''}
+            onChange={ev => setPhone(ev.target.value)}
+            className="block w-full border p-2 rounded mb-4"
+          />
 
           <label className="font-semibold text-sm text-gray-600">Street Address:</label>
-          <input type="text" placeholder="StreetAddress"
-          value={streetAddress}
-          onChange={ev => setStreetAddress(ev.target.value)}/>
-          
-          
+          <input
+            type="text"
+            placeholder="Street Address"
+            value={streetAddress || ''}
+            onChange={ev => setStreetAddress(ev.target.value)}
+            className="block w-full border p-2 rounded mb-4"
+          />
+
           <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
             Save
           </button>

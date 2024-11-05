@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 
 export default function Categories() {
     const [isAdmin, setIsAdmin] = useState(false);
+    const [adminInfoLoading, setAdminInfoLoading] = useState(true);
     useEffect(() => {
         fetch('/api/profile').then(response => {
             response.json().then(data => {
                 setIsAdmin(data.admin);
+                setAdminInfoLoading(false);
             })
         })
     }, []);
