@@ -19,27 +19,31 @@ export const authOptions = {
     }),
     CredentialsProvider({
       name: 'Credentials',
-      id: 'credentials',
       credentials: {
-        username: { label: "Email", type: "email", placeholder: "test@example.com" },
+        email: { label: "Email", type: "email", placeholder: "test@example.com" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
-        const email = credentials?.email;
-        const password = credentials?.password;
-
-        mongoose.connect(process.env.MONGO_URL);
-        const user = await User.findOne({email});
-        const passwordOk = user && bcrypt.compareSync(password, user.password);
-
-        if (passwordOk) {
-          return user;
+      async authorize(credentials) {
+        const client = await clientPromise;
+        const db = client.db();
+        
+        const user = await db.collection('users').findOne({ email: credentials.email });
+        if (!user) {
+          throw new Error("No user found with that email");
         }
 
-        return null
+        const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+        if (!isPasswordValid) {
+          throw new Error("Invalid password");
+        }
+
+        return { email: user.email }; // Return user object
       }
     })
   ],
+  pages: {
+    signIn: '/login', // Custom login page
+  },
 };
 
 export async function isAdmin() {

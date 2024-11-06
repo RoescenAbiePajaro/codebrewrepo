@@ -1,68 +1,86 @@
-// login page.js
+// app/login/page.js
 "use client";
 import { useState } from "react";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [loginInProgress, setLoginInProgress] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter();
 
-    async function handleFormSubmit(ev) {
-        ev.preventDefault();
-        setLoginInProgress(true);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setIsLoading(true);
+    setErrorMessage("");
 
-        await signIn('credentials', { email, password, callbackUrl: '/' });
-        
-        setLoginInProgress(false);
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      setErrorMessage(result.error); // Show the error message
+    } else {
+      router.push("/"); // Redirect to home page
     }
 
-    return (
-        <section className="mt-8 flex justify-center">
-            <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
-                <h1 className="text-center text-green-500 text-4xl mb-4">
-                    Login
-                </h1>
-                <form className="space-y-4" onSubmit={handleFormSubmit}>
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="Email"
-                        value={email}
-                        disabled={loginInProgress}
-                        onChange={ev => setEmail(ev.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded"
-                    />
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        value={password}
-                        disabled={loginInProgress}
-                        onChange={ev => setPassword(ev.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded"
-                    />
-                    
-                    <button
-                        disabled={loginInProgress}
-                        type="submit"
-                        className="w-full py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
-                    >
-                        Login
-                    </button>
-                    <div className="my-4 text-center text-gray-500">
-                        or login with provider
-                    </div>
-                    <button
-                        onClick={() => signIn('google', { callbackUrl: '/' })}
-                        className="flex items-center justify-center gap-4 w-full py-2 border border-gray-300 rounded hover:bg-gray-100 transition-colors"
-                    >
-                        <Image src={'/google-icon.png'} alt={'Google icon'} width={24} height={24} />
-                        Login with Google
-                    </button>
-                </form>
-            </div>
-        </section>
-    );
+    setIsLoading(false);
+  };
+
+  return (
+    <section className="mt-8 flex justify-center">
+      <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+        <h1 className="text-center text-green-500 text-4xl mb-4">Login</h1>
+        {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            disabled={isLoading}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            disabled={isLoading}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded"
+            required
+          />
+          <button
+            disabled={isLoading}
+            type="submit"
+            className="w-full py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+          >
+            {isLoading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+        <p className="mt-4 text-center">
+          Don't have an account? <a href="/register" className="text-green-500">Register here</a>
+        </p>
+
+        <div className="my-4 text-center text-gray-500">or login with provider</div>
+          <button
+            type="button"
+            onClick={() => signIn("google", { callbackUrl: "/" })}
+            className="flex items-center justify-center gap-4 w-full py-2 border border-gray-300 rounded hover:bg-gray-100 transition-colors"
+          >
+            <Image src={"/google-icon.png"} alt="Google icon" width={24} height={24} />
+            Login with Google
+          </button>
+       
+      </div>
+
+        
+    </section>
+  );
 }

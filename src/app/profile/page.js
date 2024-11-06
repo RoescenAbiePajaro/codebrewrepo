@@ -33,27 +33,29 @@ export default function ProfilePage() {
 
   async function handleProfileInfoUpdate(ev, data) {
     ev.preventDefault();
-
+  
     const savingPromise = new Promise(async (resolve, reject) => {
       const response = await fetch('/api/profile', {
         method: 'PUT',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      if (response.ok)
-        resolve()
-      else
-        reject();
+  
+      if (response.ok) {
+        resolve();
+      } else {
+        const errorData = await response.json();
+        reject(errorData.error || 'Failed to update profile');
+      }
     });
-
+  
     await toast.promise(savingPromise, {
       loading: 'Saving...',
       success: 'Profile saved!',
-      error: 'Error',
+      error: (err) => err,
     });
-
   }
-
+  
   if (status === 'loading' || !profileFetched) {
     return 'Loading...';
   }
