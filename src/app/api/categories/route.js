@@ -4,17 +4,14 @@ import mongoose from "mongoose";
 
 export async function POST(req) {
   mongoose.connect(process.env.MONGO_URL);
-  const { name } = await req.json();
-
+  const {name} = await req.json();
   if (await isAdmin()) {
-    const categoryDoc = await Category.create({ name });
-    // Return the created category in the response
+    const categoryDoc = await Category.create({name});
     return Response.json(categoryDoc);
   } else {
-    return Response.json({ error: 'Not authorized' }, { status: 403 });
+    return Response.json({});
   }
 }
-
 
 export async function PUT(req) {
   mongoose.connect(process.env.MONGO_URL);
@@ -27,10 +24,10 @@ export async function PUT(req) {
 
 export async function GET() {
   mongoose.connect(process.env.MONGO_URL);
-  const categories = await Category.find();
-  return Response.json(categories);
+  return Response.json(
+    await Category.find()
+  );
 }
-
 
 export async function DELETE(req) {
   mongoose.connect(process.env.MONGO_URL);

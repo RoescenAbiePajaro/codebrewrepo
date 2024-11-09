@@ -26,43 +26,32 @@ export default function CategoriesPage() {
 
   async function handleCategorySubmit(ev) {
     ev.preventDefault();
-  
     const creationPromise = new Promise(async (resolve, reject) => {
-      const data = { name: categoryName };
+      const data = {name:categoryName};
       if (editedCategory) {
         data._id = editedCategory._id;
       }
-  
       const response = await fetch('/api/categories', {
         method: editedCategory ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-  
-      if (response.ok) {
-        const newCategory = await response.json();
-        // If it's a new category, directly update the state to include it
-        if (!editedCategory) {
-          setCategories(prevCategories => [...prevCategories, newCategory]);
-        } else {
-          // If it's an update, replace the old category with the new one
-          setCategories(prevCategories => prevCategories.map(c => c._id === newCategory._id ? newCategory : c));
-        }
-        setCategoryName('');
-        setEditedCategory(null);
+      setCategoryName('');
+      fetchCategories();
+      setEditedCategory(null);
+      if (response.ok)
         resolve();
-      } else {
+      else
         reject();
-      }
     });
-  
     await toast.promise(creationPromise, {
-      loading: editedCategory ? 'Updating category...' : 'Creating your new category...',
+      loading: editedCategory
+                 ? 'Updating category...'
+                 : 'Creating your new category...',
       success: editedCategory ? 'Category updated' : 'Category created',
       error: 'Error, sorry...',
     });
   }
-  
 
   async function handleDeleteClick(_id) {
     const promise = new Promise(async (resolve, reject) => {
@@ -150,7 +139,6 @@ export default function CategoriesPage() {
           </div>
         ))}
       </div>
-
     </section>
   );
 }
