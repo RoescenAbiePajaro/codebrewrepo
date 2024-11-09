@@ -15,7 +15,7 @@ export default function MenuItemTile({onAddToCart, ...item}) {
       <p className="text-gray-500 text-sm line-clamp-3">
         {description}
       </p>
-      <AddToCartButton
+            <AddToCartButton
         image={image}
         hasSizesOrExtras={hasSizesOrExtras}
         onClick={onAddToCart}

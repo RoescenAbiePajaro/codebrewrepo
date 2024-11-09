@@ -1,7 +1,7 @@
 'use client';
 import Left from "@/components/icons/Left";
-import Right from "@/components/icons/Right";
-import EditableImage from "@/components/layout/EditableImage";
+// import Right from "@/components/icons/Right";
+// import EditableImage from "@/components/layout/EditableImage";
 import MenuItemForm from "@/components/layout/MenuItemForm";
 import UserTabs from "@/components/layout/UserTabs";
 import {useProfile} from "@/components/UseProfile";
@@ -25,7 +25,7 @@ export default function NewMenuItemPage() {
       });
       if (response.ok)
         resolve();
-      else
+      else 
         reject();
     });
 
