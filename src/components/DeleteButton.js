@@ -1,3 +1,4 @@
+//category and menu deletion
 import {useState} from "react";
 
 export default function DeleteButton({label,onDelete}) {
