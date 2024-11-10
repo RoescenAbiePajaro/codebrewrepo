@@ -100,7 +100,7 @@ export default function CategoriesPage() {
             />
           </div>
           <div className="pb-2 flex gap-2">
-            <button className="border border-primary" type="submit">
+            <button className="border border-green-500" type="submit">
               {editedCategory ? 'Update' : 'Create'}
             </button>
             <button

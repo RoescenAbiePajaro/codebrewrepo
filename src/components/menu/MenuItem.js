@@ -1,10 +1,11 @@
+//MenuItem
 'use client';
 import {CartContext} from "@/components/AppContext";
 import MenuItemTile from "@/components/menu/MenuItemTile";
 import Image from "next/image";
 import {useContext, useState} from "react";
 import FlyingButton from "react-flying-item";
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
 
 export default function MenuItem(menuItem) {
   const {
@@ -13,7 +14,7 @@ export default function MenuItem(menuItem) {
   } = menuItem;
   const [
     selectedSize, setSelectedSize
-  ] = useState(sizes?.[0] || null);
+  ] = useState(sizes?.[0]);
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const {addToCart} = useContext(CartContext);
@@ -84,7 +85,7 @@ export default function MenuItem(menuItem) {
                         onChange={() => setSelectedSize(size)}
                         checked={selectedSize?.name === size.name}
                         name="size"/>
-                      {size.name} ${basePrice + size.price}
+                      {size.name} ₱{basePrice + size.price}
                     </label>
                   ))}
                 </div>
@@ -101,7 +102,7 @@ export default function MenuItem(menuItem) {
                         onChange={ev => handleExtraThingClick(ev, extraThing)}
                         checked={selectedExtras.map(e => e._id).includes(extraThing._id)}
                         name={extraThing.name} />
-                      {extraThing.name} +${extraThing.price}
+                      {extraThing.name} +₱{extraThing.price}
                     </label>
                   ))}
                 </div>
@@ -112,7 +113,7 @@ export default function MenuItem(menuItem) {
                 src={image}>
                 <div className="primary sticky bottom-2"
                      onClick={handleAddToCartButtonClick}>
-                  Add to cart ${selectedPrice}
+                  Add to cart ₱{selectedPrice}
                 </div>
               </FlyingButton>
               <button
