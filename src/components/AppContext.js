@@ -1,4 +1,3 @@
-//AppContext.js
 'use client';
 import { SessionProvider } from "next-auth/react";
 import { createContext, useEffect, useState } from "react";
@@ -16,7 +15,7 @@ export function cartProductPrice(cartProduct) {
       price += extra.price;
     }
   }
-  return price;
+  return price * cartProduct.quantity; // Multiply by quantity
 }
 
 export function AppProvider({ children }) {
@@ -49,12 +48,28 @@ export function AppProvider({ children }) {
     }
   }
 
-  function addToCart(product, size = null, extras = []) {
+  function addToCart(product, size = null, extras = [], quantity = 1) {
     setCartProducts(prevProducts => {
-      const cartProduct = { ...product, size, extras };
-      const newProducts = [...prevProducts, cartProduct];
-      saveCartProductsToLocalStorage(newProducts);
-      return newProducts;
+      // Check if the product is already in the cart, and update its quantity if it is
+      const productIndex = prevProducts.findIndex(cartProduct => 
+        cartProduct._id === product._id && 
+        cartProduct.size?._id === size?._id &&
+        JSON.stringify(cartProduct.extras) === JSON.stringify(extras)
+      );
+
+      if (productIndex !== -1) {
+        // Product exists, update the quantity
+        const updatedProducts = [...prevProducts];
+        updatedProducts[productIndex].quantity += quantity;
+        saveCartProductsToLocalStorage(updatedProducts);
+        return updatedProducts;
+      } else {
+        // Product doesn't exist, add it to the cart
+        const newProduct = { ...product, size, extras, quantity };
+        const newProducts = [...prevProducts, newProduct];
+        saveCartProductsToLocalStorage(newProducts);
+        return newProducts;
+      }
     });
   }
 

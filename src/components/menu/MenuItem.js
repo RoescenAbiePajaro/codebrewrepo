@@ -4,32 +4,29 @@ import MenuItemTile from "@/components/menu/MenuItemTile";
 import Image from "next/image";
 import {useContext, useState} from "react";
 import FlyingButton from "react-flying-item";
-// import toast from "react-hot-toast";
 
 export default function MenuItem(menuItem) {
   const {
-    image,name,description,basePrice,
+    image, name, description, basePrice,
     sizes, extraIngredientPrices,
   } = menuItem;
-
   const [
     selectedSize, setSelectedSize
   ] = useState(sizes?.[0] || null);
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-  const [quantity, setQuantity] = useState(1); // New state for quantity
+  const [quantity, setQuantity] = useState(1);  // Track quantity
   const {addToCart} = useContext(CartContext);
 
   async function handleAddToCartButtonClick() {
-    console.log('add to cart');
     const hasOptions = sizes.length > 0 || extraIngredientPrices.length > 0;
     if (hasOptions && !showPopup) {
       setShowPopup(true);
       return;
     }
-    addToCart(menuItem, selectedSize, selectedExtras, quantity); // Pass quantity to addToCart
+    // Add item to cart with quantity
+    addToCart(menuItem, selectedSize, selectedExtras, quantity);
     await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log('hiding popup');
     setShowPopup(false);
   }
 
@@ -44,6 +41,7 @@ export default function MenuItem(menuItem) {
     }
   }
 
+  // Adjust price calculation based on selected options and quantity
   let selectedPrice = basePrice;
   if (selectedSize) {
     selectedPrice += selectedSize.price;
@@ -53,18 +51,7 @@ export default function MenuItem(menuItem) {
       selectedPrice += extra.price;
     }
   }
-
-  // Update price to account for quantity
-  const totalPrice = selectedPrice * quantity;
-
-  // Function to increase or decrease the quantity
-  const handleQuantityChange = (operation) => {
-    if (operation === 'increase') {
-      setQuantity(prev => prev + 1);
-    } else if (operation === 'decrease' && quantity > 1) {
-      setQuantity(prev => prev - 1);
-    }
-  };
+  selectedPrice *= quantity;  // Multiply by quantity
 
   return (
     <>
@@ -78,7 +65,6 @@ export default function MenuItem(menuItem) {
             <div
               className="overflow-y-scroll p-2"
               style={{maxHeight:'calc(100vh - 100px)'}}>
-
               <Image
                 src={image || null}
                 alt={name}
@@ -122,25 +108,22 @@ export default function MenuItem(menuItem) {
                   ))}
                 </div>
               )}
-
-              {/* Quantity control */}
-              <div className="flex justify-center items-center gap-2 my-4">
+              <div className="flex justify-between items-center py-2">
                 <button
-                  className="px-4 py-2 bg-gray-200 rounded-full"
-                  onClick={() => handleQuantityChange('decrease')}>-</button>
+                  className="text-gray-700 p-2 border rounded"
+                  onClick={() => setQuantity(prev => Math.max(prev - 1, 1))}>-</button>
                 <span className="text-lg">{quantity}</span>
                 <button
-                  className="px-4 py-2 bg-gray-200 rounded-full"
-                  onClick={() => handleQuantityChange('increase')}>+</button>
+                  className="text-gray-700 p-2 border rounded"
+                  onClick={() => setQuantity(prev => prev + 1)}>+</button>
               </div>
-
               <FlyingButton
                 targetTop={'5%'}
                 targetLeft={'95%'}
                 src={image}>
                 <div className="primary sticky bottom-2"
                      onClick={handleAddToCartButtonClick}>
-                  Add to cart ₱{totalPrice}
+                  Add to cart ₱{selectedPrice}
                 </div>
               </FlyingButton>
               <button
