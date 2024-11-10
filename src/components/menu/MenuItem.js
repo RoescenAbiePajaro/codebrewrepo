@@ -1,23 +1,21 @@
 //MenuItem
 'use client';
-import {CartContext} from "@/components/AppContext";
+import { CartContext } from "@/components/AppContext";
 import MenuItemTile from "@/components/menu/MenuItemTile";
 import Image from "next/image";
-import {useContext, useState} from "react";
+import { useContext, useState } from "react";
 import FlyingButton from "react-flying-item";
-// import toast from "react-hot-toast";
+import toast from "react-hot-toast";
 
 export default function MenuItem(menuItem) {
   const {
-    image,name,description,basePrice,
+    image, name, description, basePrice,
     sizes, extraIngredientPrices,
   } = menuItem;
-  const [
-    selectedSize, setSelectedSize
-  ] = useState(sizes?.[0]);
+  const [selectedSize, setSelectedSize] = useState(sizes?.[0]);
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-  const {addToCart} = useContext(CartContext);
+  const { addToCart } = useContext(CartContext);
 
   async function handleAddToCartButtonClick() {
     console.log('add to cart');
@@ -31,6 +29,7 @@ export default function MenuItem(menuItem) {
     console.log('hiding popup');
     setShowPopup(false);
   }
+
   function handleExtraThingClick(ev, extraThing) {
     const checked = ev.target.checked;
     if (checked) {
@@ -63,12 +62,16 @@ export default function MenuItem(menuItem) {
             className="my-8 bg-white p-2 rounded-lg max-w-md">
             <div
               className="overflow-y-scroll p-2"
-              style={{maxHeight:'calc(100vh - 100px)'}}>
-              <Image
-                src={image}
-                alt={name}
-                width={300} height={200}
-                className="mx-auto" />
+              style={{ maxHeight: 'calc(100vh - 100px)' }}>
+              {image && (
+                <Image
+                  src={image}
+                  alt={name}
+                  width={300}
+                  height={200}
+                  className="mx-auto"
+                />
+              )}
               <h2 className="text-lg font-bold text-center mb-2">{name}</h2>
               <p className="text-center text-gray-500 text-sm mb-2">
                 {description}
@@ -84,7 +87,7 @@ export default function MenuItem(menuItem) {
                         type="radio"
                         onChange={() => setSelectedSize(size)}
                         checked={selectedSize?.name === size.name}
-                        name="size"/>
+                        name="size" />
                       {size.name} ₱{basePrice + size.price}
                     </label>
                   ))}
@@ -108,14 +111,15 @@ export default function MenuItem(menuItem) {
                 </div>
               )}
               <FlyingButton
-                targetTop={'5%'}
-                targetLeft={'95%'}
-                src={image}>
-                <div className="primary sticky bottom-2"
-                     onClick={handleAddToCartButtonClick}>
-                  Add to cart ₱{selectedPrice}
-                </div>
-              </FlyingButton>
+  targetTop={'5%'}
+  targetLeft={'95%'}
+  src={image && image !== "" ? image : null}> {/* Only pass a valid image URL */}
+  <div className="primary sticky bottom-2"
+       onClick={handleAddToCartButtonClick}>
+    Add to cart ₱{selectedPrice}
+  </div>
+</FlyingButton>
+
               <button
                 className="mt-2"
                 onClick={() => setShowPopup(false)}>
