@@ -10,15 +10,15 @@ export default function Home() {
       <HomeMenu />
       <section className="text-center my-16" id="about">
         <SectionHeaders
-          subHeader={'Our story'}
-          mainHeader={'About us'}
+          subHeader={''}
+          mainHeader={''}
         />
         
       </section>
       <section className="text-center my-8" id="contact">
         <SectionHeaders
-          subHeader={'Don\'t hesitate'}
-          mainHeader={'Contact us'}
+          subHeader={''}
+          mainHeader={''}
         />
       </section>
     </>

@@ -78,5 +78,6 @@ export default function MenuItemPriceProps({name,addLabel,props,setProps}) {
         </button>
       </div>
     </div>
+    
   );
 }

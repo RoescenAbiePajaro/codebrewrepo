@@ -5,7 +5,7 @@ import MenuItemTile from "@/components/menu/MenuItemTile";
 import Image from "next/image";
 import { useContext, useState } from "react";
 import FlyingButton from "react-flying-item";
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
 
 export default function MenuItem(menuItem) {
   const {
