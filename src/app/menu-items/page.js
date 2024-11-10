@@ -50,7 +50,7 @@ export default function MenuItemsPage() {
               <div className="relative">
                 <Image
                   className="rounded-md"
-                  src={item.image} alt={''} width={200} height={200} />
+                  src={item.image} alt={'items'} width={200} height={200} />
               </div>
               <div className="text-center">
                 {item.name}

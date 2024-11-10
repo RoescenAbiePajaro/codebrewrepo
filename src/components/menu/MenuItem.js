@@ -1,21 +1,24 @@
-//MenuItem
 'use client';
-import { CartContext } from "@/components/AppContext";
+import {CartContext} from "@/components/AppContext";
 import MenuItemTile from "@/components/menu/MenuItemTile";
 import Image from "next/image";
-import { useContext, useState } from "react";
+import {useContext, useState} from "react";
 import FlyingButton from "react-flying-item";
 // import toast from "react-hot-toast";
 
 export default function MenuItem(menuItem) {
   const {
-    image, name, description, basePrice,
+    image,name,description,basePrice,
     sizes, extraIngredientPrices,
   } = menuItem;
-  const [selectedSize, setSelectedSize] = useState(sizes?.[0]);
+
+  const [
+    selectedSize, setSelectedSize
+  ] = useState(sizes?.[0] || null);
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-  const { addToCart } = useContext(CartContext);
+  const [quantity, setQuantity] = useState(1); // New state for quantity
+  const {addToCart} = useContext(CartContext);
 
   async function handleAddToCartButtonClick() {
     console.log('add to cart');
@@ -24,7 +27,7 @@ export default function MenuItem(menuItem) {
       setShowPopup(true);
       return;
     }
-    addToCart(menuItem, selectedSize, selectedExtras);
+    addToCart(menuItem, selectedSize, selectedExtras, quantity); // Pass quantity to addToCart
     await new Promise(resolve => setTimeout(resolve, 1000));
     console.log('hiding popup');
     setShowPopup(false);
@@ -51,6 +54,18 @@ export default function MenuItem(menuItem) {
     }
   }
 
+  // Update price to account for quantity
+  const totalPrice = selectedPrice * quantity;
+
+  // Function to increase or decrease the quantity
+  const handleQuantityChange = (operation) => {
+    if (operation === 'increase') {
+      setQuantity(prev => prev + 1);
+    } else if (operation === 'decrease' && quantity > 1) {
+      setQuantity(prev => prev - 1);
+    }
+  };
+
   return (
     <>
       {showPopup && (
@@ -62,16 +77,13 @@ export default function MenuItem(menuItem) {
             className="my-8 bg-white p-2 rounded-lg max-w-md">
             <div
               className="overflow-y-scroll p-2"
-              style={{ maxHeight: 'calc(100vh - 100px)' }}>
-              {image && (
-                <Image
-                  src={image}
-                  alt={name}
-                  width={300}
-                  height={200}
-                  className="mx-auto"
-                />
-              )}
+              style={{maxHeight:'calc(100vh - 100px)'}}>
+
+              <Image
+                src={image || null}
+                alt={name}
+                width={300} height={200}
+                className="mx-auto" />
               <h2 className="text-lg font-bold text-center mb-2">{name}</h2>
               <p className="text-center text-gray-500 text-sm mb-2">
                 {description}
@@ -87,7 +99,7 @@ export default function MenuItem(menuItem) {
                         type="radio"
                         onChange={() => setSelectedSize(size)}
                         checked={selectedSize?.name === size.name}
-                        name="size" />
+                        name="size"/>
                       {size.name} ₱{basePrice + size.price}
                     </label>
                   ))}
@@ -110,16 +122,27 @@ export default function MenuItem(menuItem) {
                   ))}
                 </div>
               )}
-              <FlyingButton
-  targetTop={'5%'}
-  targetLeft={'95%'}
-  src={image && image !== "" ? image : null}> {/* Only pass a valid image URL */}
-  <div className="primary sticky bottom-2"
-       onClick={handleAddToCartButtonClick}>
-    Add to cart ₱{selectedPrice}
-  </div>
-</FlyingButton>
 
+              {/* Quantity control */}
+              <div className="flex justify-center items-center gap-2 my-4">
+                <button
+                  className="px-4 py-2 bg-gray-200 rounded-full"
+                  onClick={() => handleQuantityChange('decrease')}>-</button>
+                <span className="text-lg">{quantity}</span>
+                <button
+                  className="px-4 py-2 bg-gray-200 rounded-full"
+                  onClick={() => handleQuantityChange('increase')}>+</button>
+              </div>
+
+              <FlyingButton
+                targetTop={'5%'}
+                targetLeft={'95%'}
+                src={image}>
+                <div className="primary sticky bottom-2"
+                     onClick={handleAddToCartButtonClick}>
+                  Add to cart ₱{totalPrice}
+                </div>
+              </FlyingButton>
               <button
                 className="mt-2"
                 onClick={() => setShowPopup(false)}>

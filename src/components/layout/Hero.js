@@ -16,12 +16,6 @@ export default function Hero() {
                 </div>
             </div>
             <div className="relative"> {/* Set a height for the image container */}
-                <Image
-                    src={'/tealerinlogo.png'}
-                    layout={'fill'}
-                    objectFit={'contain'}
-                    alt={'milktea'}
-                    />
 
             
             </div>

@@ -1,12 +1,20 @@
+import { useState } from 'react';
 import { cartProductPrice } from "@/components/AppContext";
 import Trash from "@/components/icons/Trash";
 import Image from "next/image";
 
 export default function CartProduct({ product, onRemove, index }) {
+  const [quantity, setQuantity] = useState(product.quantity || 1); // Set initial quantity
+
+  const handleIncrease = () => setQuantity(quantity + 1);
+  const handleDecrease = () => setQuantity(quantity > 1 ? quantity - 1 : 1); // Prevent going below 1
+
+  const totalPrice = cartProductPrice(product) * quantity;
+
   return (
     <div className="flex items-center gap-4 border-b py-4">
       <div className="w-24">
-        <Image width={240} height={240} src={product.image} alt={"productssimage"}/>
+        <Image width={240} height={240} src={product.image} alt={"productssimage"} />
       </div>
       <div className="grow">
         <h3 className="font-semibold">
@@ -25,8 +33,23 @@ export default function CartProduct({ product, onRemove, index }) {
           </div>
         )}
       </div>
+      <div className="flex items-center gap-2 text-lg font-semibold">
+        <button 
+          onClick={handleDecrease} 
+          className="px-3 py-1 bg-gray-200 rounded-full"
+        >
+          -
+        </button>
+        <span>{quantity}</span>
+        <button 
+          onClick={handleIncrease} 
+          className="px-3 py-1 bg-gray-200 rounded-full"
+        >
+          +
+        </button>
+      </div>
       <div className="text-lg font-semibold">
-      ₱{cartProductPrice(product)}
+        ₱{totalPrice}
       </div>
       {!!onRemove && (
         <div className="ml-2">

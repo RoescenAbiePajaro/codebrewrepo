@@ -30,7 +30,7 @@ export default function UserTabs({isAdmin}) {
             className={path.includes('/users') ? 'active' : ''}
             href={'/users'}
           >
-            Users
+            Staff
           </Link>
         </>
       )}

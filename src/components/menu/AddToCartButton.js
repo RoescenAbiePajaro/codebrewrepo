@@ -1,6 +1,5 @@
 import FlyingButton from 'react-flying-item'
 
-
 export default function AddToCartButton({
   hasSizesOrExtras, onClick, basePrice, image
 }) {
@@ -10,7 +9,7 @@ export default function AddToCartButton({
         <FlyingButton
           targetTop={'5%'}
           targetLeft={'95%'}
-          src={image ||null}>
+          src={image}>
           <div onClick={onClick}>
             Add to cart ₱{basePrice}
           </div>
