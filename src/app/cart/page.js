@@ -1,6 +1,6 @@
 'use client';
 import { CartContext, cartProductPrice } from "@/components/AppContext";
-import AddressInputs from "@/components/layout/AddressInputs";
+import CustomerInputs from "@/components/layout/CustomerInputs"; // Updated import
 import SectionHeaders from "@/components/layout/SectionHeaders";
 import CartProduct from "@/components/menu/CartProduct";
 import { useProfile } from "@/components/UseProfile";
@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 
 export default function CartPage() {
   const { cartProducts, removeCartProduct, setCartProducts } = useContext(CartContext);
-  const [address, setAddress] = useState({});
+  const [customer, setCustomer] = useState({});
   const { data: profileData } = useProfile();
 
   useEffect(() => {
@@ -21,9 +21,9 @@ export default function CartPage() {
   }, []);
 
   useEffect(() => {
-    if (profileData?.city) {
-      const { city } = profileData;
-      setAddress({ city });
+    if (profileData?.name || profileData?.email) {
+      const { name, email, phone } = profileData;
+      setCustomer({ name, email, phone });
     }
   }, [profileData]);
 
@@ -32,8 +32,8 @@ export default function CartPage() {
     subtotal += cartProductPrice(p);
   }
 
-  function handleAddressChange(propName, value) {
-    setAddress(prevAddress => ({ ...prevAddress, [propName]: value }));
+  function handleCustomerChange(propName, value) {
+    setCustomer(prevCustomer => ({ ...prevCustomer, [propName]: value }));
   }
 
   async function proceedToCheckout(ev) {
@@ -44,7 +44,7 @@ export default function CartPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          address,
+          customer,
           cartProducts,
         }),
       }).then(async (response) => {
@@ -77,7 +77,7 @@ export default function CartPage() {
     return (
       <section className="mt-8 text-center">
         <SectionHeaders mainHeader="Cart" />
-        <p className="mt-4">Your shopping cart is empty 😔</p>
+        <p className="mt-4">Cart is empty 😔</p>
       </section>
     );
   }
@@ -90,7 +90,7 @@ export default function CartPage() {
       <div className="mt-8 grid gap-8 grid-cols-2">
         <div>
           {cartProducts?.length === 0 && (
-            <div>No products in your shopping cart</div>
+            <div>No products in cart</div>
           )}
           {cartProducts?.length > 0 && cartProducts.map((product, index) => (
             <div key={index} className="mb-4 flex items-center justify-between">
@@ -130,9 +130,9 @@ export default function CartPage() {
         <div className="bg-gray-100 p-4 rounded-lg">
           <h2>Checkout</h2>
           <form onSubmit={proceedToCheckout}>
-            <AddressInputs
-              addressProps={address}
-              setAddressProp={handleAddressChange}
+            <CustomerInputs
+              customerProps={customer}  // Updated usage
+              setCustomerProp={handleCustomerChange} // Updated handler function
             />
             <button type="submit" className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md">
               Pay ₱{subtotal}

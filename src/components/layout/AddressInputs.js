@@ -21,3 +21,5 @@ export default function AddressInputs({ addressProps, setAddressProp, disabled =
     </>
   );
 }
+
+///make this as Customer

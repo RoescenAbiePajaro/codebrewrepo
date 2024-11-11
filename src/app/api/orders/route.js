@@ -15,7 +15,7 @@ export async function GET(req) {
   if (_id) {
     return Response.json( await Order.findById(_id) );
   }
-
+  
 
   if (admin) {
     return Response.json( await Order.find() );
