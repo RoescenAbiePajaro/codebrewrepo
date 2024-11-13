@@ -8,14 +8,14 @@ import FlyingButton from "react-flying-item";
 export default function MenuItem(menuItem) {
   const {
     image, name, description, basePrice,
-    sizes, extraIngredientPrices,
+    sizes, extraIngredientPrices, //stock,
   } = menuItem;
   const [
     selectedSize, setSelectedSize
   ] = useState(sizes?.[0] || null);
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-  const [quantity, setQuantity] = useState(1);  // Track quantity
+  const [quantity, setQuantity] = useState(1);
   const {addToCart} = useContext(CartContext);
 
   async function handleAddToCartButtonClick() {

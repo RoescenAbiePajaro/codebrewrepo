@@ -11,6 +11,7 @@ const MenuItemSchema = new Schema({
   description: {type: String},
   category: {type: mongoose.Types.ObjectId, required: false},
   basePrice: {type: Number},
+  //stock:{type: Number},
   sizes: {type:[ExtraPriceSchema]},
   extraIngredientPrices: {type:[ExtraPriceSchema]},
 }, {timestamps: true});

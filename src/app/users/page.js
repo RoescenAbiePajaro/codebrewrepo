@@ -7,15 +7,31 @@ import {useEffect, useState} from "react";
 export default function UsersPage() {
 
   const [users, setUsers] = useState([]);
-  const {loading,data} = useProfile();
+  const {loading, data} = useProfile();
 
   useEffect(() => {
-    fetch('/api/users').then(response => {
-      response.json().then(users => {
-        setUsers(users);
-      });
-    })
+    fetchUsers();
   }, []);
+
+  const fetchUsers = async () => {
+    const response = await fetch('/api/users');
+    const usersData = await response.json();
+    setUsers(usersData);
+  };
+
+  const handleDelete = async (userId) => {
+    const confirmDelete = confirm("Are you sure you want to delete this user?");
+    if (confirmDelete) {
+      const response = await fetch(`/api/users/${userId}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        setUsers(users.filter(user => user._id !== userId));
+      } else {
+        console.error("Failed to delete user");
+      }
+    }
+  };
 
   if (loading) {
     return 'Loading user info...';
@@ -40,10 +56,15 @@ export default function UsersPage() {
               </div>
               <span className="text-gray-500">{user.email}</span>
             </div>
-            <div>
-              <Link className="button" href={'/users/'+user._id}>
+            <div className="flex gap-2">
+              <Link className="button" href={'/users/' + user._id}>
                 Edit
               </Link>
+              <button
+                onClick={() => handleDelete(user._id)}
+                className="button bg-red-500 text-white rounded px-4 py-1">
+                Delete
+              </button>
             </div>
           </div>
         ))}
