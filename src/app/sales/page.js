@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie,
   XAxis, YAxis, Tooltip, Legend, CartesianGrid
@@ -7,7 +7,7 @@ import {
 import UserTabs from "@/components/layout/UserTabs";
 import axios from 'axios';
 
-const SalesReport = () => {
+const Sales = () => {
   const [salesData, setSalesData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,7 +23,7 @@ const SalesReport = () => {
   useEffect(() => {
     const fetchSalesData = async () => {
       try {
-        const response = await axios.get('/api/sales'); // Ensure this is a GET request
+        const response = await axios.get('/api/sales');
         setSalesData(response.data);
       } catch (err) {
         setError(err);
@@ -40,28 +40,28 @@ const SalesReport = () => {
   if (!Object.keys(salesData).length) return <div className="no-data">No sales data available.</div>;
 
   // Prepare chart data
-  const chartData = Object.keys(salesData).map(date => ({
+  const chartData = useMemo(() => Object.keys(salesData).map(date => ({
     date,
     value: salesData[date],
-  }));
+  })), [salesData]);
 
   // Monthly data aggregation
-  const monthlyData = Object.keys(salesData).reduce((acc, date) => {
+  const monthlyData = useMemo(() => Object.keys(salesData).reduce((acc, date) => {
     const month = date.substring(0, 7); // Extract month from date
     acc[month] = (acc[month] || 0) + salesData[date];
     return acc;
-  }, {});
+  }, {}), [salesData]);
 
-  const monthlyChart = Object.keys(monthlyData).map(month => ({
+  const monthlyChart = useMemo(() => Object.keys(monthlyData).map(month => ({
     month,
     value: monthlyData[month],
-  }));
+  })), [monthlyData]);
 
   // Sales interpretations
   const totalSales = Object.values(salesData).reduce((acc, curr) => acc + curr, 0);
   const highestSalesDate = Object.keys(salesData).reduce((acc, curr) => salesData[curr] > salesData[acc] ? curr : acc);
   const lowestSalesDate = Object.keys(salesData).reduce((acc, curr) => salesData[curr] < salesData[acc] ? curr : acc);
-  const averageSalesPerDay = totalSales / Object.keys(salesData).length;
+  const averageSalesPerDay = totalSales / Object.keys (salesData).length;
 
   const interpretation = `
     Total sales amount: ₱${totalSales.toFixed(2)}
@@ -156,11 +156,11 @@ const SalesReport = () => {
       <div>
         <h2>Sales Interpretation</h2>
         <pre>{interpretation}</pre>
-        <h2>Monthly Sales Interpretation</h2>
+        <h2 >Monthly Sales Interpretation</h2>
         <pre>{monthlyInterpretation}</pre>
       </div>
     </div>
   );
 };
 
-export default SalesReport;
+export default Sales;
