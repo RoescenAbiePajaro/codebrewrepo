@@ -1,16 +1,18 @@
 'use client';
 import { CartContext, cartProductPrice } from "@/components/AppContext";
-import CustomerInputs from "@/components/layout/CustomerInputs"; // Updated import
+import CustomerInputs from "@/components/layout/CustomerInputs"; 
 import SectionHeaders from "@/components/layout/SectionHeaders";
 import CartProduct from "@/components/menu/CartProduct";
 import { useProfile } from "@/components/UseProfile";
 import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import Receipt from "@/components/layout/Receipt";
 
 export default function CartPage() {
   const { cartProducts, removeCartProduct, setCartProducts } = useContext(CartContext);
   const [customer, setCustomer] = useState({});
   const { data: profileData } = useProfile();
+  const [showReceipt, setShowReceipt] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -21,15 +23,17 @@ export default function CartPage() {
   }, []);
 
   useEffect(() => {
-    if (profileData?.name || profileData?.email) {
+    if (profileData && (profileData.name || profileData.email)) {
       const { name, email, phone } = profileData;
       setCustomer({ name, email, phone });
     }
   }, [profileData]);
 
   let subtotal = 0;
-  for (const p of cartProducts) {
-    subtotal += cartProductPrice(p);
+  if (cartProducts) {
+    for (const p of cartProducts) {
+      subtotal += cartProductPrice(p);
+    }
   }
 
   function handleCustomerChange(propName, value) {
@@ -52,15 +56,17 @@ export default function CartPage() {
           resolve();
           window.location = await response.json();
         } else {
-          reject();
+          reject(new Error('Checkout failed')); // Provide an error message
         }
+      }).catch((error) => {
+        reject(error); // Catch any fetch errors
       });
     });
 
     await toast.promise(promise, {
       loading: 'Preparing your order...',
       success: 'Redirecting to payment...',
-      error: 'Something went wrong... Please try again later',
+      error: (err) => err.message || 'Something went wrong... Please try again later', // Use the error message
     });
   }
 
@@ -73,7 +79,7 @@ export default function CartPage() {
     });
   }
 
-  if (cartProducts?.length === 0) {
+  if (!cartProducts || cartProducts.length === 0) {
     return (
       <section className="mt-8 text-center">
         <SectionHeaders mainHeader="Cart" />
@@ -89,10 +95,7 @@ export default function CartPage() {
       </div>
       <div className="mt-8 grid gap-8 grid-cols-2">
         <div>
-          {cartProducts?.length === 0 && (
-            <div>No products in cart</div>
-          )}
-          {cartProducts?.length > 0 && cartProducts.map((product, index) => (
+          {cartProducts.map((product, index) => (
             <div key={index} className="mb-4 flex items-center justify-between">
               <CartProduct
                 product={product}
@@ -127,19 +130,48 @@ export default function CartPage() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-100 p-4 rounded-lg">
+        < div className="bg-gray-100 p-4 rounded-lg">
           <h2>Checkout</h2>
           <form onSubmit={proceedToCheckout}>
             <CustomerInputs
-              customerProps={customer}  // Updated usage
-              setCustomerProp={handleCustomerChange} // Updated handler function
+              customerProps={customer}  
+              setCustomerProp={handleCustomerChange} 
             />
             <button type="submit" className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md">
               Pay ₱{subtotal}
             </button>
           </form>
+          <button 
+            onClick={() => setShowReceipt(true)} 
+            className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md"
+          >
+            Print Receipt
+          </button>
         </div>
       </div>
+  
+      {showReceipt && (
+        <div className="fixed inset-0 bg-white z-50 overflow-auto">
+          <div className="relative p-8 max-w-lg mx-auto bg-white rounded-lg shadow-lg">
+            <Receipt customer={customer} cartProducts={cartProducts} subtotal={subtotal} />
+            <button 
+              onClick={() => {
+                window.print();
+                setShowReceipt(false);
+              }} 
+              className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md"
+            >
+              Print
+            </button>
+            <button 
+              onClick={() => setShowReceipt(false)} 
+              className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
