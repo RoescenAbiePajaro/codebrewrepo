@@ -1,4 +1,4 @@
-// /models/Order.js
+
 import { model, models, Schema } from "mongoose";
 
 const OrderSchema = new Schema({
@@ -11,6 +11,5 @@ const OrderSchema = new Schema({
     quantity: Number
   }],
   paid: { type: Boolean, default: false },
-}, { timestamps: true }); // Adds createdAt and updatedAt fields
-
-export const Order = models.Order || model('Order', OrderSchema);
+}, { timestamps: true }); 
+export const Order = models?.Order || model('Order', OrderSchema);
