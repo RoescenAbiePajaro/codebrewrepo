@@ -6,6 +6,7 @@ import CartProduct from "@/components/menu/CartProduct";
 import { useProfile } from "@/components/UseProfile";
 import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useRouter } from 'next/navigation'; // Use the new router from next/navigation
 import Receipt from "@/components/layout/Receipt";
 
 export default function CartPage() {
@@ -13,6 +14,7 @@ export default function CartPage() {
   const [customer, setCustomer] = useState({});
   const { data: profileData } = useProfile();
   const [showReceipt, setShowReceipt] = useState(false);
+  const router = useRouter(); // Initialize the new router
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -40,33 +42,35 @@ export default function CartPage() {
     setCustomer(prevCustomer => ({ ...prevCustomer, [propName]: value }));
   }
 
-  async function proceedToCheckout(ev) {
+  // Save the receipt to the database
+  async function saveReceipt(ev) {
     ev.preventDefault();
 
     const promise = new Promise((resolve, reject) => {
-      fetch('/api/checkout', {
+      fetch('/api/receipt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           customer,
           cartProducts,
+          subtotal
         }),
       }).then(async (response) => {
         if (response.ok) {
           resolve();
-          window.location = await response.json();
+          toast.success('Receipt saved successfully!');
         } else {
-          reject(new Error('Checkout failed')); // Provide an error message
+          reject(new Error('Saving receipt failed'));
         }
       }).catch((error) => {
-        reject(error); // Catch any fetch errors
+        reject(error);
       });
     });
 
     await toast.promise(promise, {
-      loading: 'Preparing your order...',
-      success: 'Redirecting to payment...',
-      error: (err) => err.message || 'Something went wrong... Please try again later', // Use the error message
+      loading: 'Saving your receipt...',
+      success: 'Receipt saved!',
+      error: (err) => err.message || 'Something went wrong... Please try again later',
     });
   }
 
@@ -130,17 +134,20 @@ export default function CartPage() {
             </div>
           </div>
         </div>
-        < div className="bg-gray-100 p-4 rounded-lg">
+
+        {/* Checkout Form */}
+        <div className="bg-gray-100 p-4 rounded-lg">
           <h2>Checkout</h2>
-          <form onSubmit={proceedToCheckout}>
+          <form onSubmit={saveReceipt}>
             <CustomerInputs
               customerProps={customer}  
               setCustomerProp={handleCustomerChange} 
             />
-            <button type="submit" className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md">
-              Pay ₱{subtotal}
+            <button type="submit" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md">
+              Save Receipt
             </button>
           </form>
+
           <button 
             onClick={() => setShowReceipt(true)} 
             className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md"
@@ -149,7 +156,7 @@ export default function CartPage() {
           </button>
         </div>
       </div>
-  
+
       {showReceipt && (
         <div className="fixed inset-0 bg-white z-50 overflow-auto">
           <div className="relative p-8 max-w-lg mx-auto bg-white rounded-lg shadow-lg">

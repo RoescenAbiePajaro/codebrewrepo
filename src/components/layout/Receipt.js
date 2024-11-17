@@ -1,3 +1,5 @@
+//layout/Receipt.js this connection to  cart page a
+'use client';
 import React from 'react';
 import Image from 'next/image'; 
 import { cartProductPrice } from "@/components/AppContext"; 

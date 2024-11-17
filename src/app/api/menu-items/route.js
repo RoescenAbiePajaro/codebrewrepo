@@ -5,8 +5,6 @@ import mongoose from "mongoose";
 async function connectDB() {
   if (!mongoose.connection.readyState) {
     await mongoose.connect(process.env.MONGO_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
     });
   }
 }

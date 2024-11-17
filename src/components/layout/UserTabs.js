@@ -23,8 +23,8 @@ export default function UserTabs({ isAdmin }) {
           <Link className={path === '/sales' ? 'active' : ''} href={'/sales'}>
             Sales
           </Link>
-          <Link className={path === '/customers' ? 'active' : ''} href={'/customers'}>
-            Customers
+          <Link className={path === '/receipt' ? 'active' : ''} href={'/receipt'}>
+            Receipts
           </Link>
         </>
       )}

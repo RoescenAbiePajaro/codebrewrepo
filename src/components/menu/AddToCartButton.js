@@ -9,7 +9,7 @@ export default function AddToCartButton({
         <FlyingButton
           targetTop={'5%'}
           targetLeft={'95%'}
-          src={image}>
+          src={image || null}>
           <div onClick={onClick}>
             Add to cart ₱{basePrice}
           </div>

@@ -2,7 +2,6 @@
 'use client';
 import SectionHeaders from "@/components/layout/SectionHeaders";
 import MenuItem from "@/components/menu/MenuItem";
-import Image from "next/image";
 import {useEffect, useState} from "react";
 
 export default function HomeMenu() {
