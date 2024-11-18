@@ -1,11 +1,10 @@
-'use client'; 
-
-import { useSession } from "next-auth/react"; k
+'use client';
+import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from 'react';
 import UserTabs from "@/components/layout/UserTabs";
 
 export default function CustomersList() {
-  const { data: session } = useSession(); 
+  const { data: session } = useSession();
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,11 +20,18 @@ export default function CustomersList() {
       try {
         const response = await fetch('/api/customers');
         if (!response.ok) {
-          throw new Error('Failed to fetch customers');
+          if (response.status === 401) {
+            throw new Error("Please log in to view customers.");
+          } else if (response.status === 403) {
+            throw new Error("Admin access required.");
+          } else {
+            throw new Error("Failed to fetch customers");
+          }
         }
         const data = await response.json();
         setCustomers(data);
       } catch (err) {
+        console.error("Error fetching customers:", err);
         setError(err.message);
       } finally {
         setLoading(false);
