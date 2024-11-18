@@ -1,4 +1,4 @@
-'use client';  // Add this since we're using hooks
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -12,10 +12,7 @@ const ReceiptPage = () => {
   useEffect(() => {
     const fetchReceipts = async () => {
       try {
-        const response = await fetch('/api/receipt', {
-          // Add cache: 'no-store' to prevent caching
-          cache: 'no-store'
-        });
+        const response = await fetch('/api/receipt', { cache: 'no-store' });
         if (!response.ok) throw new Error('Failed to fetch receipts');
         const data = await response.json();
         setReceipts(data);
@@ -30,7 +27,6 @@ const ReceiptPage = () => {
 
   const handleDelete = async (id) => {
     try {
-      // Updated API route path to match App Router convention
       const response = await fetch(`/api/receipt/${id}`, { 
         method: 'DELETE',
         cache: 'no-store'
@@ -39,7 +35,7 @@ const ReceiptPage = () => {
       if (result.success) {
         toast.success('Receipt deleted successfully!');
         setReceipts(receipts.filter((receipt) => receipt._id !== id));
-        router.refresh(); // Add this to refresh the page data
+        router.refresh();
       } else {
         toast.error(result.message || 'Failed to delete receipt');
       }
