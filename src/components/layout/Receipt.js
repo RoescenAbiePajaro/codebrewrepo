@@ -53,4 +53,5 @@ const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0 }) => {
   );
 };
 
+
 export default Receipt;
