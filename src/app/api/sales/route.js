@@ -1,51 +1,54 @@
-// pages/api/sales.js
-import { Order } from "@/models/Order";
+// app/api/sales/route.js
+
+import Receipt from "@/models/Receipt";
 import mongoose from "mongoose";
 
-export default async function handler(req, res) {
-  if (req.method === 'GET') {
-    try {
-      await mongoose.connect(process.env.MONGO_URL);
-
-      const { timeframe } = req.query;
-      let salesData = {};
-
-      const orders = await Order.find();
-
-      orders.forEach(order => {
-        const date = new Date(order.createdAt);
-        let key;
-
-        switch (timeframe) {
-          case 'daily':
-            key = date.toISOString().split('T')[0]; // YYYY-MM-DD
-            break;
-          case 'weekly':
-            const week = new Date(date.setDate(date.getDate() - date.getDay())).toISOString().split('T')[0]; // Start of the week
-            key = week;
-            break;
-          case 'monthly':
-            key = date.toISOString().split('T')[0].slice(0, 7); // YYYY-MM
-            break;
-          default:
-            key = date.toISOString().split('T')[0];
-        }
-
-        if (!salesData[key]) {
-          salesData[key] = 0;
-        }
-
-        const totalAmount = order.cartProducts.reduce((acc, product) => acc + (product.price * product.quantity), 0);
-        salesData[key] += totalAmount;
-      });
-
-      res.status(200).json(salesData);
-    } catch (error) {
-      console.error('Error fetching sales data:', error); // Log the error for debugging
-      res.status(500).json({ message: 'Internal Server Error', error: error.message });
+async function connectDB() {
+  if (!mongoose.connection.readyState) {
+    if (!process.env.MONGO_URL) {
+      throw new Error("MONGO_URL is not defined in the environment variables.");
     }
-  } else {
-    res.setHeader('Allow', ['GET']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+    await mongoose.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+  }
+}
+
+export async function GET(req) {
+  try {
+    await connectDB();
+    const url = new URL(req.url);
+    const timeframe = url.searchParams.get("timeframe") || "daily";
+
+    let groupStage;
+    switch (timeframe) {
+      case "daily":
+        groupStage = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } };
+        break;
+      case "weekly":
+        groupStage = { $isoWeek: "$createdAt" };
+        break;
+      case "monthly":
+        groupStage = { $dateToString: { format: "%Y-%m", date: "$createdAt" } };
+        break;
+      default:
+        throw new Error("Invalid timeframe parameter.");
+    }
+
+    const sales = await Receipt.aggregate([
+      { $group: { _id: groupStage, totalSales: { $sum: "$subtotal" } } },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const formattedSales = sales.reduce((acc, { _id, totalSales }) => {
+      acc[_id] = totalSales;
+      return acc;
+    }, {});
+
+    return new Response(JSON.stringify(formattedSales), { status: 200 });
+  } catch (error) {
+    console.error("Error retrieving sales data:", error);
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 }
