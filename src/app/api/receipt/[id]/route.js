@@ -10,7 +10,8 @@ async function connectDB() {
 export async function DELETE(req) {
   try {
     await connectDB();
-    const { id } = req.params; // Access dynamic `id` from the route
+    const url = new URL(req.url);
+    const id = url.searchParams.get("id"); // Get the id from the query parameters
     await Receipt.findByIdAndDelete(id);
     return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (error) {
