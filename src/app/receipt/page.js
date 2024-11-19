@@ -1,14 +1,18 @@
+// ReceiptPage.js
 'use client'; 
 import UserTabs from "@/components/layout/UserTabs";
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import Modal from "@/components/layout/Modal"; // Import the Modal component
 
 const ReceiptPage = () => {
   const [receipts, setReceipts] = useState([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [selectedReceipt, setSelectedReceipt] = useState(null); // State for the selected receipt
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
 
   const fetchReceipts = async () => {
     try {
@@ -29,16 +33,9 @@ const ReceiptPage = () => {
     return () => clearInterval(interval); // Clean up interval on unmount
   }, []);
 
-  const handleView = async (id) => {
-    setLoading(true);
-    try {
-      await router.push(`/receipt/${id}`);
-    } catch (error) {
-      console.error('Error navigating to receipt:', error);
-      toast.error('Failed to navigate to receipt');
-    } finally {
-      setLoading(false);
-    }
+  const handleView = (receipt) => {
+    setSelectedReceipt(receipt); // Set the selected receipt
+    setIsModalOpen(true); // Open the modal
   };
 
   const handleDelete = async (id) => {
@@ -47,26 +44,19 @@ const ReceiptPage = () => {
 
     setDeleteLoading(true);
     try {
-      console.log('Attempting to delete receipt with ID:', id); // Debug log
-      const response = await fetch(`/api/receipt?id=${id}`, { method: 'DELETE' }); // Pass the ID in the query string
+      const response = await fetch(`/api/receipt?id=${id}`, { method: 'DELETE' });
 
-      console.log('Response status:', response.status, response.statusText); // Debug log
-
-      // Check if the response is ok
       if (!response.ok) {
         let errorDetails;
         try {
-          // Try to parse the response as JSON
           errorDetails = await response.json();
         } catch (e) {
-          // If parsing fails, set error details to a generic message
           errorDetails = { error: 'Failed to delete receipt' };
         }
-        console.error('Error details:', errorDetails); // Log error details
+        console.error('Error details:', errorDetails);
         throw new Error(errorDetails.error || 'Failed to delete receipt');
       }
 
-      // If successful, update the state
       setReceipts((prevReceipts) => prevReceipts.filter((receipt) => receipt._id !== id));
       toast.success('Receipt deleted successfully');
     } catch (error) {
@@ -125,11 +115,10 @@ const ReceiptPage = () => {
               </div>
               <div className="flex gap-2">
                 <button 
-                  onClick={() => handleView(receipt._id)}
-                  className={`px-4 py-2 ${loading ? 'bg-gray-400' : ' bg-green-500'} text-white rounded-md hover:bg-green-600`}
-                  disabled={loading}
+                  onClick={() => handleView(receipt)}
+                  className={`px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600`}
                 >
-                  {loading ? 'Loading...' : 'View'}
+                  View
                 </button>
 
                 <button
@@ -139,7 +128,6 @@ const ReceiptPage = () => {
                 >
                   {deleteLoading ? 'Deleting...' : 'Delete'}
                 </button>
-
               </div>
             </div>
           ))
@@ -147,6 +135,11 @@ const ReceiptPage = () => {
           <p className="text-gray-500">No receipts found.</p>
         )}
       </div>
+      <Modal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        receipt={selectedReceipt} 
+      />
     </section>
   );
 };

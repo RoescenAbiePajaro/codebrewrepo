@@ -70,8 +70,8 @@ export default function UsersPage() {
               </div>
               <span className="text-gray-500">{user.email}</span>
             </div>
-            <div className="flex gap-2">
-              <Link className="button" href={'/users/' + user._id}>
+            <div className="flex gap-2 ">
+              <Link className="button  bg-green-500 text-white rounded px-4 py-1" href={'/users/' + user._id}>
                 Edit
               </Link>
               <button
