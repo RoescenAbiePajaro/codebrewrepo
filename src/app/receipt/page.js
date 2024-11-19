@@ -8,6 +8,7 @@ const ReceiptPage = () => {
   const [receipts, setReceipts] = useState([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const fetchReceipts = async () => {
     try {
@@ -44,14 +45,35 @@ const ReceiptPage = () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this receipt?");
     if (!confirmDelete) return;
 
+    setDeleteLoading(true);
     try {
-      const response = await fetch(`/api/receipt?id=${id}`, { method: 'DELETE' });
-      if (!response.ok) throw new Error('Failed to delete receipt');
+      console.log('Attempting to delete receipt with ID:', id); // Debug log
+      const response = await fetch(`/api/receipt?id=${id}`, { method: 'DELETE' }); // Pass the ID in the query string
+
+      console.log('Response status:', response.status, response.statusText); // Debug log
+
+      // Check if the response is ok
+      if (!response.ok) {
+        let errorDetails;
+        try {
+          // Try to parse the response as JSON
+          errorDetails = await response.json();
+        } catch (e) {
+          // If parsing fails, set error details to a generic message
+          errorDetails = { error: 'Failed to delete receipt' };
+        }
+        console.error('Error details:', errorDetails); // Log error details
+        throw new Error(errorDetails.error || 'Failed to delete receipt');
+      }
+
+      // If successful, update the state
       setReceipts((prevReceipts) => prevReceipts.filter((receipt) => receipt._id !== id));
       toast.success('Receipt deleted successfully');
     } catch (error) {
       console.error('Error deleting receipt:', error);
-      toast.error('Failed to delete receipt');
+      toast.error(error.message);
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -67,7 +89,7 @@ const ReceiptPage = () => {
     };
     return new Date(dateString).toLocaleString('en-US', options);
   };
-  
+
   return (
     <section className="max-w-2xl mx-auto mt-8">
       <UserTabs isAdmin={true} />
@@ -112,10 +134,12 @@ const ReceiptPage = () => {
 
                 <button
                   onClick={() => handleDelete(receipt._id)}
-                  className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                  className={`px-4 py-2 ${deleteLoading ? 'bg-gray-400' : 'bg-red-500'} text-white rounded-md hover:bg-red-600`}
+                  disabled={deleteLoading}
                 >
-                  Delete
+                  {deleteLoading ? 'Deleting...' : 'Delete'}
                 </button>
+
               </div>
             </div>
           ))

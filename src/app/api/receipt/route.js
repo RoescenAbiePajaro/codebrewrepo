@@ -43,3 +43,26 @@ export async function GET(req) {
     return new Response(JSON.stringify({ error: "Failed to retrieve receipts" }), { status: 500 });
   }
 }
+
+export async function DELETE(req) {
+  try {
+    await connectDB();
+    const url = new URL(req.url);
+    const id = url.searchParams.get("id");
+
+    if (!id) {
+      return new Response(JSON.stringify({ error: "Receipt ID is required" }), { status: 400 });
+    }
+
+    const deletedReceipt = await Receipt.findByIdAndDelete(id);
+    if (!deletedReceipt) {
+      return new Response(JSON.stringify({ error: "Receipt not found" }), { status: 404 });
+    }
+
+    return new Response(JSON.stringify({ success: true }), { status: 200 });
+  } catch (error) {
+    console.error("Error deleting receipt:", error.message);
+    return new Response(JSON.stringify({ error: "Failed to delete receipt" }), { status: 500 });
+  }
+}
+
