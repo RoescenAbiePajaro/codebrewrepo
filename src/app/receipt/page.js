@@ -1,8 +1,7 @@
-// src/app/receipt/page.js
-'use client'; // Ensure this is present to use hooks in a client component
+'use client'; 
 import UserTabs from "@/components/layout/UserTabs";
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; // Keep this import
+import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 const ReceiptPage = () => {
@@ -10,36 +9,37 @@ const ReceiptPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchReceipts = async () => {
-      try {
-        const response = await fetch('/api/receipt', { cache: 'no-store' });
-        if (!response.ok) throw new Error('Failed to fetch receipts');
-        const data = await response.json();
-        setReceipts(data);
-      } catch (error) {
-        console.error('Error fetching receipts:', error);
-        toast.error('Failed to load receipts');
-      }
-    };
+  const fetchReceipts = async () => {
+    try {
+      const response = await fetch('/api/receipt', { cache: 'no-store' });
+      if (!response.ok) throw new Error('Failed to fetch receipts');
+      const data = await response.json();
+      setReceipts(data);
+    } catch (error) {
+      console.error('Error fetching receipts:', error);
+      toast.error('Failed to load receipts');
+    }
+  };
 
-    fetchReceipts();
+  useEffect(() => {
+    fetchReceipts(); // Initial fetch
+    const interval = setInterval(fetchReceipts, 30000); // Fetch every 30 seconds
+
+    return () => clearInterval(interval); // Clean up interval on unmount
   }, []);
 
-  // Navigate to the receipt details page
   const handleView = async (id) => {
-    setLoading(true); // Set loading state to true
+    setLoading(true);
     try {
-      await router.push(`/receipt/${id}`); // Navigate to the receipt details page with the receipt ID
+      await router.push(`/receipt/${id}`);
     } catch (error) {
       console.error('Error navigating to receipt:', error);
       toast.error('Failed to navigate to receipt');
     } finally {
-      setLoading(false); // Reset loading state
+      setLoading(false);
     }
   };
 
-  // Delete a receipt
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this receipt?");
     if (!confirmDelete) return;
@@ -55,6 +55,19 @@ const ReceiptPage = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    const options = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZone: 'Asia/Manila',
+    };
+    return new Date(dateString).toLocaleString('en-US', options);
+  };
+  
   return (
     <section className="max-w-2xl mx-auto mt-8">
       <UserTabs isAdmin={true} />
@@ -84,11 +97,14 @@ const ReceiptPage = () => {
                 <span className="text-gray-500">
                   ₱{receipt.subtotal.toFixed(2)}
                 </span>
+                <span className="text-gray-500 text-sm">
+                  {formatDate(receipt.createdAt)}
+                </span>
               </div>
               <div className="flex gap-2">
                 <button 
                   onClick={() => handleView(receipt._id)}
-                  className={`px-4 py-2 ${loading ? 'bg-gray-400' : 'bg-green-500'} text-white rounded-md hover:bg-green-600`}
+                  className={`px-4 py-2 ${loading ? 'bg-gray-400' : ' bg-green-500'} text-white rounded-md hover:bg-green-600`}
                   disabled={loading}
                 >
                   {loading ? 'Loading...' : 'View'}
@@ -104,7 +120,7 @@ const ReceiptPage = () => {
             </div>
           ))
         ) : (
-          <p className="text -gray-500">No receipts found.</p>
+          <p className="text-gray-500">No receipts found.</p>
         )}
       </div>
     </section>
