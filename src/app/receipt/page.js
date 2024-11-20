@@ -4,7 +4,7 @@ import UserTabs from "@/components/layout/UserTabs";
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import Modal from "@/components/layout/Modal"; // Import the Modal component
+import Modal from "@/components/layout/Modal";
 
 const ReceiptPage = () => {
   const [receipts, setReceipts] = useState([]);

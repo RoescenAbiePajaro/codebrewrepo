@@ -15,6 +15,7 @@ import {
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import UserTabs from "@/components/layout/UserTabs";
 
+// Register Chart.js components
 ChartJS.register(
   LineElement,
   BarElement,
@@ -27,6 +28,7 @@ ChartJS.register(
   Legend
 );
 
+// Main SalesPage component
 const SalesPage = () => {
   const [salesData, setSalesData] = useState({});
   const [chartData, setChartData] = useState(null);
@@ -34,21 +36,21 @@ const SalesPage = () => {
   const [interpretation, setInterpretation] = useState('');
   const [timeframe, setTimeframe] = useState('daily');
 
-  const fetchSalesData = async () => {
-    try {
-      const response = await fetch(`/api/sales?timeframe=${timeframe}`);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const data = await response.json();
-      setSalesData(data);
-    } catch (error) {
-      console.error("Error fetching sales data:", error);
-      setSalesData({});
-    }
-  };
-
   useEffect(() => {
+    const fetchSalesData = async () => {
+      try {
+        const response = await fetch(`/api/sales?timeframe=${timeframe}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        setSalesData(data);
+      } catch (error) {
+        console.error("Error fetching sales data:", error);
+        setSalesData({});
+      }
+    };
+
     fetchSalesData();
-    const interval = setInterval(fetchSalesData, 30000); // Poll ing every 30 seconds
+    const interval = setInterval(fetchSalesData, 30000); // Polling every 30 seconds
     return () => clearInterval(interval);
   }, [timeframe]);
 
@@ -57,7 +59,7 @@ const SalesPage = () => {
       updateChartData();
       updateInterpretations();
     }
-  }, [salesData, timeframe]);
+  }, [salesData]);
 
   const updateChartData = () => {
     const labels = Object.keys(salesData);
@@ -114,50 +116,65 @@ const SalesPage = () => {
   return (
     <section className="mt-8 max-w-4xl mx-auto p-4">
       <UserTabs isAdmin={true} />
-      <div className="flex gap-4 mt-4">
-        <button
-          className={`px-4 py-2 rounded ${timeframe === 'daily' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
-          onClick={() => setTimeframe('daily')}
-        >
-          Daily
-        </button>
-        <button
-          className={`px-4 py-2 rounded ${timeframe === 'weekly' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
-          onClick={() => setTimeframe('weekly')}
-        >
-          Weekly
-        </button>
-        <button
-          className={`px-4 py-2 rounded ${timeframe === 'monthly' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
-          onClick={() => setTimeframe('monthly')}
-        >
-          Monthly
-        </button>
-      </div>
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {chartData && (
-          <>
-            <div>
-              <h2 className="text-lg font-bold mb-4">Line Chart</h2>
-              <Line data={chartData} />
-            </div>
-            <div>
-              <h2 className="text-lg font-bold mb-4">Bar Chart</h2>
-              <Bar data={chartData} />
-            </div>
-            <div>
-              <h2 className="text-lg font-bold mb-4">Pie Chart</h2>
-              <Pie data={pieData} />
-            </div>
-          </>
-        )}
-      </div>
-      <div className="mt-6">
-        <h2 className="text-lg font-bold">Sales Interpretation</h2>
-        <p className="whitespace-pre-line">{interpretation}</p>
-      </div>
+      <TimeframeButtons timeframe={timeframe} setTimeframe={setTimeframe} />
+      <ChartSection chartData={chartData} pieData={pieData} />
+      <InterpretationSection interpretation={interpretation} />
     </section>
   );
 };
+
+// Timeframe button component
+const TimeframeButtons = ({ timeframe, setTimeframe }) => (
+  <div className="flex gap-4 mt-4">
+    <button
+      className={`px-4 py-2 rounded ${timeframe === 'daily' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+      onClick={() => setTimeframe('daily')}
+    >
+      Daily
+    </button>
+    <button
+      className={`px-4 py-2 rounded ${timeframe === 'weekly' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+      onClick={() => setTimeframe('weekly')}
+    >
+      Weekly
+    </button>
+    <button
+      className={`px-4 py-2 rounded ${timeframe === 'monthly' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+      onClick={() => setTimeframe('monthly')}
+    >
+      Monthly
+    </button>
+  </div>
+);
+
+// Chart section component
+const ChartSection = ({ chartData, pieData }) => (
+  <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+    {chartData && (
+      <>
+        <div>
+          <h2 className="text-lg font-bold mb-4">Line Chart</h2>
+          <Line data={chartData} />
+        </div>
+        <div>
+          <h2 className="text-lg font-bold mb-4">Bar Chart</h2>
+          <Bar data={chartData} />
+        </div>
+        <div>
+          <h2 className="text-lg font-bold mb-4">Pie Chart</h2>
+          <Pie data={pieData} />
+        </div>
+      </>
+    )}
+  </div>
+);
+
+// Interpretation section component
+const InterpretationSection = ({ interpretation }) => (
+  <div className="mt-6">
+    <h2 className="text-lg font-bold">Sales Interpretation</h2>
+    <p className="whitespace-pre-line">{interpretation}</p>
+  </div>
+);
 
 export default SalesPage;
