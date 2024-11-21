@@ -1,4 +1,4 @@
-'use client';
+'use client'; 
 import React, { useState, useEffect } from 'react';
 import {
   Chart as ChartJS,
@@ -69,7 +69,7 @@ const SalesPage = () => {
       labels,
       datasets: [
         {
-          label: 'Sales Amount',
+          label: 'Sales Amount (₱)',
           data: amounts,
           borderColor: 'rgba(75,192,192,1)',
           backgroundColor: 'rgba(75,192,192,0.2)',
@@ -98,23 +98,31 @@ const SalesPage = () => {
 
   const updateInterpretations = () => {
     const totalSales = Object.values(salesData).reduce((acc, curr) => acc + (Number(curr) || 0), 0);
-    const highestSalesDate = Object.keys(salesData).reduce((acc, curr) => salesData[curr] > salesData[acc] ? curr : acc);
-    const lowestSalesDate = Object.keys(salesData).reduce((acc, curr) => salesData[curr] < salesData[acc] ? curr : acc);
     const averageSalesPerDay = totalSales / Object.keys(salesData).length;
 
-    const highestSalesAmount = Number(salesData[highestSalesDate]) || 0;
-    const lowestSalesAmount = Number(salesData[lowestSalesDate]) || 0;
+    // Collect all sales data for interpretation
+    const salesEntries = Object.entries(salesData).map(([date, amount]) => ({
+      date,
+      amount: Number(amount) || 0,
+    }));
 
-    setInterpretation(`
-      Total sales amount: ₱${totalSales.toFixed(2)}
-      The highest sales were on ${highestSalesDate} with ₱${highestSalesAmount.toFixed(2)}.
-      The lowest sales were on ${lowestSalesDate} with ₱${lowestSalesAmount.toFixed(2)}.
-      The average sales per day is ₱${averageSalesPerDay.toFixed(2)}.
-    `);
+    // Sort sales entries by amount
+    salesEntries.sort((a, b) => b.amount - a.amount); // Sort descending
+
+    // Prepare interpretation text
+    let interpretationText = `Total sales amount: ₱${totalSales.toFixed(2)}\n`;
+    interpretationText += `Average sales per day: ₱${averageSalesPerDay.toFixed(2)}\n\n`;
+    interpretationText += `Sales per date:\n`;
+
+    salesEntries.forEach(({ date, amount }) => {
+      interpretationText += `- ${date}: ₱${amount.toFixed(2)}\n`;
+    });
+
+    setInterpretation(interpretationText);
   };
 
   return (
-    <section className="mt-8 max-w-4xl mx-auto p-4">
+    <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
       <TimeframeButtons timeframe={timeframe} setTimeframe={setTimeframe} />
       <ChartSection chartData={chartData} pieData={pieData} />
@@ -127,19 +135,19 @@ const SalesPage = () => {
 const TimeframeButtons = ({ timeframe, setTimeframe }) => (
   <div className="flex gap-4 mt-4">
     <button
-      className={`px-4 py-2 rounded ${timeframe === 'daily' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+      className={`px-4 py-2 rounded-lg transition duration-300 ${timeframe === 'daily' ? 'bg-green-600 text-white' : 'bg-gray-200'}`}
       onClick={() => setTimeframe('daily')}
     >
       Daily
     </button>
     <button
-      className={`px-4 py-2 rounded ${timeframe === 'weekly' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+      className={`px-4 py-2 rounded-lg transition duration-300 ${timeframe === 'weekly' ? 'bg-green-600 text-white' : 'bg-gray-200'}`}
       onClick={() => setTimeframe('weekly')}
     >
       Weekly
     </button>
     <button
-      className={`px-4 py-2 rounded ${timeframe === 'monthly' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+      className={`px-4 py-2 rounded-lg transition duration-300 ${timeframe === 'monthly' ? 'bg-green-600 text-white' : 'bg-gray-200'}`}
       onClick={() => setTimeframe('monthly')}
     >
       Monthly
@@ -152,16 +160,16 @@ const ChartSection = ({ chartData, pieData }) => (
   <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
     {chartData && (
       <>
-        <div>
-          <h2 className="text-lg font-bold mb-4">Line Chart</h2>
+        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-bold mb-4">Sales Trend (Line Chart)</h2>
           <Line data={chartData} />
         </div>
-        <div>
-          <h2 className="text-lg font-bold mb-4">Bar Chart</h2>
+        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-bold mb-4">Sales Distribution (Bar Chart)</h2>
           <Bar data={chartData} />
         </div>
-        <div>
-          <h2 className="text-lg font-bold mb-4">Pie Chart</h2>
+        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-bold mb-4">Revenue Streams (Pie Chart)</h2>
           <Pie data={pieData} />
         </div>
       </>
@@ -171,7 +179,7 @@ const ChartSection = ({ chartData, pieData }) => (
 
 // Interpretation section component
 const InterpretationSection = ({ interpretation }) => (
-  <div className="mt-6">
+  <div className="mt-6 bg-gray-100 p-4 rounded-lg shadow-md">
     <h2 className="text-lg font-bold">Sales Interpretation</h2>
     <p className="whitespace-pre-line">{interpretation}</p>
   </div>

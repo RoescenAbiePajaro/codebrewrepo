@@ -45,7 +45,7 @@ export default function CustomersList() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <section className="mt-8 max-w-2xl mx-auto">
+    <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
       <div>
         <h2 className="text-2xl font-bold mb-4">Customers</h2>
