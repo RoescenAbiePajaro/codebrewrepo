@@ -20,7 +20,7 @@ export default function DeleteButton({label,onDelete}) {
               }}
               type="button"
               className="primary">
-              Yes,&nbsp;delete!
+              Yes,&nbsp;Delete!
             </button>
           </div>
         </div>

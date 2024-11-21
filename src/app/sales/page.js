@@ -1,12 +1,25 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Chart as ChartJS, LineElement, BarElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend } from 'chart.js';
-import { Line, Bar } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  LineElement,
+  BarElement,
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Line, Bar, Pie } from 'react-chartjs-2';
 import UserTabs from "@/components/layout/UserTabs";
 
+// Register Chart.js components
 ChartJS.register(
   LineElement,
   BarElement,
+  ArcElement,
   CategoryScale,
   LinearScale,
   PointElement,
@@ -15,29 +28,30 @@ ChartJS.register(
   Legend
 );
 
+// Main SalesPage component
 const SalesPage = () => {
   const [salesData, setSalesData] = useState({});
   const [chartData, setChartData] = useState(null);
+  const [pieData, setPieData] = useState(null);
   const [interpretation, setInterpretation] = useState('');
-  const [monthlyInterpretation, setMonthlyInterpretation] = useState('');
   const [timeframe, setTimeframe] = useState('daily');
 
-  const fetchSalesData = async () => {
-    try {
-      const response = await fetch(`/api/sales?timeframe=${timeframe}`);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const data = await response.json();
-      setSalesData(data);
-    } catch (error) {
-      console.error('Error fetching sales data:', error);
-      setSalesData({}); // Reset sales data on error
-    }
-  };
-
   useEffect(() => {
-    fetchSalesData(); // Initial fetch
-    const interval = setInterval(fetchSalesData, 30000); // Fetch every 30 seconds
-    return () => clearInterval(interval); // Clean up interval on unmount
+    const fetchSalesData = async () => {
+      try {
+        const response = await fetch(`/api/sales?timeframe=${timeframe}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        setSalesData(data);
+      } catch (error) {
+        console.error("Error fetching sales data:", error);
+        setSalesData({});
+      }
+    };
+
+    fetchSalesData();
+    const interval = setInterval(fetchSalesData, 30000); // Polling every 30 seconds
+    return () => clearInterval(interval);
   }, [timeframe]);
 
   useEffect(() => {
@@ -45,16 +59,10 @@ const SalesPage = () => {
       updateChartData();
       updateInterpretations();
     }
-  }, [salesData, timeframe]);
+  }, [salesData]);
 
   const updateChartData = () => {
-    const labels = Object.keys(salesData).map((key) => {
-      if (timeframe === 'daily') return key; // Date is already in the format YYYY-MM-DD
-      if (timeframe === 'weekly') return `Week ${key}`; // Week number
-      if (timeframe === 'monthly') return key; // Format as YYYY-MM
-      return key;
-    });
-
+    const labels = Object.keys(salesData);
     const amounts = Object.values(salesData);
 
     setChartData({
@@ -63,10 +71,26 @@ const SalesPage = () => {
         {
           label: 'Sales Amount',
           data: amounts,
-          fill: false,
           borderColor: 'rgba(75,192,192,1)',
           backgroundColor: 'rgba(75,192,192,0.2)',
           tension: 0.1,
+        },
+      ],
+    });
+
+    setPieData({
+      labels,
+      datasets: [
+        {
+          data: amounts,
+          backgroundColor: [
+            'rgba(75,192,192,0.6)',
+            'rgba(54,162,235,0.6)',
+            'rgba(255,206,86,0.6)',
+            'rgba(153,102,255,0.6)',
+            'rgba(255,159,64,0.6)',
+          ],
+          borderWidth: 1,
         },
       ],
     });
@@ -83,108 +107,74 @@ const SalesPage = () => {
 
     setInterpretation(`
       Total sales amount: ₱${totalSales.toFixed(2)}
-      The highest sales were on ${highestSalesDate} with a total of ₱${highestSalesAmount.toFixed(2)}
-      The lowest sales were on ${lowestSalesDate} with a total of ₱${lowestSalesAmount.toFixed(2)}
-      The average sales per day is ₱${averageSalesPerDay.toFixed(2)}
-    `);
-
-    // Monthly sales interpretation
-    const monthlyData = Object.keys(salesData).reduce((acc, date) => {
-      const month = date.substring(0, 7);
-      acc[month] = (acc[month] || 0) + salesData[date];
-      return acc;
-    }, {});
-
-    const totalMonthlySales = Object.values(monthlyData).reduce((acc, curr) => acc + (Number(curr) || 0), 0);
-    const highestMonthlySalesMonth = Object.keys(monthlyData).reduce((acc, curr) => monthlyData[curr] > monthlyData[acc] ? curr : acc);
-    const lowestMonthlySalesMonth = Object.keys(monthlyData).reduce((acc, curr) => monthlyData[curr] < monthlyData[acc] ? curr : acc);
-    const averageMonthlySales = totalMonthlySales / Object.keys(monthlyData).length;
-
-    const highestMonthlySalesAmount = Number(monthlyData[highestMonthlySalesMonth]) || 0;
-    const lowestMonthlySalesAmount = Number(monthlyData[lowestMonthlySalesMonth]) || 0;
-
-    setMonthlyInterpretation(`
-      Total monthly sales amount: ₱${totalMonthlySales.toFixed(2)}
-      The highest monthly sales were in ${highestMonthlySalesMonth} with a total of ₱${highestMonthlySalesAmount.toFixed(2)}
-      The lowest monthly sales were in ${lowestMonthlySalesMonth} with a total of ₱${lowestMonthlySalesAmount.toFixed(2)}
-      The average monthly sales are ₱${(averageMonthlySales || 0).toFixed(2)}
+      The highest sales were on ${highestSalesDate} with ₱${highestSalesAmount.toFixed(2)}.
+      The lowest sales were on ${lowestSalesDate} with ₱${lowestSalesAmount.toFixed(2)}.
+      The average sales per day is ₱${averageSalesPerDay.toFixed(2)}.
     `);
   };
 
   return (
-    <section className="mt-8 max-w-2xl mx-auto">
+    <section className="mt-8 max-w-4xl mx-auto p-4">
       <UserTabs isAdmin={true} />
-      <div>
-        <div className="flex gap-4 mt-4">
-          <button
-            className={`px-4 py-2 rounded ${timeframe === 'daily' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
-            onClick={() => setTimeframe('daily')}
-            aria-pressed={timeframe === 'daily'}
-          >
-            Daily
-          </button>
-          <button
-            className={`px-4 py-2 rounded ${timeframe === 'weekly' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
-            onClick={() => setTimeframe('weekly')}
-            aria-pressed={timeframe === 'weekly'}
-          >
-            Weekly
-          </button>
-          <button
-            className={`px-4 py-2 rounded ${timeframe === 'monthly' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
-            onClick={() => setTimeframe('monthly')}
-            aria-pressed={timeframe === 'monthly'}
-          >
-            Monthly
-          </button>
-        </div>
-        <div className="mt-6">
-          {chartData ? (
-            <>
-              {timeframe === 'daily' && (
-                <Line
-                  data={chartData}
-                  options={{
-                    responsive: true,
-                    plugins: {
-                      legend: {
-                        display: true,
-                        position: 'top',
-                      },
-                    },
-                  }}
-                />
-              )}
-              {timeframe !== 'daily' && (
-                <Bar
-                  data={chartData}
-                  options={{
-                    responsive: true,
-                    plugins: {
-                      legend: {
-                        display: true,
-                        position: 'top',
-                      },
-                    },
-                  }}
-                />
-              )}
-            </>
-          ) : (
-            <p>Loading chart...</p>
-          )}
-        </div>
-        <div className="mt-6">
-          <h2 className="text-lg font-bold">Sales Interpretation</h2>
-          <p>{interpretation}</p>
-        </div>
-        <div className="mt-6">
-          <h2 className="text-lg font-bold">Monthly Sales Interpretation</h2>
-          <p>{monthlyInterpretation}</p>
-        </div>
-      </div>
+      <TimeframeButtons timeframe={timeframe} setTimeframe={setTimeframe} />
+      <ChartSection chartData={chartData} pieData={pieData} />
+      <InterpretationSection interpretation={interpretation} />
     </section>
   );
 };
+
+// Timeframe button component
+const TimeframeButtons = ({ timeframe, setTimeframe }) => (
+  <div className="flex gap-4 mt-4">
+    <button
+      className={`px-4 py-2 rounded ${timeframe === 'daily' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+      onClick={() => setTimeframe('daily')}
+    >
+      Daily
+    </button>
+    <button
+      className={`px-4 py-2 rounded ${timeframe === 'weekly' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+      onClick={() => setTimeframe('weekly')}
+    >
+      Weekly
+    </button>
+    <button
+      className={`px-4 py-2 rounded ${timeframe === 'monthly' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+      onClick={() => setTimeframe('monthly')}
+    >
+      Monthly
+    </button>
+  </div>
+);
+
+// Chart section component
+const ChartSection = ({ chartData, pieData }) => (
+  <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+    {chartData && (
+      <>
+        <div>
+          <h2 className="text-lg font-bold mb-4">Line Chart</h2>
+          <Line data={chartData} />
+        </div>
+        <div>
+          <h2 className="text-lg font-bold mb-4">Bar Chart</h2>
+          <Bar data={chartData} />
+        </div>
+        <div>
+          <h2 className="text-lg font-bold mb-4">Pie Chart</h2>
+          <Pie data={pieData} />
+        </div>
+      </>
+    )}
+  </div>
+);
+
+// Interpretation section component
+const InterpretationSection = ({ interpretation }) => (
+  <div className="mt-6">
+    <h2 className="text-lg font-bold">Sales Interpretation</h2>
+    <p className="whitespace-pre-line">{interpretation}</p>
+  </div>
+);
 
 export default SalesPage;

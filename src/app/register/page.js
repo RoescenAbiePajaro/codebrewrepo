@@ -14,20 +14,20 @@ export default function RegisterPage() {
     event.preventDefault();
     setIsLoading(true);
     setError("");
-
+  
     const response = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
-
+  
     if (response.ok) {
       setUserCreated(true);
     } else {
-      const errorMessage = await response.text(); // Get error message from response
-      setError(errorMessage || "An error occurred. Please try again.");
+      const errorMessage = await response.json(); // Parse the JSON response
+      setError(errorMessage.error || "An error occurred. Please try again.");
     }
-    
+  
     setIsLoading(false);
   };
 

@@ -25,10 +25,24 @@ export default function UsersPage() {
       const response = await fetch(`/api/users/${userId}`, {
         method: 'DELETE',
       });
+  
+      // Check if the response is ok
       if (response.ok) {
         setUsers(users.filter(user => user._id !== userId));
+        alert("User  deleted successfully.");
       } else {
-        console.error("Failed to delete user");
+        const responseText = await response.text(); // Get the response as text
+        console.error("Failed to delete user:", responseText);
+        
+        // Attempt to parse the response as JSON
+        let errorMessage;
+        try {
+          const jsonResponse = JSON.parse(responseText);
+          errorMessage = jsonResponse.error || "Failed to delete user.";
+        } catch (e) {
+          errorMessage = "Failed to delete user. Please try again.";
+        }
+        alert(errorMessage); // Notify user of the error
       }
     }
   };
@@ -56,8 +70,8 @@ export default function UsersPage() {
               </div>
               <span className="text-gray-500">{user.email}</span>
             </div>
-            <div className="flex gap-2">
-              <Link className="button" href={'/users/' + user._id}>
+            <div className="flex gap-2 ">
+              <Link className="button  bg-green-500 text-white rounded px-4 py-1" href={'/users/' + user._id}>
                 Edit
               </Link>
               <button

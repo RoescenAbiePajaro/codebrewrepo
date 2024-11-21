@@ -124,7 +124,7 @@ export default function CategoriesPage() {
               {c.name}
             </div>
             <div className="flex gap-1">
-              <button type="button"
+              <button className="button bg-green-500 text-white rounded px-4 py-1"
                       onClick={() => {
                         setEditedCategory(c);
                         setCategoryName(c.name);
@@ -132,9 +132,12 @@ export default function CategoriesPage() {
               >
                 Edit
               </button>
-              <DeleteButton
+              <DeleteButton 
+                className="bg-red-500 text-white rounded px-4 py-1 hover:bg-red-600"
                 label="Delete"
-                onDelete={() => handleDeleteClick(c._id)} />
+                onDelete={() => handleDeleteClick(c._id)} 
+              />
+
             </div>
           </div>
         ))}

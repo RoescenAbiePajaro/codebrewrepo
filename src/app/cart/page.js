@@ -6,7 +6,7 @@ import CartProduct from "@/components/menu/CartProduct";
 import { useProfile } from "@/components/UseProfile";
 import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useRouter } from 'next/navigation'; // Use the new router from next/navigation
+import { useRouter } from 'next/navigation';
 import Receipt from "@/components/layout/Receipt";
 
 export default function CartPage() {
@@ -14,7 +14,7 @@ export default function CartPage() {
   const [customer, setCustomer] = useState({});
   const { data: profileData } = useProfile();
   const [showReceipt, setShowReceipt] = useState(false);
-  const router = useRouter(); // Initialize the new router
+  const router = useRouter(); 
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -45,7 +45,7 @@ export default function CartPage() {
   // Save the receipt to the database
   async function saveReceipt(ev) {
     ev.preventDefault();
-
+  
     const promise = new Promise((resolve, reject) => {
       fetch('/api/receipt', {
         method: 'POST',
@@ -53,11 +53,12 @@ export default function CartPage() {
         body: JSON.stringify({
           customer,
           cartProducts,
-          subtotal
+          subtotal,
         }),
       }).then(async (response) => {
         if (response.ok) {
-          resolve();
+          const savedReceipt = await response.json();
+          resolve(savedReceipt);
           toast.success('Receipt saved successfully!');
         } else {
           reject(new Error('Saving receipt failed'));
@@ -66,16 +67,17 @@ export default function CartPage() {
         reject(error);
       });
     });
-
+  
     await toast.promise(promise, {
       loading: 'Saving your receipt...',
       success: 'Receipt saved!',
       error: (err) => err.message || 'Something went wrong... Please try again later',
     });
   }
+  
 
   function updateQuantity(index, newQuantity) {
-    if (newQuantity < 1) return; // Prevent quantity from being less than 1
+    if (newQuantity < 1) return; 
     setCartProducts(prevProducts => {
       const updatedProducts = [...prevProducts];
       updatedProducts[index].quantity = newQuantity;
@@ -103,19 +105,19 @@ export default function CartPage() {
             <div key={index} className="mb-4 flex items-center justify-between">
               <CartProduct
                 product={product}
-                index={index} // Pass index here
+                index={index} 
                 onRemove={removeCartProduct}
               />
               <div className="flex items-center space-x-2">
                 <button
-                  className="bg-gray-200 p-2 rounded-full"
+                  className="bg-gray-200 p-2 rounded-full no-print"
                   onClick={() => updateQuantity(index, product.quantity - 1)}
                 >
                   -
                 </button>
                 <span>{product.quantity}</span>
                 <button
-                  className="bg-gray-200 p-2 rounded-full"
+                  className="bg-gray-200 p-2 rounded-full no-print"
                   onClick={() => updateQuantity(index, product.quantity + 1)}
                 >
                   +
@@ -136,21 +138,21 @@ export default function CartPage() {
         </div>
 
         {/* Checkout Form */}
-        <div className="bg-gray-100 p-4 rounded-lg">
+        <div className="bg-gray-100 p-4 rounded-lg no-print">
           <h2>Checkout</h2>
           <form onSubmit={saveReceipt}>
             <CustomerInputs
               customerProps={customer}  
               setCustomerProp={handleCustomerChange} 
             />
-            <button type="submit" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md">
+            <button type="submit" className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md no-print">
               Save Receipt
             </button>
           </form>
 
           <button 
             onClick={() => setShowReceipt(true)} 
-            className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md"
+            className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md no-print"
           >
             Print Receipt
           </button>
@@ -160,19 +162,24 @@ export default function CartPage() {
       {showReceipt && (
         <div className="fixed inset-0 bg-white z-50 overflow-auto">
           <div className="relative p-8 max-w-lg mx-auto bg-white rounded-lg shadow-lg">
-            <Receipt customer={customer} cartProducts={cartProducts} subtotal={subtotal} />
+            <Receipt 
+              customer={customer} 
+              cartProducts={cartProducts} 
+              subtotal={subtotal} 
+              createdAt={new Date().toLocaleString()} 
+            />
             <button 
               onClick={() => {
                 window.print();
                 setShowReceipt(false);
               }} 
-              className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md"
+              className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md no-print"
             >
               Print
             </button>
             <button 
               onClick={() => setShowReceipt(false)} 
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
+              className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md no-print"
             >
               Close
             </button>

@@ -1,4 +1,3 @@
-// app/login/page.js
 "use client";
 import { useState } from "react";
 import Image from "next/image";
@@ -26,6 +25,7 @@ export default function LoginPage() {
     if (result?.error) {
       setErrorMessage(result.error); // Show the error message
     } else {
+      // Successful login
       router.push("/"); // Redirect to home page
     }
 
@@ -65,22 +65,19 @@ export default function LoginPage() {
           </button>
         </form>
         <p className="mt-4 text-center">
-          Dont have an account? <a href="/register" className="text-green-500">Register here</a>
+          Don't have an account? <a href="/register" className="text-green-500">Register here</a>
         </p>
 
         <div className="my-4 text-center text-gray-500">or login with provider</div>
-          <button
-            type="button"
-            onClick={() => signIn("google", { callbackUrl: "/" })}
-            className="flex items-center justify-center gap-4 w-full py-2 border border-gray-300 rounded hover:bg-gray-100 transition-colors"
-          >
-            <Image src={"/google-icon.png"} alt="Google icon" width={24} height={24} />
-            Login with Google
-          </button>
-       
+        <button
+          type="button"
+          onClick={() => signIn("google", { callbackUrl: "/" })}
+          className="flex items-center justify-center gap-4 w-full py-2 border border-gray-300 rounded hover:bg-gray-100 transition-colors"
+        >
+          <Image src={"/google-icon.png"} alt="Google icon" width={24} height={24} />
+          Login with Google
+        </button>
       </div>
-
-        
     </section>
   );
 }
