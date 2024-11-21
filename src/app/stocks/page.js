@@ -13,6 +13,7 @@ const StocksPage = () => {
   const [updateLoading, setUpdateLoading] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStock, setSelectedStock] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchStocks = async () => {
     try {
@@ -36,10 +37,10 @@ const StocksPage = () => {
     console.log('Updating stock for:', id, 'New stock:', newStock);
     setUpdateLoading((prev) => ({ ...prev, [id]: true })); // Set loading for this stock
     try {
-      const response = await axios.put(`/api/menu-items`, { _id: id, stock: newStock });
+      const response = await axios.put('/api/menu-items', { _id: id, stock: newStock });
       console.log('Updated stock response:', response.data);
       setStocks((prev) =>
-        prev.map((item) => (item._id === id ? { ...item, stock: response.data.stock } : item))
+        prev.map((item) => (item._id === id ? { ...item, stock: newStock } : item)) // Update stock immediately
       );
       toast.success('Stock updated successfully');
     } catch (error) {
@@ -60,6 +61,10 @@ const StocksPage = () => {
     setSelectedStock(null);
   };
 
+  const filteredStocks = stocks.filter(stock => 
+    stock.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading) return <p>Loading stocks...</p>;
   if (error) return <p>{error}</p>;
 
@@ -68,7 +73,14 @@ const StocksPage = () => {
       <UserTabs isAdmin={true} />
       <div className="mt-8">
         <h1 className="text-xl font-bold mb-4">Manage Stocks</h1>
-        {stocks.length > 0 ? (
+        <input
+          type="text"
+          placeholder="Search stocks..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="border rounded p-2 mb-4 w-full"
+        />
+        {filteredStocks.length > 0 ? (
           <table className="min-w-full bg-white border border-gray-300">
             <thead>
               <tr>
@@ -79,15 +91,15 @@ const StocksPage = () => {
               </tr>
             </thead>
             <tbody>
-              {stocks.map((item) => (
+              {filteredStocks.map((item) => (
                 <tr key={item._id} className="hover:bg-gray-100">
-                  <td className="border-b p-2">{item.name}</td>
-                  <td className="border-b p-2">${item.basePrice ? item.basePrice.toFixed(2) : 'N/A'}</td>
-                  <td className="border-b p-2">
+                  <td className="border-b p-2 text-left">{item.name}</td>
+                  <td className="border-b p-2 text-right">{item.basePrice ? `₱${item.basePrice.toFixed(2)}` : '₱0.00'}</td>
+                  <td className="border-b p-2 text-right">
                     {item.stock > 0 ? (
                       <input
                         type="number"
-                        value={item.stock || 0}
+                        value={isNaN(item.stock) ? 0 : item.stock}
                         onChange={(e) => {
                           const newValue = parseInt(e.target.value);
                           if (!isNaN(newValue)) {
@@ -103,7 +115,7 @@ const StocksPage = () => {
                       </span>
                     )}
                   </td>
-                  <td className="border-b p-2">
+                  <td className="border-b p-2 text-center">
                     <button
                       onClick={() => openModal(item)}
                       className="bg-green-500 text-white rounded px-2 py-1"

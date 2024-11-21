@@ -5,6 +5,7 @@ import {useProfile} from "@/components/UseProfile";
 import {useParams} from "next/navigation";
 import {useEffect, useState} from "react";
 import toast from "react-hot-toast";
+import {redirect} from "next/navigation";
 
 export default function EditUserPage() {
   const {loading, data} = useProfile();
@@ -45,7 +46,7 @@ export default function EditUserPage() {
   }
 
   if (!data.admin) {
-    return 'Not an admin';
+    return redirect('/');
   }
 
   return (

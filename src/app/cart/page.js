@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import Receipt from "@/components/layout/Receipt";
 
 export default function CartPage() {
-  const { cartProducts, removeCartProduct, setCartProducts } = useContext(CartContext);
+  const { cartProducts, removeCartProduct, setCartProducts, clearCart } = useContext(CartContext);
   const [customer, setCustomer] = useState({});
   const { data: profileData } = useProfile();
   const [showReceipt, setShowReceipt] = useState(false);
@@ -58,6 +58,7 @@ export default function CartPage() {
       }).then(async (response) => {
         if (response.ok) {
           const savedReceipt = await response.json();
+          clearCart();
           resolve(savedReceipt);
           toast.success('Receipt saved successfully!');
         } else {

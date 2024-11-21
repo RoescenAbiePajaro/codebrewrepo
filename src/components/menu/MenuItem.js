@@ -4,10 +4,11 @@ import MenuItemTile from "@/components/menu/MenuItemTile";
 import Image from "next/image";
 import {useContext, useState} from "react";
 import FlyingButton from "react-flying-item";
+import {toast} from "react-hot-toast";
 
 export default function MenuItem(menuItem) {
   const {
-    image, name, description, basePrice,
+    image, name, description, basePrice, stock,
     sizes, extraIngredientPrices, //stock,
   } = menuItem;
   const [
@@ -19,6 +20,10 @@ export default function MenuItem(menuItem) {
   const {addToCart} = useContext(CartContext);
 
   async function handleAddToCartButtonClick() {
+    if (stock <= 0) {
+      toast.error('This item is sold out and cannot be added to the cart.');
+      return;
+    }
     const hasOptions = sizes.length > 0 || extraIngredientPrices.length > 0;
     if (hasOptions && !showPopup) {
       setShowPopup(true);
