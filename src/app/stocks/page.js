@@ -1,74 +1,123 @@
+// StocksPage.js
 'use client';
-
-import { useState, useEffect } from 'react';
-import axios from 'axios';
 import UserTabs from "@/components/layout/UserTabs";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import Modal from "@/components/layout/Modal";
 
-export default function StocksPage() {
+const StocksPage = () => {
   const [stocks, setStocks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [updateLoading, setUpdateLoading] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedStock, setSelectedStock] = useState(null);
 
-  useEffect(() => {
-    const fetchStocks = async () => {
-      try {
-        const response = await axios.get('/api/stocks');
-        setStocks(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching stocks:', error);
-      }
-    };
-
-    fetchStocks();
-  }, []);
-
-  const handleUpdateStock = async (id, newStock) => {
+  const fetchStocks = async () => {
     try {
-      const response = await axios.put(`/api/stocks/${id}`, { stock: newStock });
-      setStocks((prev) =>
-        prev.map((item) => (item._id === id ? { ...item, stock: response.data.stock } : item))
-      );
+      const response = await axios.get('/api/menu-items');
+      setStocks(response.data);
     } catch (error) {
-      console.error('Error updating stock:', error);
+      console.error('Error fetching stocks:', error);
+      setError('Failed to load stocks. Please try again later.');
+    } finally {
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchStocks(); // Initial fetch
+  }, []);
+
+  const handleUpdateStock = async (id, newStock) => {
+    if (newStock < 0) return; // Prevent negative stock updates
+    setUpdateLoading((prev) => ({ ...prev, [id]: true })); // Set loading for this stock
+    try {
+      const response = await axios.put(`/api/menu-items`, { _id: id, stock: newStock });
+      setStocks((prev) =>
+        prev.map((item) => (item._id === id ? { ...item, stock: response.data.stock } : item))
+      );
+      toast.success('Stock updated successfully');
+    } catch (error) {
+      console.error('Error updating stock:', error);
+      toast.error('Failed to update stock');
+    } finally {
+      setUpdateLoading((prev) => ({ ...prev, [id]: false })); // Reset loading for this stock
+    }
+  };
+
+  const openModal = (item) => {
+    setSelectedStock(item);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedStock(null);
+  };
+
   if (loading) return <p>Loading stocks...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <section className="max-w-2xl mx-auto mt-8">
       <UserTabs isAdmin={true} />
-        <div className="stocks-page">
-        <h1>Manage Stocks</h1>
-        <table>
+      <div className="mt-8">
+        <h1 className="text-xl font-bold mb-4">Manage Stocks</h1>
+        {stocks.length > 0 ? (
+          <table className="min-w-full bg-white border border-gray-300">
             <thead>
-            <tr>
-                <th>Name</th>
-                <th>Base Price</th>
-                <th>Stock</th>
-                <th>Action</th>
-            </tr>
+              <tr>
+                <th className="border-b p-2">Name</th>
+                <th className="border-b p-2">Base Price</th>
+                <th className="border-b p-2">Stock</th>
+              </tr>
             </thead>
             <tbody>
-            {stocks.map((item) => (
-                <tr key={item._id}>
-                <td>{item.name}</td>
-                <td>${item.basePrice.toFixed(2)}</td>
-                <td>
-                    <input
-                    type="number"
-                    value={item.stock || 0}
-                    onChange={(e) => handleUpdateStock(item._id, parseInt(e.target.value))}
-                    />
-                </td>
-                <td>
-                    <button onClick={() => handleUpdateStock(item._id, item.stock)}>Update</button>
-                </td>
+              {stocks.map((item) => (
+                <tr key={item._id} className="hover:bg-gray-100">
+                  <td className="border-b p-2">{item.name}</td>
+                  <td className="border-b p-2">${item.basePrice ? item.basePrice.toFixed(2) : 'N/A'}</td>
+                  <td className="border-b p-2">
+                    {item.stock > 0 ? (
+                      <input
+                        type="number"
+                        value={item.stock || 0}
+                        onChange={(e) => {
+                          const newValue = parseInt(e.target.value);
+                          if (!isNaN(newValue)) {
+                            handleUpdateStock(item._id, newValue);
+                          }
+                        }}
+                        className="border rounded p-1 w-20"
+                        disabled={updateLoading[item._id]} // Disable input if loading
+                      />
+                    ) : (
+                      <span 
+                        className="text-red-500 font-bold cursor-pointer" 
+                        onClick={() => openModal(item)}
+                      >
+                        Sold Out
+                      </span>
+                    )}
+                  </td>
                 </tr>
-            ))}
+              ))}
             </tbody>
-        </table>
-        </div>
+          </table>
+        ) : (
+          <p className="text-gray-500">No stocks found.</p>
+        )}
+      </div>
+      <Modal 
+        isOpen={isModalOpen} 
+        onClose={closeModal} 
+        onUpdate={handleUpdateStock} 
+        stockItem={selectedStock} 
+      />
     </section>
   );
-}
+};
+
+export default StocksPage;
