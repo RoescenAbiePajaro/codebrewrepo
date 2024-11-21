@@ -56,7 +56,7 @@ export async function PUT(req) {
 export async function GET(req) {
   try {
     await connectDB();
-    const stocks = await MenuItem.find(); // Fetch all menu items
+    const stocks = await MenuItem.find({}, 'name basePrice stock'); // Ensure basePrice is included
     return new Response(JSON.stringify(stocks), { status: 200 });
   } catch (error) {
     console.error("Error retrieving stocks data:", error);

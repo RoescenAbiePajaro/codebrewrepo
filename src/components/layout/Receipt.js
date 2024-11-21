@@ -21,7 +21,7 @@ const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0, createdAt }) 
 
       {/* Customer Information */}
       <div className="mt-4">
-        <h3 className="font-semibold text-gray-700">Customer Information</h3>
+        <h3 className="font-semibold text-gray-700">Staff Information</h3>
         <p>Name: <span className="font-medium">{customer.name || "N/A"}</span></p>
         <p>Email: <span className="font-medium">{customer.email || "N/A"}</span></p>
         <p>Phone: <span className="font-medium">{customer.phone || "N/A"}</span></p>
