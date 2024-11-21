@@ -49,6 +49,14 @@ export function AppProvider({ children }) {
   }
 
   function addToCart(product, size = null, extras = [], quantity = 1) {
+    // Check if the product can be added (e.g., based on stock or other conditions)
+    const canAddToCart = product.stock > 0; // Example condition
+
+    if (!canAddToCart) {
+      toast.error('Cannot add item to cart'); // Notify user
+      return; // Prevent adding to cart
+    }
+
     setCartProducts(prevProducts => {
       // Check if the product is already in the cart, and update its quantity if it is
       const productIndex = prevProducts.findIndex(cartProduct => 

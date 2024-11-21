@@ -17,7 +17,7 @@ export default function Hero() {
             <div className="relative">
                 {/* Only render Image component when you have a valid src */}
                 {/* Example:
-                <Image 
+                <Image
                     src="/your-image.jpg"
                     alt="Hero image"
                     width={400}

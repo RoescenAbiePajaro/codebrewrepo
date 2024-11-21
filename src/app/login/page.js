@@ -1,3 +1,4 @@
+//loginpage page.js
 "use client";
 import { useState } from "react";
 import Image from "next/image";
@@ -65,7 +66,7 @@ export default function LoginPage() {
           </button>
         </form>
         <p className="mt-4 text-center">
-          Don't have an account? <a href="/register" className="text-green-500">Register here</a>
+          Dont have an account? <a href="/register" className="text-green-500">Register here</a>
         </p>
 
         <div className="my-4 text-center text-gray-500">or login with provider</div>
