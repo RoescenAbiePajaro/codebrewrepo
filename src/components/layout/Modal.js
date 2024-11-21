@@ -1,6 +1,6 @@
-import React, { useState } from "react"; // Added missing import
+import React, { useState } from "react"; 
 import Image from "next/image"; 
-import { cartProductPrice } from "@/components/AppContext"; // Ensure this path is correct
+import { cartProductPrice } from "@/components/AppContext"; 
 
 const Modal = ({ isOpen, onClose, receipt, onUpdate, stockItem }) => {
   const [newStock, setNewStock] = useState(stockItem?.stock || 0);
@@ -81,27 +81,27 @@ const Modal = ({ isOpen, onClose, receipt, onUpdate, stockItem }) => {
           <>
           {/* Stock Update Modal Content */}
           <h2 className="text-lg font-bold mb-4">Update Stock for {stockItem.name}</h2>
-          <input
-            type="number"
-            value={newStock}
-            onChange={(e) => setNewStock(parseInt(e.target.value))}
-            className="border rounded p-1 w-20"
-          />
-          <div className="mt-4 flex space-x-2"> {/* Add flex and space-x-2 for spacing */}
-            <button
-              onClick={handleSubmit}
-              className="bg-green-500 text-white p-2 rounded"
-            >
-              Update
-            </button>
-            <button
-              onClick={onClose}
-              className="bg-gray-300 p-2 rounded"
-            >
-              Cancel
-            </button>
-          </div>
-        </>
+            <input
+              type="number"
+              value={newStock}
+              onChange={(e) => setNewStock(parseInt(e.target.value) || 0)} // Ensure it's a number
+              className="border rounded p-1 w-20"
+            />
+            <div className="mt-4 flex space-x-2">
+              <button
+                onClick={handleSubmit}
+                className="bg-green-500 text-white p-2 rounded"
+              >
+                Update
+              </button>
+              <button
+                onClick={onClose}
+                className="bg-gray-300 p-2 rounded"
+              >
+                Cancel
+              </button>
+            </div>
+          </>
         ) : (
           <p className="text-gray-500">No content available.</p>
         )}

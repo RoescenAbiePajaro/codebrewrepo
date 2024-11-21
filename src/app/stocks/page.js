@@ -17,6 +17,7 @@ const StocksPage = () => {
   const fetchStocks = async () => {
     try {
       const response = await axios.get('/api/menu-items');
+      console.log('Fetched stocks:', response.data);
       setStocks(response.data);
     } catch (error) {
       console.error('Error fetching stocks:', error);
@@ -32,9 +33,11 @@ const StocksPage = () => {
 
   const handleUpdateStock = async (id, newStock) => {
     if (newStock < 0) return; // Prevent negative stock updates
+    console.log('Updating stock for:', id, 'New stock:', newStock);
     setUpdateLoading((prev) => ({ ...prev, [id]: true })); // Set loading for this stock
     try {
       const response = await axios.put(`/api/menu-items`, { _id: id, stock: newStock });
+      console.log('Updated stock response:', response.data);
       setStocks((prev) =>
         prev.map((item) => (item._id === id ? { ...item, stock: response.data.stock } : item))
       );
@@ -46,7 +49,7 @@ const StocksPage = () => {
       setUpdateLoading((prev) => ({ ...prev, [id]: false })); // Reset loading for this stock
     }
   };
-
+  
   const openModal = (item) => {
     setSelectedStock(item);
     setIsModalOpen(true);
@@ -72,6 +75,7 @@ const StocksPage = () => {
                 <th className="border-b p-2">Name</th>
                 <th className="border-b p-2">Base Price</th>
                 <th className="border-b p-2">Stock</th>
+                <th className="border-b p-2">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -94,13 +98,18 @@ const StocksPage = () => {
                         disabled={updateLoading[item._id]} // Disable input if loading
                       />
                     ) : (
-                      <span 
-                        className="text-red-500 font-bold cursor-pointer" 
-                        onClick={() => openModal(item)}
-                      >
+                      <span className="text-red-500 font-bold cursor-pointer">
                         Sold Out
                       </span>
                     )}
+                  </td>
+                  <td className="border-b p-2">
+                    <button
+                      onClick={() => openModal(item)}
+                      className="bg-green-500 text-white rounded px-2 py-1"
+                    >
+                      Update
+                    </button>
                   </td>
                 </tr>
               ))}
