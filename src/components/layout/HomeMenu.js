@@ -1,35 +1,29 @@
-//HomeMenu
 'use client';
+
 import SectionHeaders from "@/components/layout/SectionHeaders";
-import MenuItem from "@/components/menu/MenuItem";
-import {useEffect, useState} from "react";
 
 export default function HomeMenu() {
-  const [bestSellers, setBestSellers] = useState([]);
-  useEffect(() => {
-    fetch('/api/menu-items').then(res => {
-      res.json().then(menuItems => {
-        setBestSellers(menuItems.slice(-3));
-      });
-    });
-  }, []);
   return (
-    <section className="">
+    <section className="relative bg-gradient-to-br from-green-400 via-green-500 to-green-600 p-6 rounded-lg shadow-lg">
+      {/* Background Decorations */}
       <div className="absolute left-0 right-0 w-full justify-start">
-        <div className="absolute left-0 -top-[70px] text-left -z-10">
+        <div className="absolute left-0 -top-[70px] text-left -z-10 opacity-30">
+          <img src="/images/decor1.png" alt="Left Decoration" className="w-40 h-auto" />
         </div>
-        <div className="absolute -top-[100px] right-0 -z-10">
+        <div className="absolute -top-[100px] right-0 -z-10 opacity-30">
+          <img src="/images/decor2.png" alt="Right Decoration" className="w-40 h-auto" />
         </div>
       </div>
-      <div className="text-center mb-4">
+
+      {/* Header Section */}
+      <div className="text-center mb-8">
+        <div className="flex justify-center mb-4">
+          <img src="/images/tealerin-milktea-logo.png" alt="Tealerin Milktea Logo" className="w-24 h-24 rounded-full" />
+        </div>
         <SectionHeaders
-          subHeader={''}
-          mainHeader={''} />
-      </div>
-      <div className="grid sm:grid-cols-3 gap-4">
-        {bestSellers?.length > 0 && bestSellers.map(item => (
-          <MenuItem key={item._id} {...item} />
-        ))}
+          subHeader="Refreshing Flavors Await"
+          mainHeader="Welcome to Tealerin Milktea"
+        />
       </div>
     </section>
   );
