@@ -1,3 +1,4 @@
+//profile/page
 'use client';
 
 import UserForm from "@/components/layout/UserForm";

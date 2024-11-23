@@ -8,13 +8,15 @@ import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from 'next/navigation';
 import Receipt from "@/components/layout/Receipt";
+import { useSession } from "next-auth/react";  // Add useSession for authentication
 
 export default function CartPage() {
   const { cartProducts, removeCartProduct, setCartProducts, clearCart } = useContext(CartContext);
   const [customer, setCustomer] = useState({});
   const { data: profileData } = useProfile();
   const [showReceipt, setShowReceipt] = useState(false);
-  const router = useRouter(); 
+  const router = useRouter();
+  const { status } = useSession(); // Get the authentication status
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -45,7 +47,7 @@ export default function CartPage() {
   // Save the receipt to the database
   async function saveReceipt(ev) {
     ev.preventDefault();
-  
+
     const promise = new Promise((resolve, reject) => {
       fetch('/api/receipt', {
         method: 'POST',
@@ -68,14 +70,13 @@ export default function CartPage() {
         reject(error);
       });
     });
-  
+
     await toast.promise(promise, {
       loading: 'Saving your receipt...',
       success: 'Receipt saved!',
       error: (err) => err.message || 'Something went wrong... Please try again later',
     });
   }
-  
 
   function updateQuantity(index, newQuantity) {
     if (newQuantity < 1) return; 
@@ -84,6 +85,12 @@ export default function CartPage() {
       updatedProducts[index].quantity = newQuantity;
       return updatedProducts;
     });
+  }
+
+  // If not authenticated, redirect to login page
+  if (status === 'unauthenticated') {
+    router.push('/login');  // Redirect user to login page
+    return null;  // Return null while redirecting
   }
 
   if (!cartProducts || cartProducts.length === 0) {
