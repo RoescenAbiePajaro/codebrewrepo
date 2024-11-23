@@ -1,3 +1,4 @@
+// src\app\users\page.js
 'use client';
 import UserTabs from "@/components/layout/UserTabs";
 import {useProfile} from "@/components/UseProfile";

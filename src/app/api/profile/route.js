@@ -1,3 +1,4 @@
+// src\app\api\profile
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { User } from "@/models/User";
 import { UserInfo } from "@/models/UserInfo";

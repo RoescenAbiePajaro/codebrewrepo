@@ -1,4 +1,4 @@
-
+// src\app\auth\[...nextauth]route.js
 import clientPromise from "@/libs/mongoConnect";
 import {UserInfo} from "@/models/UserInfo";
 import bcrypt from "bcrypt";

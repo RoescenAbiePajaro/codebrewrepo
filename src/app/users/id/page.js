@@ -1,3 +1,4 @@
+// src\app\users\id\page.js
 'use client';
 import UserForm from "@/components/layout/UserForm";
 import UserTabs from "@/components/layout/UserTabs";
