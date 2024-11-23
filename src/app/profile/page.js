@@ -1,4 +1,3 @@
-//profile/page
 'use client';
 
 import UserForm from "@/components/layout/UserForm";
@@ -31,6 +30,11 @@ export default function ProfilePage() {
           setProfileFetched(true);
         });
     }
+
+    // Redirect when the user is not authenticated
+    if (status === 'unauthenticated') {
+      redirect('/login');
+    }
   }, [session, status]);
 
   async function handleProfileInfoUpdate(ev, data) {
@@ -62,10 +66,6 @@ export default function ProfilePage() {
 
   if (status === 'loading' || !profileFetched) {
     return 'Loading...';
-  }
-
-  if (status === 'unauthenticated') {
-    return redirect('/login');
   }
 
   return (

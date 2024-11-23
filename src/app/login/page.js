@@ -1,4 +1,5 @@
-"use client";
+'use client';
+
 import { useState } from "react";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
@@ -14,29 +15,31 @@ export default function LoginPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
-    setErrorMessage("");
+    setErrorMessage(""); // Reset error message before attempting login
 
     const result = await signIn("credentials", {
       email,
       password,
-      redirect: false,
+      redirect: false, // Don't automatically redirect after login, handle it manually
     });
 
     if (result?.error) {
-      setErrorMessage(result.error); // Show the error message
+      setErrorMessage(result.error); // Display error message if login fails
     } else {
-      // Successful login
-      router.push("/"); // Redirect to home page
+      // If login is successful, redirect to home page
+      router.push("/"); // Adjust if you want to redirect elsewhere
     }
 
-    setIsLoading(false);
+    setIsLoading(false); // Disable loading spinner after request
   };
 
   return (
     <section className="mt-8 flex justify-center">
       <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
         <h1 className="text-center text-green-500 text-4xl mb-4">Login</h1>
-        {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
+        {errorMessage && (
+          <p className="text-red-500 text-center mb-4">{errorMessage}</p>
+        )}
         <form className="space-y-4" onSubmit={handleSubmit}>
           <input
             type="email"
@@ -65,16 +68,19 @@ export default function LoginPage() {
           </button>
         </form>
         <p className="mt-4 text-center">
-          Dont have an account? <a href="/register" className="text-green-500">Register here</a>
+          Dont have an account?{" "}
+          <a href="/register" className="text-green-500">
+            Register here
+          </a>
         </p>
 
-        <div className="my-4 text-center text-gray-500">or login with provider</div>
+        <div className="my-4 text-center text-gray-500">or login with</div>
         <button
           type="button"
           onClick={() => signIn("google", { callbackUrl: "/" })}
           className="flex items-center justify-center gap-4 w-full py-2 border border-gray-300 rounded hover:bg-gray-100 transition-colors"
         >
-          <Image src={"/google-icon.png"} alt="Google icon" width={24} height={24} />
+          <Image src="/google-icon.png" alt="Google icon" width={24} height={24} />
           Login with Google
         </button>
       </div>
