@@ -10,7 +10,7 @@ import {redirect} from "next/navigation";
 
 export default function EditUserPage() {
   const {loading, data} = useProfile();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null); /////// i change this
   const {id} = useParams();
 
   useEffect(() => {

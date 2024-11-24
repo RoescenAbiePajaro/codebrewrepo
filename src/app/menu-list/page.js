@@ -2,6 +2,7 @@
 import SectionHeaders from "@/components/layout/SectionHeaders";
 import MenuItem from "@/components/menu/MenuItem";
 import { useEffect, useState } from "react";
+import UserTabs from "@/components/layout/UserTabs";
 
 export default function MenuPage() {
   const [categories, setCategories] = useState([]);
@@ -24,6 +25,9 @@ export default function MenuPage() {
 
   return (
     <section className="mt-8">
+      {/* Add UserTabs here */}
+      <UserTabs isAdmin={true} /> {/* Pass `isAdmin` prop if needed */}
+
       {/* Search Bar */}
       <div className="text-center mb-8">
         <input
