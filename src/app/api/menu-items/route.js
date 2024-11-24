@@ -2,6 +2,7 @@ import { isAdmin } from "@/app/api/auth/[...nextauth]/route";
 import { MenuItem } from "@/models/MenuItem";
 import mongoose from "mongoose";
 
+
 async function connectDB() {
   if (!mongoose.connection.readyState) {
     await mongoose.connect(process.env.MONGO_URL, {
