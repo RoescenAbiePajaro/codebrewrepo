@@ -6,6 +6,7 @@ import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useContext, useState } from "react";
 
+// AuthLinks component to handle login/logout and display user info
 function AuthLinks({ status, userName }) {
   if (status === 'authenticated') {
     return (
@@ -40,12 +41,15 @@ export default function Header() {
   let userName = userData?.name || userData?.email;
   const { cartProducts } = useContext(CartContext);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  // If the user has a full name, shorten it to just the first name
   if (userName && userName.includes(' ')) {
     userName = userName.split(' ')[0];
   }
-  
+
   return (
     <header>
+      {/* Mobile Navigation */}
       <div className="flex items-center md:hidden justify-between">
         <Link className="text-green font-semibold text-2xl" href={'/'}>
           Tealerin Milktea
@@ -68,6 +72,8 @@ export default function Header() {
           </button>
         </div>
       </div>
+
+      {/* Mobile Nav Menu */}
       {mobileNavOpen && (
         <div
           onClick={() => setMobileNavOpen(false)}
@@ -76,6 +82,8 @@ export default function Header() {
           <AuthLinks status={status} userName={userName} />
         </div>
       )}
+
+      {/* Desktop Navigation */}
       <div className="hidden md:flex items-center justify-between">
         <nav className="flex items-center gap-8 text-gray-500 font-semibold">
           <Link className="text-green font-semibold text-2xl" href={'/'}>
@@ -83,6 +91,7 @@ export default function Header() {
           </Link>
           <Link href={'/'}>Home</Link>
         </nav>
+
         <nav className="flex items-center gap-4 text-gray-500 font-semibold">
           <AuthLinks status={status} userName={userName} />
           {status === 'authenticated' && (
