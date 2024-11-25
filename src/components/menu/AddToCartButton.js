@@ -1,33 +1,37 @@
-import FlyingButton from 'react-flying-item'
+import { useState } from 'react';
 
 export default function AddToCartButton({
-  hasSizesOrExtras, onClick, basePrice, image, stock
+  hasSizesOrExtras, onClick, basePrice, image, stock,
 }) {
-  const isDisabled = stock <= 0;
+  const [isAdding, setIsAdding] = useState(false); // State to track if adding to cart
+  const isDisabled = stock <= 0 || isAdding; // Disable if no stock or already adding
 
-  const handleAddToCart = () => {
-    if (!isDisabled) {
-      // Add the item to the cart
-      onClick(basePrice);
-    }
+  const handleAddToCart = async () => {
+    if (isDisabled) return;
+
+    setIsAdding(true); // Disable button to prevent multiple clicks
+    await new Promise((resolve) => setTimeout(resolve, 300)); // Simulate any async operation (e.g., API call)
+
+    onClick(basePrice); // Add to cart callback
+    alert('Item added to cart!'); // Show alert
+    setIsAdding(false); // Re-enable button
   };
 
   if (!hasSizesOrExtras || isDisabled) {
     return (
-      <div className="flying-button-parent mt-4">
-        { !isDisabled && (
-          <FlyingButton
-            targetTop={'5%'}
-            targetLeft={'95%'}
-            src={image || null}>
-            <div onClick={handleAddToCart} className={isDisabled ? 'opacity-50 cursor-not-allowed' : ''}>
-              Add to cart ₱{basePrice}
-            </div>
-          </FlyingButton>
-        )}
+      <div className="mt-4">
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          className={`w-full ${isDisabled ? 'bg-gray-500' : 'bg-green-500'} text-white rounded-full px-8 py-2`}
+          disabled={isDisabled}
+        >
+          <span>{isAdding ? 'Adding...' : `Add to cart ₱${basePrice}`}</span>
+        </button>
       </div>
     );
   }
+
   return (
     <button
       type="button"
@@ -35,7 +39,7 @@ export default function AddToCartButton({
       className={`mt-4 ${isDisabled ? 'bg-gray-500' : 'bg-green-500'} text-white rounded-full px-8 py-2`}
       disabled={isDisabled}
     >
-      <span>Add to cart (from ₱{basePrice})</span>
+      <span>{isAdding ? 'Adding...' : `Add to cart (from ₱${basePrice})`}</span>
     </button>
   );
 }

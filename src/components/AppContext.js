@@ -1,4 +1,5 @@
 'use client';
+
 import { SessionProvider } from "next-auth/react";
 import { createContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -24,9 +25,17 @@ export function AppProvider({ children }) {
 
   useEffect(() => {
     if (ls && ls.getItem('cart')) {
-      setCartProducts(JSON.parse(ls.getItem('cart')));
+      try {
+        const storedCart = JSON.parse(ls.getItem('cart'));
+        if (Array.isArray(storedCart)) {
+          setCartProducts(storedCart);
+        }
+      } catch (error) {
+        console.error("Failed to parse cart from localStorage:", error);
+        ls.removeItem('cart');
+      }
     }
-  }, []);
+  }, [ls]);
 
   function clearCart() {
     setCartProducts([]);
@@ -34,7 +43,7 @@ export function AppProvider({ children }) {
   }
 
   function removeCartProduct(indexToRemove) {
-    setCartProducts(prevCartProducts => {
+    setCartProducts((prevCartProducts) => {
       const newCartProducts = prevCartProducts.filter((_, index) => index !== indexToRemove);
       saveCartProductsToLocalStorage(newCartProducts);
       return newCartProducts;
@@ -49,30 +58,25 @@ export function AppProvider({ children }) {
   }
 
   function addToCart(product, size = null, extras = [], quantity = 1) {
-    // Check if the product can be added (e.g., based on stock or other conditions)
-    const canAddToCart = product.stock > 0; // Example condition
-
+    const canAddToCart = (product.stock || 0) > 0; // Default stock check
     if (!canAddToCart) {
-      toast.error('Cannot add item to cart'); // Notify user
-      return; // Prevent adding to cart
+      toast.error('Cannot add item to cart');
+      return;
     }
 
-    setCartProducts(prevProducts => {
-      // Check if the product is already in the cart, and update its quantity if it is
-      const productIndex = prevProducts.findIndex(cartProduct => 
-        cartProduct._id === product._id && 
+    setCartProducts((prevProducts) => {
+      const productIndex = prevProducts.findIndex((cartProduct) =>
+        cartProduct._id === product._id &&
         cartProduct.size?._id === size?._id &&
-        JSON.stringify(cartProduct.extras) === JSON.stringify(extras)
+        JSON.stringify(cartProduct.extras) === JSON.stringify(extras) // Deep comparison for extras
       );
 
       if (productIndex !== -1) {
-        // Product exists, update the quantity
         const updatedProducts = [...prevProducts];
         updatedProducts[productIndex].quantity += quantity;
         saveCartProductsToLocalStorage(updatedProducts);
         return updatedProducts;
       } else {
-        // Product doesn't exist, add it to the cart
         const newProduct = { ...product, size, extras, quantity };
         const newProducts = [...prevProducts, newProduct];
         saveCartProductsToLocalStorage(newProducts);
