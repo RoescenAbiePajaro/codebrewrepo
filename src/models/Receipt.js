@@ -1,5 +1,6 @@
 //models/Receipt.js this is for receipt model for mongodb 
 import mongoose from 'mongoose';
+import moment from 'moment-timezone';
 
 const ReceiptSchema = new mongoose.Schema({
   customer: {
@@ -17,7 +18,7 @@ const ReceiptSchema = new mongoose.Schema({
   subtotal: Number,
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: () => moment.tz("Asia/Manila").toDate(),
   },
 });
 

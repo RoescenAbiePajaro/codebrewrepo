@@ -77,7 +77,7 @@ const ReceiptPage = () => {
       second: '2-digit',
       timeZone: 'Asia/Manila',
     };
-    return new Date(dateString).toLocaleString('en-US', options);
+    return new Date(dateString).toLocaleString('en-PH', options);
   };
 
   return (

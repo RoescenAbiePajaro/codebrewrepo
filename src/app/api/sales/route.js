@@ -1,5 +1,4 @@
 // app/api/sales/route.js
-
 import Receipt from "@/models/Receipt";
 import mongoose from "mongoose";
 
@@ -21,27 +20,51 @@ export async function GET(req) {
     const url = new URL(req.url);
     const timeframe = url.searchParams.get("timeframe") || "daily";
 
-    let groupStage;
+    let salesData;
+
     switch (timeframe) {
       case "daily":
-        groupStage = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } };
+        salesData = await Receipt.aggregate([
+          { 
+            $group: { 
+              _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }, 
+              totalSales: { $sum: "$subtotal" } 
+            } 
+          },
+          { $sort: { _id: 1 } },
+        ]);
         break;
+
       case "weekly":
-        groupStage = { $isoWeek: "$createdAt" };
+        salesData = await Receipt.aggregate([
+          { 
+            $group: { 
+              _id: { $isoWeek: "$createdAt" }, 
+              totalSales: { $sum: "$subtotal" } 
+            } 
+          },
+          { $sort: { _id: 1 } },
+        ]);
         break;
+
       case "monthly":
-        groupStage = { $dateToString: { format: "%Y-%m", date: "$createdAt" } };
+        salesData = await Receipt.aggregate([
+          { 
+            $group: { 
+              _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } }, 
+              totalSales: { $sum: "$subtotal" } 
+            } 
+          },
+          { $sort: { _id: 1 } },
+        ]);
         break;
+
       default:
         throw new Error("Invalid timeframe parameter.");
     }
 
-    const sales = await Receipt.aggregate([
-      { $group: { _id: groupStage, totalSales: { $sum: "$subtotal" } } },
-      { $sort: { _id: 1 } },
-    ]);
-
-    const formattedSales = sales.reduce((acc, { _id, totalSales }) => {
+    // Format sales data for daily, weekly, monthly
+    const formattedSales = salesData.reduce((acc, { _id, totalSales }) => {
       acc[_id] = totalSales;
       return acc;
     }, {});
