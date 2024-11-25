@@ -6,7 +6,7 @@ const ExtraPriceSchema = new Schema({
 });
 
 const MenuItemSchema = new Schema({
-  image: { type: String },
+  image: { type: String, default:null },
   name: { type: String },
   description: { type: String },
   category: { type: mongoose.Types.ObjectId, required: false },
