@@ -15,6 +15,12 @@ export default function ProfilePage() {
   const { status } = session;
 
   useEffect(() => {
+    // Redirect to login page if the user is unauthenticated
+    if (status === 'unauthenticated') {
+      redirect('/login');
+      return;
+    }
+
     if (status === 'authenticated') {
       fetch('/api/profile')
         .then(response => response.json())
@@ -29,11 +35,6 @@ export default function ProfilePage() {
           console.error("Error fetching profile:", error);
           setProfileFetched(true);
         });
-    }
-
-    // Redirect when the user is not authenticated
-    if (status === 'unauthenticated') {
-      redirect('/login');
     }
   }, [session, status]);
 
