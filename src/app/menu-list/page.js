@@ -24,7 +24,7 @@ export default function MenuPage() {
   );
 
   return (
-    <section className="mt-8">
+    <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       {/* Add UserTabs here */}
       <UserTabs isAdmin={true} /> {/* Pass `isAdmin` prop if needed */}
 
@@ -33,7 +33,7 @@ export default function MenuPage() {
         <input
           type="text"
           placeholder="Search products..."
-          className="px-4 py-2 border rounded"
+          className="mt-4 px-4 py-2 border rounded"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />

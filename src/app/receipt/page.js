@@ -81,7 +81,7 @@ const ReceiptPage = () => {
   };
 
   return (
-    <section className="max-w-2xl mx-auto mt-8">
+    <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
       <div className="mt-8">
         {receipts.length > 0 ? (
