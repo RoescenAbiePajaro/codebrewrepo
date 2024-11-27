@@ -1,84 +1,79 @@
 'use client';
 import DeleteButton from "@/components/DeleteButton";
 import UserTabs from "@/components/layout/UserTabs";
-import {useEffect, useState} from "react";
-import {useProfile} from "@/components/UseProfile";
+import { useEffect, useState } from "react";
+import { useProfile } from "@/components/UseProfile";
 import toast from "react-hot-toast";
+import TablePagination from '@mui/material/TablePagination'; // Make sure to import this
 
 export default function CategoriesPage() {
-
   const [categoryName, setCategoryName] = useState('');
   const [categories, setCategories] = useState([]);
-  const {loading:profileLoading, data:profileData} = useProfile();
+  const { loading: profileLoading, data: profileData } = useProfile();
   const [editedCategory, setEditedCategory] = useState(null);
+  
+  // Pagination state
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
   function fetchCategories() {
-    fetch('/api/categories').then(res => {
-      res.json().then(categories => {
+    fetch('/api/categories')
+      .then(res => res.json())
+      .then(categories => {
         setCategories(categories);
+      })
+      .catch(err => {
+        toast.error('Failed to fetch categories');
+        console.error(err);
       });
-    });
   }
 
   async function handleCategorySubmit(ev) {
     ev.preventDefault();
-    const creationPromise = new Promise(async (resolve, reject) => {
-      const data = {name:categoryName};
-      if (editedCategory) {
-        data._id = editedCategory._id;
-      }
-      const response = await fetch('/api/categories', {
-        method: editedCategory ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+    const data = { name: categoryName };
+    if (editedCategory) {
+      data._id = editedCategory._id;
+    }
+    
+    const method = editedCategory ? 'PUT' : 'POST';
+    const response = await fetch('/api/categories', {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
       setCategoryName('');
       fetchCategories();
       setEditedCategory(null);
-      if (response.ok)
-        resolve();
-      else
-        reject();
-    });
-    await toast.promise(creationPromise, {
-      loading: editedCategory
-                 ? 'Updating category...'
-                 : 'Creating your new category...',
-      success: editedCategory ? 'Category updated' : 'Category created',
-      error: 'Error, sorry...',
-    });
+      toast.success(editedCategory ? 'Category updated' : 'Category created');
+    } else {
+      toast.error('Error, sorry...');
+    }
   }
 
   async function handleDeleteClick(_id) {
-    const promise = new Promise(async (resolve, reject) => {
-      const response = await fetch('/api/categories?_id='+_id, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        resolve();
-      } else {
-        reject();
-      }
+    const response = await fetch(`/api/categories?_id=${_id}`, {
+      method: 'DELETE',
     });
 
-    await toast.promise(promise, {
-      loading: 'Deleting...',
-      success: 'Deleted',
-      error: 'Error',
-    });
-
-    fetchCategories();
+    if (response.ok) {
+      toast.success('Deleted');
+      fetchCategories();
+    } else {
+      toast.error('Error deleting category');
+    }
   }
 
   if (profileLoading) {
     return 'Loading user info...';
   }
 
-  if (!profileData.admin) {
+  if (!profileData?.admin) {
     return 'Not an admin';
   }
 
@@ -94,9 +89,10 @@ export default function CategoriesPage() {
                 <>: <b>{editedCategory.name}</b></>
               )}
             </label>
-            <input type="text"
-                   value={categoryName}
-                   onChange={ev => setCategoryName(ev.target.value)}
+            <input
+              type="text"
+              value={categoryName}
+              onChange={ev => setCategoryName(ev.target.value)}
             />
           </div>
           <div className="pb-2 flex gap-2">
@@ -116,10 +112,10 @@ export default function CategoriesPage() {
       </form>
       <div>
         <h2 className="mt-8 text-sm text-gray-500">Existing categories</h2>
-        {categories?.length > 0 && categories.map(c => (
+        {categories?.length > 0 && categories.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(c => (
           <div
             key={c._id}
-            className="bg-gray-100 rounded-xl p-2 px-4 flex gap-1 mb-1 items-center">
+            className="bg-gray-100 rounded-xl p- 2 px-4 flex gap-1 mb-1 items-center">
             <div className="grow">
               {c.name}
             </div>
@@ -137,11 +133,22 @@ export default function CategoriesPage() {
                 label="Delete"
                 onDelete={() => handleDeleteClick(c._id)} 
               />
-
             </div>
           </div>
         ))}
       </div>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={categories.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={(event, newPage) => setPage(newPage)}
+        onRowsPerPageChange={(event) => {
+          setRowsPerPage(parseInt(event.target.value, 10));
+          setPage(0);
+        }}
+      />
     </section>
   );
 }

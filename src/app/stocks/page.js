@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import Modal from "@/components/layout/Modal";
+import TablePagination from '@mui/material/TablePagination'; // Ensure this is the correct import
 
 const StocksPage = () => {
   const [stocks, setStocks] = useState([]);
@@ -14,6 +15,13 @@ const StocksPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStock, setSelectedStock] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // Pagination state
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  
+  // New state for filtering
+  const [filterOption, setFilterOption] = useState('all');
 
   const fetchStocks = async () => {
     try {
@@ -61,9 +69,22 @@ const StocksPage = () => {
     setSelectedStock(null);
   };
 
-  const filteredStocks = stocks.filter(stock => 
-    stock.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredStocks = stocks.filter(stock => {
+    const matchesSearch = stock.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter = filterOption === 'all' ||
+                          (filterOption === 'soldOut' && stock.stock <= 0) ||
+                          (filterOption === 'inStock' && stock.stock > 0);
+    return matchesSearch && matchesFilter;
+  });
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to first page on rows per page change
+  };
 
   if (loading) return <p>Loading stocks...</p>;
   if (error) return <p>{error}</p>;
@@ -80,6 +101,19 @@ const StocksPage = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="border rounded p-2 mb-4 w-full"
         />
+        <div className="flex justify-end mb-4">
+          <label>
+            <select
+              value={filterOption}
+              onChange={(e) => setFilterOption(e.target.value)}
+              className="border rounded p-2"
+            >
+              <option value="all">All</option>
+              <option value="soldOut">Sold Out</option>
+              <option value="inStock">In Stock</option>
+            </select>
+          </label>
+        </div>
         {filteredStocks.length > 0 ? (
           <table className="min-w-full bg-white border border-gray-300">
             <thead>
@@ -91,7 +125,7 @@ const StocksPage = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredStocks.map((item) => (
+              {filteredStocks.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
                 <tr key={item._id} className="hover:bg-gray-100">
                   <td className="border-b p-2 text-left">{item.name}</td>
                   <td className="border-b p-2 text-right">{item.basePrice ? `₱${item.basePrice.toFixed(2)}` : '₱0.00'}</td>
@@ -136,6 +170,15 @@ const StocksPage = () => {
         onClose={closeModal} 
         onUpdate={handleUpdateStock} 
         stockItem={selectedStock} 
+      />
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={filteredStocks.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </section>
   );
