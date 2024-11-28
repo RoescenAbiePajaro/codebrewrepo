@@ -14,6 +14,8 @@ import {
 } from 'chart.js';
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import UserTabs from "@/components/layout/UserTabs";
+import * as XLSX from 'xlsx'; 
+import DownloadIcon from '@mui/icons-material/Download'; 
 
 // Register Chart.js components
 ChartJS.register(
@@ -100,16 +102,13 @@ const SalesPage = () => {
     const totalSales = Object.values(salesData).reduce((acc, curr) => acc + (Number(curr) || 0), 0);
     const averageSalesPerDay = totalSales / Object.keys(salesData).length;
 
-    // Collect all sales data for interpretation
     const salesEntries = Object.entries(salesData).map(([date, amount]) => ({
       date,
       amount: Number(amount) || 0,
     }));
 
-    // Sort sales entries by amount
     salesEntries.sort((a, b) => b.amount - a.amount); // Sort descending
 
-    // Prepare interpretation text
     let interpretationText = `Total sales amount: ₱${totalSales.toFixed(2)}\n`;
     interpretationText += `Average sales per day: ₱${averageSalesPerDay.toFixed(2)}\n\n`;
     interpretationText += `Sales per date:\n`;
@@ -121,10 +120,23 @@ const SalesPage = () => {
     setInterpretation(interpretationText);
   };
 
+  const downloadExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(Object.entries(salesData).map(([date, amount]) => ({ Date: date, Amount: amount })));
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sales Data");
+    XLSX.writeFile(workbook, "sales_data.xlsx");
+  };
+
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
       <TimeframeButtons timeframe={timeframe} setTimeframe={setTimeframe} />
+      <button
+        onClick={downloadExcel}
+        className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+      >
+        <DownloadIcon /> 
+      </button>
       <ChartSection chartData={chartData} pieData={pieData} />
       <InterpretationSection interpretation={interpretation} />
     </section>

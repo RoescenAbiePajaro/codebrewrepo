@@ -3,8 +3,10 @@ import SectionHeaders from "@/components/layout/SectionHeaders";
 import MenuItem from "@/components/menu/MenuItem";
 import { useEffect, useState } from "react";
 import UserTabs from "@/components/layout/UserTabs";
+import { useSession } from "next-auth/react"; // Import useSession
 
 export default function MenuPage() {
+  const { data: session } = useSession(); // Get session data
   const [categories, setCategories] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -18,6 +20,9 @@ export default function MenuPage() {
     });
   }, []);
 
+  // Determine if user is admin
+  const isAdmin = session?.user?.isAdmin || false; // Assuming isAdmin is part of session
+
   // Filter items based on search query
   const filteredMenuItems = menuItems.filter(item =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -25,8 +30,7 @@ export default function MenuPage() {
 
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      {/* Add UserTabs here */}
-      <UserTabs isAdmin={true} /> {/* Pass `isAdmin` prop if needed */}
+      <UserTabs isAdmin={isAdmin} /> {/* Pass `isAdmin` prop */}
 
       {/* Search Bar */}
       <div className="text-center mb-8">

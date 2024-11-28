@@ -8,7 +8,7 @@ import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from 'next/navigation';
 import Receipt from "@/components/layout/Receipt";
-import { useSession } from "next-auth/react";  // Add useSession for authentication
+import { useSession } from "next-auth/react"; 
 
 export default function CartPage() {
   const { cartProducts, removeCartProduct, setCartProducts, clearCart } = useContext(CartContext);
@@ -16,7 +16,7 @@ export default function CartPage() {
   const { data: profileData } = useProfile();
   const [showReceipt, setShowReceipt] = useState(false);
   const router = useRouter();
-  const { status } = useSession(); // Get the authentication status
+  const { status } = useSession(); 
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -44,7 +44,6 @@ export default function CartPage() {
     setCustomer(prevCustomer => ({ ...prevCustomer, [propName]: value }));
   }
 
-  // Save the receipt to the database
   async function saveReceipt(ev) {
     ev.preventDefault();
 
@@ -87,10 +86,9 @@ export default function CartPage() {
     });
   }
 
-  // If not authenticated, redirect to login page
   if (status === 'unauthenticated') {
-    router.push('/login');  // Redirect user to login page
-    return null;  // Return null while redirecting
+    router.push('/login'); 
+    return null; 
   }
 
   if (!cartProducts || cartProducts.length === 0) {
