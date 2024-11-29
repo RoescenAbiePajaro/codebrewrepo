@@ -1,15 +1,37 @@
-import React, { useState } from "react"; 
-import Image from "next/image"; 
-import { cartProductPrice } from "@/components/AppContext"; 
+import React, { useState } from "react";
+import Image from "next/image";
+import { cartProductPrice } from "@/components/AppContext";
 
-const Modal = ({ isOpen, onClose, receipt, onUpdate, stockItem }) => {
-  const [newStock, setNewStock] = useState(stockItem?.stock || 0);
+const Modal = ({ isOpen, onClose, receipt, onUpdate, stockItem, user }) => {
+  const initialStock = stockItem?.stock || 0;
+  const initialUserData = { ...user, name: user?.name || "", admin: user?.admin || false };
+  
+  const [formData, setFormData] = useState(initialUserData);
+  const [newStock, setNewStock] = useState(initialStock);
 
-  const handleSubmit = () => {
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onUpdate(user._id, formData);
+    onClose();
+  };
+
+  const handleStockUpdate = () => {
     if (onUpdate && stockItem) {
       onUpdate(stockItem._id, newStock);
       onClose();
     }
+  };
+
+  const handleClose = () => {
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -44,7 +66,9 @@ const Modal = ({ isOpen, onClose, receipt, onUpdate, stockItem }) => {
                 {receipt.cartProducts.length > 0 ? (
                   receipt.cartProducts.map((product, index) => (
                     <li key={index} className="flex justify-between py-2">
-                      <span className="text-gray-600">{product.name} (x{product.quantity})</span>
+                      <span className="text-gray-600">
+                        {product.name} (x{product.quantity})
+                      </span>
                       <span className="font-medium">
                         ₱{(cartProductPrice(product) * product.quantity).toFixed(2)}
                       </span>
@@ -65,22 +89,22 @@ const Modal = ({ isOpen, onClose, receipt, onUpdate, stockItem }) => {
               <p>Thank you for your purchase!</p>
               <p>Visit us again!</p>
               <p>
-                Please note that this is a non-refundable amount. For any assistance, please email 
-                <b> paolonavarrosa@gmail.com</b>.
+                Please note that this is a non-refundable amount. For any assistance, please email
+                <b> paolonavarrosa @gmail.com</b>.
               </p>
             </div>
 
             <button
               className="mt-4 px-4 py-2 bg-green-500 text-white rounded"
-              onClick={onClose}
+              onClick={handleClose}
             >
               Close
             </button>
           </>
         ) : stockItem ? (
           <>
-          {/* Stock Update Modal Content */}
-          <h2 className="text-lg font-bold mb-4">Update Stock for {stockItem.name}</h2>
+            {/* Stock Update Modal Content */}
+            <h2 className="text-lg font-bold mb-4">Update Stock for {stockItem.name}</h2>
             <input
               type="number"
               value={newStock}
@@ -89,18 +113,66 @@ const Modal = ({ isOpen, onClose, receipt, onUpdate, stockItem }) => {
             />
             <div className="mt-4 flex space-x-2">
               <button
-                onClick={handleSubmit}
+                onClick={handleStockUpdate}
                 className="bg-green-500 text-white p-2 rounded"
               >
                 Update
               </button>
               <button
-                onClick={onClose}
+                onClick={handleClose}
                 className="bg-gray-300 p-2 rounded"
               >
                 Cancel
               </button>
             </div>
+          </>
+        ) : user ? (
+          <>
+            {/* User Edit Modal Content */}
+            <h2 className="text-lg font-bold mb-4">Edit User</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label className="block font-medium">Name:</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name} 
+                  onChange={handleChange} 
+                  className="border rounded w-full p-2"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block font-medium">Email:</label>
+                <input
+                  type="text"
+                  value={user.email}
+                  readOnly 
+                  className="border rounded w-full p-2"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block font-medium">Admin:</label>
+                <input
+                  type="checkbox"
+                  name="admin"
+                  checked={formData.admin}
+                  onChange={handleChange} 
+                  className="ml-2"
+                />
+              </div>
+              <div className="flex space-x-2">
+                <button type="submit" className="bg-green-500 text-white p-2 rounded">
+                  Update
+                </button>
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="bg-gray-300 p-2 rounded"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </>
         ) : (
           <p className="text-gray-500">No content available.</p>
