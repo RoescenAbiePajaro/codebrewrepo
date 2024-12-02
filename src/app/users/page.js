@@ -32,16 +32,20 @@ export default function UsersPage() {
   const handleDelete = async (userId) => {
     if (confirm("Are you sure you want to delete this user?")) {
       try {
-        const response = await fetch(`/api/users/${userId}`, { method: "DELETE" });
-        if (!response.ok) throw new Error("Failed to delete user");
-        setUsers(users.filter((user) => user._id !== userId));
-        alert("User  deleted successfully.");
+        const response = await fetch(`/api/users?id=${userId}`, { method: "DELETE" });
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to delete user");
+        }
+        setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
+        alert("User deleted successfully.");
       } catch (error) {
         console.error("Error deleting user:", error);
         alert("An error occurred while deleting the user.");
       }
     }
   };
+  
 
   const handleUserUpdate = async (userId, updatedUserData) => {
     try {

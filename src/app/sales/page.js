@@ -37,7 +37,25 @@ const SalesPage = () => {
   const [pieData, setPieData] = useState(null);
   const [interpretation, setInterpretation] = useState('');
   const [timeframe, setTimeframe] = useState('daily');
+  const [productData, setProductData] = useState(null);
 
+  // Fetch product data
+  useEffect(() => {
+    const fetchProductData = async () => {
+      try {
+        const response = await fetch(`/api/sales?groupBy=products`);
+        if (!response.ok) throw new Error("Failed to fetch product data");
+        const data = await response.json();
+        setProductData(data);
+      } catch (error) {
+        console.error("Error fetching product data:", error);
+      }
+    };
+
+    fetchProductData();
+  }, []);
+
+  // Fetch sales data periodically
   useEffect(() => {
     const fetchSalesData = async () => {
       try {
@@ -56,6 +74,7 @@ const SalesPage = () => {
     return () => clearInterval(interval);
   }, [timeframe]);
 
+  // Update chart and interpretation data when sales data changes
   useEffect(() => {
     if (Object.keys(salesData).length > 0) {
       updateChartData();
@@ -133,11 +152,11 @@ const SalesPage = () => {
       <TimeframeButtons timeframe={timeframe} setTimeframe={setTimeframe} />
       <button
         onClick={downloadExcel}
-        className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+        className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 flex items-center gap-2"
       >
-        <DownloadIcon /> 
+        <DownloadIcon /> Export to Excel
       </button>
-      <ChartSection chartData={chartData} pieData={pieData} />
+      <ChartSection chartData={chartData} pieData={pieData} productData={productData} />
       <InterpretationSection interpretation={interpretation} />
     </section>
   );
@@ -168,7 +187,7 @@ const TimeframeButtons = ({ timeframe, setTimeframe }) => (
 );
 
 // Chart section component
-const ChartSection = ({ chartData, pieData }) => (
+const ChartSection = ({ chartData, pieData, productData }) => (
   <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
     {chartData && (
       <>
@@ -186,15 +205,72 @@ const ChartSection = ({ chartData, pieData }) => (
         </div>
       </>
     )}
+    {productData && (
+      <>
+        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-bold mb-4">Product Sales Trend (Line Chart)</h2>
+          <Line
+            data={{
+              labels: Object.keys(productData),
+              datasets: [
+                {
+                  label: 'Product Sales (₱)',
+                  data: Object.values(productData),
+                  borderColor: 'rgba(255,99,132,1)',
+                  backgroundColor: 'rgba(255,99,132,0.2)',
+                  tension: 0.1,
+                },
+              ],
+            }}
+          />
+        </div>
+        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-bold mb-4">Product Sales Distribution (Bar Chart)</h2>
+          <Bar
+            data={{
+              labels: Object.keys(productData),
+              datasets: [
+                {
+                  label: 'Product Sales (₱)',
+                  data: Object.values(productData),
+                  backgroundColor: 'rgba(54,162,235,0.6)',
+                },
+              ],
+            }}
+          />
+        </div>
+        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-bold mb-4">Product Revenue Streams (Pie Chart)</h2>
+          <Pie data={{
+              labels: Object.keys(productData),
+              datasets: [
+                {
+                  data: Object.values(productData),
+                  backgroundColor: [
+                    'rgba(75,192,192,0.6)',
+                    'rgba(54,162,235,0.6)',
+                    'rgba(255,206,86,0.6)',
+                    'rgba(153,102,255,0.6)',
+                    'rgba(255,159,64,0.6)',
+                  ],
+                  borderWidth: 1,
+                },
+              ],
+            }}
+          />
+        </div>
+      </>
+    )}
   </div>
 );
 
 // Interpretation section component
 const InterpretationSection = ({ interpretation }) => (
-  <div className="mt-6 bg-gray-100 p-4 rounded-lg shadow-md">
-    <h2 className="text-lg font-bold">Sales Interpretation</h2>
-    <p className="whitespace-pre-line">{interpretation}</p>
+  <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
+    <h2 className="text-lg font-bold mb-4">Sales Interpretation</h2>
+    <pre>{interpretation}</pre>
   </div>
 );
 
 export default SalesPage;
+           

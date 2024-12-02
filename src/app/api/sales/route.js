@@ -1,4 +1,3 @@
-// app/api/sales/route.js
 import Receipt from "@/models/Receipt";
 import mongoose from "mongoose";
 
@@ -18,52 +17,68 @@ export async function GET(req) {
   try {
     await connectDB();
     const url = new URL(req.url);
-    const timeframe = url.searchParams.get("timeframe") || "daily";
+    const groupBy = url.searchParams.get("groupBy") || "timeframe"; // Default to 'timeframe'
+    const timeframe = url.searchParams.get("timeframe") || "daily"; // Default to 'daily'
 
     let salesData;
 
-    switch (timeframe) {
-      case "daily":
-        salesData = await Receipt.aggregate([
-          { 
-            $group: { 
-              _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }, 
-              totalSales: { $sum: "$subtotal" } 
-            } 
+    // Handle the groupBy logic
+    if (groupBy === "products") {
+      salesData = await Receipt.aggregate([
+        { $unwind: "$products" }, // Unwind products array in each receipt
+        {
+          $group: {
+            _id: "$products.name", // Group by product name
+            totalSales: { $sum: "$products.price" }, // Sum up product prices
           },
-          { $sort: { _id: 1 } },
-        ]);
-        break;
+        },
+        { $sort: { totalSales: -1 } }, // Sort by total sales in descending order
+      ]);
+    } else {
+      // Handle the timeframe logic
+      switch (timeframe) {
+        case "daily":
+          salesData = await Receipt.aggregate([
+            {
+              $group: {
+                _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                totalSales: { $sum: "$subtotal" },
+              },
+            },
+            { $sort: { _id: 1 } },
+          ]);
+          break;
 
-      case "weekly":
-        salesData = await Receipt.aggregate([
-          { 
-            $group: { 
-              _id: { $isoWeek: "$createdAt" }, 
-              totalSales: { $sum: "$subtotal" } 
-            } 
-          },
-          { $sort: { _id: 1 } },
-        ]);
-        break;
+        case "weekly":
+          salesData = await Receipt.aggregate([
+            {
+              $group: {
+                _id: { $isoWeek: "$createdAt" },
+                totalSales: { $sum: "$subtotal" },
+              },
+            },
+            { $sort: { _id: 1 } },
+          ]);
+          break;
 
-      case "monthly":
-        salesData = await Receipt.aggregate([
-          { 
-            $group: { 
-              _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } }, 
-              totalSales: { $sum: "$subtotal" } 
-            } 
-          },
-          { $sort: { _id: 1 } },
-        ]);
-        break;
+        case "monthly":
+          salesData = await Receipt.aggregate([
+            {
+              $group: {
+                _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
+                totalSales: { $sum: "$subtotal" },
+              },
+            },
+            { $sort: { _id: 1 } },
+          ]);
+          break;
 
-      default:
-        throw new Error("Invalid timeframe parameter.");
+        default:
+          throw new Error("Invalid timeframe parameter.");
+      }
     }
 
-    // Format sales data for daily, weekly, monthly
+    // Format the sales data
     const formattedSales = salesData.reduce((acc, { _id, totalSales }) => {
       acc[_id] = totalSales;
       return acc;

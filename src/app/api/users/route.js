@@ -56,20 +56,20 @@ export async function POST(request) {
 export async function DELETE(req) {
   try {
     await connectToDatabase();
-    const url = new URL(req.url);
-    const id = url.pathname.split('/').pop();
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
 
     if (!id) {
-      return new Response(JSON.stringify({ error: "User  ID is required" }), { status: 400 });
+      return new Response(JSON.stringify({ error: "User ID is required" }), { status: 400 });
     }
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return new Response(JSON.stringify({ error: "Invalid User ID" }), { status: 400 });
     }
 
-    const deletedUser  = await User.findByIdAndDelete(id);
-    if (!deletedUser ) {
-      return new Response(JSON.stringify({ error: "User  not found" }), { status: 404 });
+    const deletedUser = await User.findByIdAndDelete(id);
+    if (!deletedUser) {
+      return new Response(JSON.stringify({ error: "User not found" }), { status: 404 });
     }
 
     return new Response(JSON.stringify({ success: true }), { status: 200 });
