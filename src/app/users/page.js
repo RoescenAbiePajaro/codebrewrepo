@@ -4,11 +4,13 @@ import React, { useEffect, useState } from 'react';
 import UserTabs from '@/components/layout/UserTabs';
 import TablePagination from '@mui/material/TablePagination';
 import Modal from '@/components/layout/Modal';
+import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress for loading spinner
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [loading, setLoading] = useState(true); // Track loading state
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -17,6 +19,7 @@ export default function UsersPage() {
   }, []);
 
   const fetchUsers = async () => {
+    setLoading(true); // Set loading to true when starting to fetch data
     try {
       const response = await fetch('/api/users');
       if (!response.ok) throw new Error('Failed to fetch users');
@@ -25,6 +28,8 @@ export default function UsersPage() {
     } catch (error) {
       console.error('Error fetching users:', error);
       alert('Failed to load users. Please try again later.');
+    } finally {
+      setLoading(false); // Set loading to false when fetching is done
     }
   };
 
@@ -89,31 +94,37 @@ export default function UsersPage() {
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
       <div className="mt-8">
-        {users.length > 0 ? (
-          users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
-            <div key={user._id} className="bg-gray-100 rounded-lg mb-2 p-1 px-4 flex items-center gap-4">
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 grow">
-                <div className="text-gray-900">{user.name || <span className="italic">No name</span>}</div>
-                <span className="text-gray-500">{user.email}</span>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleEdit(user)}
-                  className="button bg-green-500 text-white rounded px-4 py-1"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(user._id)}
-                  className="button bg-red-500 text-white rounded px-4 py-1"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))
+        {loading ? ( // Show loading spinner while fetching data
+          <div className="flex justify-center items-center">
+            <CircularProgress />
+          </div>
         ) : (
-          <p className="text-gray-500">No users found.</p>
+          users.length > 0 ? (
+            users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
+              <div key={user._id} className="bg-gray-100 rounded-lg mb-2 p-1 px-4 flex items-center gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 grow">
+                  <div className="text-gray-900">{user.name || <span className="italic">No name</span>}</div>
+                  <span className="text-gray-500">{user.email}</span>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleEdit(user)}
+                    className="button bg-green-500 text-white rounded px-4 py-1"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(user._id)}
+                    className="button bg-red-500 text-white rounded px-4 py-1"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500">No users found.</p>
+          )
         )}
       </div>
       <TablePagination

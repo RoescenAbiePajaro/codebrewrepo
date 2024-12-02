@@ -1,29 +1,41 @@
-'use client';
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 
 export default function Modal({ user, isOpen, onClose, onUpdate }) {
-  const [editedName, setEditedName] = useState(user?.name || '');
+  const [editedName, setEditedName] = useState(user?.name || "");
+  const [editedEmail, setEditedEmail] = useState(user?.email || "");
   const [isAdminChecked, setIsAdminChecked] = useState(user?.admin || false);
 
-  const handleSave = () => {
+  useEffect(() => {
+    // Reset modal fields when opening
+    setEditedName(user?.name || "");
+    setEditedEmail(user?.email || "");
+    setIsAdminChecked(user?.admin || false);
+  }, [user, isOpen]);
+
+  const handleSave = async () => {
     if (!user?._id) {
-      alert('User ID is missing.');
+      alert("User ID is missing.");
       return;
     }
 
-    onUpdate({
+    const updatedUser = {
       _id: user._id,
       name: editedName,
+      email: editedEmail,
       admin: isAdminChecked,
-    });
-    onClose();
+    };
+
+    try {
+      await onUpdate(updatedUser); // Trigger the update handler passed as a prop
+      onClose(); // Close the modal on success
+    } catch (err) {
+      console.error("Error updating user:", err);
+      alert("Failed to update user. Please try again.");
+    }
   };
 
   const handleCancel = () => {
-    setEditedName(user?.name || '');
-    setIsAdminChecked(user?.admin || false);
-    onClose();
+    onClose(); // Simply close the modal without making changes
   };
 
   if (!isOpen) return null;
@@ -33,14 +45,21 @@ export default function Modal({ user, isOpen, onClose, onUpdate }) {
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-lg font-bold mb-4">Edit User</h2>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Name
-          </label>
+          <label className="block text-sm font-medium text-gray-700">Name</label>
           <input
             type="text"
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             value={editedName}
             onChange={(e) => setEditedName(e.target.value)}
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Email</label>
+          <input
+            type="email"
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            value={editedEmail}
+            onChange={(e) => setEditedEmail(e.target.value)}
           />
         </div>
         <div className="mb-4">
@@ -62,7 +81,7 @@ export default function Modal({ user, isOpen, onClose, onUpdate }) {
             Cancel
           </button>
           <button
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md"
+            className="px-4 py-2 bg-green-600 text-white rounded-md"
             onClick={handleSave}
           >
             Save

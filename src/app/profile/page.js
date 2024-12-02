@@ -6,12 +6,14 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress for loading spinner
 
 export default function ProfilePage() {
   const session = useSession();
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [profileFetched, setProfileFetched] = useState(false);
+  const [loading, setLoading] = useState(false); // Add loading state
   const { status } = session;
 
   useEffect(() => {
@@ -22,6 +24,7 @@ export default function ProfilePage() {
     }
 
     if (status === 'authenticated') {
+      setLoading(true); // Set loading to true while fetching
       fetch('/api/profile')
         .then(response => response.json())
         .then(data => {
@@ -30,10 +33,12 @@ export default function ProfilePage() {
             setIsAdmin(data.admin || false);
           }
           setProfileFetched(true);
+          setLoading(false); // Set loading to false after fetching
         })
         .catch(error => {
           console.error("Error fetching profile:", error);
           setProfileFetched(true);
+          setLoading(false); // Set loading to false in case of error
         });
     }
   }, [session, status]);
@@ -65,8 +70,12 @@ export default function ProfilePage() {
     });
   }
 
-  if (status === 'loading' || !profileFetched) {
-    return 'Loading...';
+  if (status === 'loading' || !profileFetched || loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <CircularProgress /> {/* Show spinner while loading */}
+      </div>
+    );
   }
 
   return (

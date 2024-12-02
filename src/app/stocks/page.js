@@ -1,4 +1,3 @@
-// StocksPage.js
 'use client';
 import UserTabs from "@/components/layout/UserTabs";
 import React, { useEffect, useState } from 'react';
@@ -6,6 +5,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import Modal from "@/components/layout/Modal";
 import TablePagination from '@mui/material/TablePagination'; // Ensure this is the correct import
+import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress for loading spinner
 
 const StocksPage = () => {
   const [stocks, setStocks] = useState([]);
@@ -86,7 +86,15 @@ const StocksPage = () => {
     setPage(0); // Reset to first page on rows per page change
   };
 
-  if (loading) return <p>Loading stocks...</p>;
+  // Show loading spinner while stocks are being fetched
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <CircularProgress /> {/* Show spinner while loading */}
+      </div>
+    );
+  }
+
   if (error) return <p>{error}</p>;
 
   return (

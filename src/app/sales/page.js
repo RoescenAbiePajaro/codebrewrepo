@@ -1,4 +1,5 @@
-'use client'; 
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import {
   Chart as ChartJS,
@@ -16,6 +17,7 @@ import { Line, Bar, Pie } from 'react-chartjs-2';
 import UserTabs from "@/components/layout/UserTabs";
 import * as XLSX from 'xlsx'; 
 import DownloadIcon from '@mui/icons-material/Download'; 
+import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress for loading spinner
 
 // Register Chart.js components
 ChartJS.register(
@@ -38,6 +40,7 @@ const SalesPage = () => {
   const [interpretation, setInterpretation] = useState('');
   const [timeframe, setTimeframe] = useState('daily');
   const [productData, setProductData] = useState(null);
+  const [loading, setLoading] = useState(true); // Add loading state to track fetching status
 
   // Fetch product data
   useEffect(() => {
@@ -49,6 +52,8 @@ const SalesPage = () => {
         setProductData(data);
       } catch (error) {
         console.error("Error fetching product data:", error);
+      } finally {
+        setLoading(false); // Set loading to false after fetching data
       }
     };
 
@@ -146,6 +151,15 @@ const SalesPage = () => {
     XLSX.writeFile(workbook, "sales_data.xlsx");
   };
 
+  // Show loading spinner until data is fetched
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <CircularProgress /> {/* Show spinner while loading */}
+      </div>
+    );
+  }
+
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
@@ -242,22 +256,21 @@ const ChartSection = ({ chartData, pieData, productData }) => (
         <div className="bg-gray-100 p-4 rounded-lg shadow-md">
           <h2 className="text-lg font-bold mb-4">Product Revenue Streams (Pie Chart)</h2>
           <Pie data={{
-              labels: Object.keys(productData),
-              datasets: [
-                {
-                  data: Object.values(productData),
-                  backgroundColor: [
-                    'rgba(75,192,192,0.6)',
-                    'rgba(54,162,235,0.6)',
-                    'rgba(255,206,86,0.6)',
-                    'rgba(153,102,255,0.6)',
-                    'rgba(255,159,64,0.6)',
-                  ],
-                  borderWidth: 1,
-                },
-              ],
-            }}
-          />
+            labels: Object.keys(productData),
+            datasets: [
+              {
+                data: Object.values(productData),
+                backgroundColor: [
+                  'rgba(75,192,192,0.6)',
+                  'rgba(54,162,235,0.6)',
+                  'rgba(255,206,86,0.6)',
+                  'rgba(153,102,255,0.6)',
+                  'rgba(255,159,64,0.6)',
+                ],
+                borderWidth: 1,
+              },
+            ],
+          }} />
         </div>
       </>
     )}
@@ -273,4 +286,3 @@ const InterpretationSection = ({ interpretation }) => (
 );
 
 export default SalesPage;
-           
