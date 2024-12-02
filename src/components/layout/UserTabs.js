@@ -15,6 +15,9 @@ export default function UserTabs({ isAdmin }) {
         <Link className={path === '/menu' ? 'active' : ''} href={'/menu'}>
           Menu Here
         </Link>
+        <Link className={path === '/receiptnotadmin' ? 'active' : ''} href={'/receiptnotadmin'}>
+          Staff Receipt
+        </Link>
       
         {isAdmin && (
           <>
@@ -32,7 +35,7 @@ export default function UserTabs({ isAdmin }) {
               Sales
             </Link>
             <Link className={path.includes('/receipt') ? 'active' : ''} href={'/receipt'}>
-              Receipt
+              Admin Receipt
             </Link>
             <Link className={path.includes('/stocks') ? 'active' : ''} href={'/stocks'}>
               Stocks

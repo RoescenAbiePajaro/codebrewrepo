@@ -1,12 +1,10 @@
-//models/Receipt.js this is for receipt model for mongodb 
+// src\models\Receipt.js
 import mongoose from 'mongoose';
 import moment from 'moment-timezone';
 
 const ReceiptSchema = new mongoose.Schema({
   customer: {
-    name: String,
-    email: String,
-    phone: String,
+    staffname: String,
   },
   cartProducts: [
     {

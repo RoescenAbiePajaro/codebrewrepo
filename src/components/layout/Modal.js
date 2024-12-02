@@ -1,185 +1,74 @@
-import React, { useState } from "react";
-import Image from "next/image";
-import { cartProductPrice } from "@/components/AppContext";
+'use client';
 
-const Modal = ({ isOpen, onClose, receipt, onUpdate, stockItem, user }) => {
-  const initialStock = stockItem?.stock || 0;
-  const initialUserData = { ...user, name: user?.name || "", admin: user?.admin || false };
-  
-  const [formData, setFormData] = useState(initialUserData);
-  const [newStock, setNewStock] = useState(initialStock);
+import React, { useState } from 'react';
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
+export default function Modal({ user, isOpen, onClose, onUpdate }) {
+  const [editedName, setEditedName] = useState(user?.name || '');
+  const [isAdminChecked, setIsAdminChecked] = useState(user?.admin || false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onUpdate(user._id, formData);
+  const handleSave = () => {
+    if (!user?._id) {
+      alert('User ID is missing.');
+      return;
+    }
+
+    onUpdate({
+      _id: user._id,
+      name: editedName,
+      admin: isAdminChecked,
+    });
     onClose();
   };
 
-  const handleStockUpdate = () => {
-    if (onUpdate && stockItem) {
-      onUpdate(stockItem._id, newStock);
-      onClose();
-    }
-  };
-
-  const handleClose = () => {
+  const handleCancel = () => {
+    setEditedName(user?.name || '');
+    setIsAdminChecked(user?.admin || false);
     onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg p-6 w-11/12 max-w-md">
-        {receipt ? (
-          <>
-            {/* Receipt Modal Content */}
-            <div className="text-center mb-6">
-              <Image
-                src="/tealerinlogo.png"
-                alt="Company Logo"
-                width={150}
-                height={50}
-                className="mx-auto mb-4"
-              />
-              <h2 className="text-xl font-bold text-gray-800">TeaLerin</h2>
-            </div>
-
-            <div className="mt-4">
-              <h3 className="font-semibold text-gray-700">Customer Information</h3>
-              <p>Name: <span className="font-medium">{receipt.customer?.name || "N/A"}</span></p>
-              <p>Email: <span className="font-medium">{receipt.customer?.email || "N/A"}</span></p>
-              <p>Phone: <span className="font-medium">{receipt.customer?.phone || "N/A"}</span></p>
-            </div>
-
-            <div className="mt-4">
-              <h3 className="font-semibold text-gray-700">Products</h3>
-              <ul className="divide-y divide-gray-200">
-                {receipt.cartProducts.length > 0 ? (
-                  receipt.cartProducts.map((product, index) => (
-                    <li key={index} className="flex justify-between py-2">
-                      <span className="text-gray-600">
-                        {product.name} (x{product.quantity})
-                      </span>
-                      <span className="font-medium">
-                        ₱{(cartProductPrice(product) * product.quantity).toFixed(2)}
-                      </span>
-                    </li>
-                  ))
-                ) : (
-                  <p className="text-gray-500">No products in cart.</p>
-                )}
-              </ul>
-            </div>
-
-            <div className="mt-4 flex justify-between font-bold text-gray-800">
-              <span>Subtotal:</span>
-              <span>₱{receipt.subtotal.toFixed(2)}</span>
-            </div>
-
-            <div className="mt-4 border-t pt-4 text-center text-gray-600">
-              <p>Thank you for your purchase!</p>
-              <p>Visit us again!</p>
-              <p>
-                Please note that this is a non-refundable amount. For any assistance, please email
-                <b> paolonavarrosa @gmail.com</b>.
-              </p>
-            </div>
-
-            <button
-              className="mt-4 px-4 py-2 bg-green-500 text-white rounded"
-              onClick={handleClose}
-            >
-              Close
-            </button>
-          </>
-        ) : stockItem ? (
-          <>
-            {/* Stock Update Modal Content */}
-            <h2 className="text-lg font-bold mb-4">Update Stock for {stockItem.name}</h2>
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 className="text-lg font-bold mb-4">Edit User</h2>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Name
+          </label>
+          <input
+            type="text"
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            value={editedName}
+            onChange={(e) => setEditedName(e.target.value)}
+          />
+        </div>
+        <div className="mb-4">
+          <label className="inline-flex items-center">
             <input
-              type="number"
-              value={newStock}
-              onChange={(e) => setNewStock(parseInt(e.target.value) || 0)} // Ensure it's a number
-              className="border rounded p-1 w-20"
+              type="checkbox"
+              className="form-checkbox"
+              checked={isAdminChecked}
+              onChange={(e) => setIsAdminChecked(e.target.checked)}
             />
-            <div className="mt-4 flex space-x-2">
-              <button
-                onClick={handleStockUpdate}
-                className="bg-green-500 text-white p-2 rounded"
-              >
-                Update
-              </button>
-              <button
-                onClick={handleClose}
-                className="bg-gray-300 p-2 rounded"
-              >
-                Cancel
-              </button>
-            </div>
-          </>
-        ) : user ? (
-          <>
-            {/* User Edit Modal Content */}
-            <h2 className="text-lg font-bold mb-4">Edit User</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="block font-medium">Name:</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name} 
-                  onChange={handleChange} 
-                  className="border rounded w-full p-2"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block font-medium">Email:</label>
-                <input
-                  type="text"
-                  value={user.email}
-                  readOnly 
-                  className="border rounded w-full p-2"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block font-medium">Admin:</label>
-                <input
-                  type="checkbox"
-                  name="admin"
-                  checked={formData.admin}
-                  onChange={handleChange} 
-                  className="ml-2"
-                />
-              </div>
-              <div className="flex space-x-2">
-                <button type="submit" className="bg-green-500 text-white p-2 rounded">
-                  Update
-                </button>
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="bg-gray-300 p-2 rounded"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </>
-        ) : (
-          <p className="text-gray-500">No content available.</p>
-        )}
+            <span className="ml-2">Admin</span>
+          </label>
+        </div>
+        <div className="flex justify-end gap-4">
+          <button
+            className="px-4 py-2 bg-gray-500 text-white rounded-md"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+          <button
+            className="px-4 py-2 bg-indigo-600 text-white rounded-md"
+            onClick={handleSave}
+          >
+            Save
+          </button>
+        </div>
       </div>
     </div>
   );
-};
-
-export default Modal;
+}

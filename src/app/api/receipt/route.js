@@ -1,3 +1,4 @@
+// src\app\api\receipt\route.js
 import Receipt from "@/models/Receipt";
 import mongoose from "mongoose";
 

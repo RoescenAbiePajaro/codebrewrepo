@@ -1,3 +1,4 @@
+// src\app\menu-list\page.js
 'use client';
 import SectionHeaders from "@/components/layout/SectionHeaders";
 import MenuItem from "@/components/menu/MenuItem";
@@ -30,7 +31,11 @@ export default function MenuPage() {
 
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <UserTabs isAdmin={isAdmin} /> {/* Pass `isAdmin` prop */}
+      <UserTabs isAdmin={true} />
+      <div className="flex justify-between items-center mt-8">
+        <h2 className="text-xl font-bold">Menu Here</h2>
+      </div>
+    
 
       {/* Search Bar */}
       <div className="text-center mb-8">
