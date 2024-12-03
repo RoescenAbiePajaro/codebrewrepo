@@ -1,10 +1,9 @@
-// src\app\menu-list\page.js
 'use client';
 import SectionHeaders from "@/components/layout/SectionHeaders";
 import MenuItem from "@/components/menu/MenuItem";
 import { useEffect, useState } from "react";
 import UserTabs from "@/components/layout/UserTabs";
-import { useSession } from "next-auth/react"; // Import useSession
+import { useSession } from "next-auth/react"; 
 
 export default function MenuPage() {
   const { data: session } = useSession(); // Get session data
@@ -22,7 +21,7 @@ export default function MenuPage() {
   }, []);
 
   // Determine if user is admin
-  const isAdmin = session?.user?.isAdmin || false; // Assuming isAdmin is part of session
+  const isAdmin = session?.user?.isAdmin || false;
 
   // Filter items based on search query
   const filteredMenuItems = menuItems.filter(item =>
@@ -31,11 +30,10 @@ export default function MenuPage() {
 
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <UserTabs isAdmin={true} />
+      <UserTabs isAdmin={isAdmin} />
       <div className="flex justify-between items-center mt-8">
         <h2 className="text-xl font-bold">Menu Here</h2>
       </div>
-    
 
       {/* Search Bar */}
       <div className="text-center mb-8">
@@ -60,7 +58,6 @@ export default function MenuPage() {
             <SectionHeaders mainHeader={c.name} />
           </div>
           <div className="grid sm:grid-cols-3 gap-4 mt-6 mb-12">
-            {/* Filtered items */}
             {filteredMenuItems
               .filter(item => item.category === c._id)
               .map(item => (

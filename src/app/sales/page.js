@@ -17,7 +17,7 @@ import { Line, Bar, Pie } from 'react-chartjs-2';
 import UserTabs from "@/components/layout/UserTabs";
 import * as XLSX from 'xlsx'; 
 import DownloadIcon from '@mui/icons-material/Download'; 
-import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress for loading spinner
+import CircularProgress from '@mui/material/CircularProgress'; 
 
 // Register Chart.js components
 ChartJS.register(
@@ -43,20 +43,27 @@ const SalesPage = () => {
   const [loading, setLoading] = useState(true); // Add loading state to track fetching status
 
   // Fetch product data
-  useEffect(() => {
-    const fetchProductData = async () => {
-      try {
-        const response = await fetch(`/api/sales?groupBy=products`);
-        if (!response.ok) throw new Error("Failed to fetch product data");
-        const data = await response.json();
-        setProductData(data);
-      } catch (error) {
-        console.error("Error fetching product data:", error);
-      } finally {
-        setLoading(false); // Set loading to false after fetching data
-      }
-    };
+  const fetchProductData = async () => {
+    try {
+      const response = await fetch(`/api/sales?groupBy=products`);
+      if (!response.ok) throw new Error("Failed to fetch product data");
+      const data = await response.json();
 
+      // Format the data to make it suitable for charts
+      const formattedProductData = data.reduce((acc, product) => {
+        acc[product._id] = product.totalSales;
+        return acc;
+      }, {});
+
+      setProductData(formattedProductData);
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+    } finally {
+      setLoading(false); // Set loading to false after fetching data
+    }
+  };
+
+  useEffect(() => {
     fetchProductData();
   }, []);
 
@@ -127,9 +134,9 @@ const SalesPage = () => {
     const averageSalesPerDay = totalSales / Object.keys(salesData).length;
 
     const salesEntries = Object.entries(salesData).map(([date, amount]) => ({
-      date,
-      amount: Number(amount) || 0,
-    }));
+        date,
+        amount: Number(amount) || 0,
+      }));
 
     salesEntries.sort((a, b) => b.amount - a.amount); // Sort descending
 
@@ -145,10 +152,13 @@ const SalesPage = () => {
   };
 
   const downloadExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(Object.entries(salesData).map(([date, amount]) => ({ Date: date, Amount: amount })));
+    const worksheet = XLSX.utils.json_to_sheet(Object.entries(productData).map(([product, sales]) => ({
+      Product: product,
+      Sales: sales.toFixed(2),
+    })));
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sales Data");
-    XLSX.writeFile(workbook, "sales_data.xlsx");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Product Sales");
+    XLSX.writeFile(workbook, "product_sales.xlsx");
   };
 
   // Show loading spinner until data is fetched
@@ -219,6 +229,8 @@ const ChartSection = ({ chartData, pieData, productData }) => (
         </div>
       </>
     )}
+
+    {/* Render product data if available */}
     {productData && (
       <>
         <div className="bg-gray-100 p-4 rounded-lg shadow-md">
@@ -230,7 +242,7 @@ const ChartSection = ({ chartData, pieData, productData }) => (
                 {
                   label: 'Product Sales (₱)',
                   data: Object.values(productData),
-                  borderColor: 'rgba(255,99,132,1)',
+                  borderColor: 'rgba(255,99,132, 1)',
                   backgroundColor: 'rgba(255,99,132,0.2)',
                   tension: 0.1,
                 },
@@ -239,38 +251,25 @@ const ChartSection = ({ chartData, pieData, productData }) => (
           />
         </div>
         <div className="bg-gray-100 p-4 rounded-lg shadow-md">
-          <h2 className="text-lg font-bold mb-4">Product Sales Distribution (Bar Chart)</h2>
-          <Bar
+          <h2 className="text-lg font-bold mb-4">Product Sales Distribution (Pie Chart)</h2>
+          <Pie
             data={{
               labels: Object.keys(productData),
               datasets: [
                 {
-                  label: 'Product Sales (₱)',
                   data: Object.values(productData),
-                  backgroundColor: 'rgba(54,162,235,0.6)',
+                  backgroundColor: [
+                    'rgba(75,192,192,0.6)',
+                    'rgba(54,162,235,0.6)',
+                    'rgba(255,206,86,0.6)',
+                    'rgba(153,102,255,0.6)',
+                    'rgba(255,159,64,0.6)',
+                  ],
+                  borderWidth: 1,
                 },
               ],
             }}
           />
-        </div>
-        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
-          <h2 className="text-lg font-bold mb-4">Product Revenue Streams (Pie Chart)</h2>
-          <Pie data={{
-            labels: Object.keys(productData),
-            datasets: [
-              {
-                data: Object.values(productData),
-                backgroundColor: [
-                  'rgba(75,192,192,0.6)',
-                  'rgba(54,162,235,0.6)',
-                  'rgba(255,206,86,0.6)',
-                  'rgba(153,102,255,0.6)',
-                  'rgba(255,159,64,0.6)',
-                ],
-                borderWidth: 1,
-              },
-            ],
-          }} />
         </div>
       </>
     )}
@@ -280,8 +279,8 @@ const ChartSection = ({ chartData, pieData, productData }) => (
 // Interpretation section component
 const InterpretationSection = ({ interpretation }) => (
   <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
-    <h2 className="text-lg font-bold mb-4">Sales Interpretation</h2>
-    <pre>{interpretation}</pre>
+    <h2 className="text-lg font-bold mb-4">Interpretation</h2>
+    <pre className="text-gray-700 whitespace-pre-wrap">{interpretation}</pre>
   </div>
 );
 
