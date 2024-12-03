@@ -1,3 +1,4 @@
+// src\models\UserInfo.js
 import { Schema, model, models } from "mongoose";
 
 const UserInfoSchema = new Schema({

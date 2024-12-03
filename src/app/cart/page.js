@@ -1,3 +1,4 @@
+//src\app\cart
 'use client';
 import { CartContext, cartProductPrice } from "@/components/AppContext";
 import CustomerInputs from "@/components/layout/CustomerInputs"; 
@@ -25,11 +26,11 @@ export default function CartPage() {
       }
     }
   }, []);
-
+ //this will be Receipt component to get the id
   useEffect(() => {
-    if (profileData && (profileData.name || profileData.email)) {
-      const { name, email, phone } = profileData;
-      setCustomer({ name, email, phone });
+    if (profileData && (profileData.staffname)) {
+      const { staffname} = profileData;
+      setCustomer({ staffname});
     }
   }, [profileData]);
 

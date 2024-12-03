@@ -5,12 +5,15 @@ import { useEffect, useState } from "react";
 import { useProfile } from "@/components/UseProfile";
 import toast from "react-hot-toast";
 import TablePagination from '@mui/material/TablePagination'; // Make sure to import this
+import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress for loading spinner
 
 export default function CategoriesPage() {
   const [categoryName, setCategoryName] = useState('');
   const [categories, setCategories] = useState([]);
+  const [loadingCategories, setLoadingCategories] = useState(true); // Loading state for categories
   const { loading: profileLoading, data: profileData } = useProfile();
   const [editedCategory, setEditedCategory] = useState(null);
+  const [loadingAction, setLoadingAction] = useState(false); // Loading state for actions (create, update, delete)
   
   // Pagination state
   const [page, setPage] = useState(0);
@@ -21,6 +24,7 @@ export default function CategoriesPage() {
   }, []);
 
   function fetchCategories() {
+    setLoadingCategories(true); // Set loading to true while fetching
     fetch('/api/categories')
       .then(res => res.json())
       .then(categories => {
@@ -29,6 +33,9 @@ export default function CategoriesPage() {
       .catch(err => {
         toast.error('Failed to fetch categories');
         console.error(err);
+      })
+      .finally(() => {
+        setLoadingCategories(false); // Set loading to false once categories are fetched
       });
   }
 
@@ -40,6 +47,7 @@ export default function CategoriesPage() {
     }
     
     const method = editedCategory ? 'PUT' : 'POST';
+    setLoadingAction(true); // Set loading while submitting the category
     const response = await fetch('/api/categories', {
       method,
       headers: { 'Content-Type': 'application/json' },
@@ -54,9 +62,11 @@ export default function CategoriesPage() {
     } else {
       toast.error('Error, sorry...');
     }
+    setLoadingAction(false); // Reset loading state after the action
   }
 
   async function handleDeleteClick(_id) {
+    setLoadingAction(true); // Set loading while deleting the category
     const response = await fetch(`/api/categories?_id=${_id}`, {
       method: 'DELETE',
     });
@@ -67,6 +77,7 @@ export default function CategoriesPage() {
     } else {
       toast.error('Error deleting category');
     }
+    setLoadingAction(false); // Reset loading state after the action
   }
 
   if (profileLoading) {
@@ -75,6 +86,14 @@ export default function CategoriesPage() {
 
   if (!profileData?.admin) {
     return 'Not an admin';
+  }
+
+  if (loadingCategories) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <CircularProgress /> {/* Show spinner while loading categories */}
+      </div>
+    );
   }
 
   return (
@@ -93,18 +112,21 @@ export default function CategoriesPage() {
               type="text"
               value={categoryName}
               onChange={ev => setCategoryName(ev.target.value)}
+              disabled={loadingAction} // Disable input while loading
             />
           </div>
           <div className="pb-2 flex gap-2">
-            <button className="border border-green-500" type="submit">
-              {editedCategory ? 'Update' : 'Create'}
+            <button className="border border-green-500" type="submit" disabled={loadingAction}>
+              {loadingAction ? 'Saving...' : editedCategory ? 'Update' : 'Create'}
             </button>
             <button
               type="button"
               onClick={() => {
                 setEditedCategory(null);
                 setCategoryName('');
-              }}>
+              }}
+              disabled={loadingAction}
+            >
               Cancel
             </button>
           </div>
@@ -125,13 +147,15 @@ export default function CategoriesPage() {
                         setEditedCategory(c);
                         setCategoryName(c.name);
                       }}
+                      disabled={loadingAction}
               >
-                Edit
+                {loadingAction ? 'Editing...' : 'Edit'}
               </button>
               <DeleteButton 
                 className="bg-red-500 text-white rounded px-4 py-1 hover:bg-red-600"
                 label="Delete"
                 onDelete={() => handleDeleteClick(c._id)} 
+                disabled={loadingAction}
               />
             </div>
           </div>

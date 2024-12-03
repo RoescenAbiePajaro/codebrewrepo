@@ -1,9 +1,17 @@
+// src\components\layout\Receipt.js
 'use client';
 import React from 'react';
 import Image from 'next/image'; 
-import { cartProductPrice } from "@/components/AppContext"; 
+
+// Assuming cartProductPrice is passed correctly or defined properly
+const cartProductPrice = (product) => {
+  // Ensure this function correctly accesses the price, for now, using product.price directly
+  return product.price || 0; 
+};
 
 const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0, createdAt }) => {
+  const { staffname } = customer; // Extract customer info
+
   return (
     <div id="receipt" className="p-6 bg-white shadow-lg rounded-lg">
       {/* Company Information */}
@@ -22,10 +30,8 @@ const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0, createdAt }) 
       {/* Customer Information */}
       <div className="mt-4">
         <h3 className="font-semibold text-gray-700">Tealerin Information</h3>
-        <p>Name: <span className="font-medium">{customer.name || "N/A"}</span></p>
-        <p>Email: <span className="font-medium">{customer.email || "N/A"}</span></p>
-        <p>Phone: <span className="font-medium">{customer.phone || "N/A"}</span></p>
-        <p>Date: <span className="font-medium">{createdAt || "N/A"}</span></p>
+        <p>Name: <span className="font-medium">{staffname || "No Customer"}</span></p>
+        <p>Date: <span className="font-medium">{createdAt ? new Date(createdAt).toLocaleString() : "N/A"}</span></p>
       </div>
 
       {/* Products List */}
