@@ -11,5 +11,6 @@ export default function CustomerInputs({ customerProps, setCustomerProp }) {
         placeholder="Staff Name"
       />
     </div>
+    
   );
 }

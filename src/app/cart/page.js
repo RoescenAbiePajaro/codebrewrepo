@@ -1,3 +1,4 @@
+//src\app\cart
 'use client';
 import { CartContext, cartProductPrice } from "@/components/AppContext";
 import CustomerInputs from "@/components/layout/CustomerInputs"; 
