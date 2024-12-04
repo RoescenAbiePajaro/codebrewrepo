@@ -1,4 +1,5 @@
-'use client';
+"use client";
+
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
@@ -6,11 +7,12 @@ import Image from "next/image";
 import Right from "@/components/icons/Right";
 import UserTabs from "@/components/layout/UserTabs";
 import { useProfile } from "@/components/UseProfile";
-import MenuItemForm from "@/components/layout/MenuItemForm"; // Import the MenuItemForm component
+import MenuItemForm from "@/components/layout/MenuItemForm";
 
-export default function MenuItemsPage() {
+const MenuItemsPage = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedMenuItem, setSelectedMenuItem] = useState(null);
   const { loading, data } = useProfile();
 
   useEffect(() => {
@@ -29,9 +31,11 @@ export default function MenuItemsPage() {
 
   const handleFormSubmit = async (ev, formData) => {
     ev.preventDefault();
+    console.log("Form data being sent:", formData);
+
     try {
-      const response = await fetch("/api/menu-items", {
-        method: "POST",
+      const response = await fetch(`/api/menu-items/${selectedMenuItem?._id || ""}`, {
+        method: selectedMenuItem ? "PUT" : "POST",
         body: JSON.stringify(formData),
         headers: { "Content-Type": "application/json" },
       });
@@ -39,13 +43,42 @@ export default function MenuItemsPage() {
       if (response.ok) {
         toast.success("Saved successfully!");
         setIsModalOpen(false);
+        setSelectedMenuItem(null);
         fetchMenuItems();
       } else {
-        throw new Error("Failed to save");
+        const errorResponse = await response.json();
+        console.error("Error saving item:", errorResponse);
+        toast.error(`Failed to save the item. Error: ${errorResponse.error || "Unknown error"}`);
       }
     } catch (error) {
+      console.error("Error submitting form:", error);
       toast.error("Failed to save the item.");
     }
+  };
+
+  const handleDelete = async (itemId) => {
+    try {
+      const response = await fetch(`/api/menu-items?_id=${itemId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        toast.success("Item deleted successfully!");
+        fetchMenuItems();
+      } else {
+        const errorResponse = await response.json();
+        console.error("Error deleting item:", errorResponse);
+        toast.error(`Failed to delete the item. Error: ${errorResponse.error || "Unknown error"}`);
+      }
+    } catch (error) {
+      console.error("Error deleting item:", error);
+      toast.error("Failed to delete the item.");
+    }
+  };
+
+  const openEditModal = (item) => {
+    setSelectedMenuItem(item);
+    setIsModalOpen(true);
   };
 
   if (loading) return "Loading user info...";
@@ -57,7 +90,10 @@ export default function MenuItemsPage() {
       <div className="mt-8">
         <button
           className="button flex items-center"
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setSelectedMenuItem(null);
+            setIsModalOpen(true);
+          }}
         >
           <span>Create new menu item</span>
           <Right />
@@ -65,37 +101,52 @@ export default function MenuItemsPage() {
       </div>
       <div>
         <h2 className="text-sm text-gray-500 mt-8">Edit menu item:</h2>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-4">
           {menuItems?.map((item) => (
-            <Link
+            <div
               key={item._id}
-              href={`/menu-items/edit/${item._id}`}
-              className="bg-gray-200 rounded-lg p-4"
+              className="bg-gray-200 rounded-lg p-4 flex flex-col justify-between"
             >
-              <div className="relative">
+              <div
+                className="relative flex justify-center items-center cursor-pointer"
+                onClick={() => openEditModal(item)}
+              >
                 <Image
-                  className="rounded-md"
+                  className="rounded-md object-cover"
                   src={item.image}
                   alt={item.name}
                   width={200}
                   height={200}
                 />
               </div>
-              <div className="text-center">{item.name}</div>
-            </Link>
+              <div className="text-center mt-2">{item.name}</div>
+              <button
+                onClick={() => handleDelete(item._id)}
+                className="mt-auto bg-red-500 text-white p-2 rounded-md"
+              >
+                Delete
+              </button>
+            </div>
           ))}
         </div>
       </div>
 
-      {/* Modal for Creating New Menu Item */}
       {isModalOpen && (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl"> {/* Increased width */}
-            <h3 className="text-lg font-semibold">Create New Menu Item</h3>
-            <MenuItemForm onSubmit={handleFormSubmit} />
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl relative">
+            <h3 className="text-lg font-semibold">
+              {selectedMenuItem ? "Edit Menu Item" : "Create New Menu Item"}
+            </h3>
+            <MenuItemForm
+              onSubmit={handleFormSubmit}
+              initialData={selectedMenuItem}
+            />
             <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-600" // Adjusted position
+              onClick={() => {
+                setIsModalOpen(false);
+                setSelectedMenuItem(null);
+              }}
+              className="absolute top-4 right-4 text-gray-600"
             >
               &times;
             </button>
@@ -104,4 +155,6 @@ export default function MenuItemsPage() {
       )}
     </section>
   );
-}
+};
+
+export default MenuItemsPage;
