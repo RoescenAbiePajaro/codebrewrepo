@@ -1,5 +1,4 @@
-'use client';
-
+'use client'; 
 import React, { useState, useEffect } from 'react';
 import {
   Chart as ChartJS,
@@ -17,7 +16,6 @@ import { Line, Bar, Pie } from 'react-chartjs-2';
 import UserTabs from "@/components/layout/UserTabs";
 import * as XLSX from 'xlsx'; 
 import DownloadIcon from '@mui/icons-material/Download'; 
-import CircularProgress from '@mui/material/CircularProgress'; 
 
 // Register Chart.js components
 ChartJS.register(
@@ -39,35 +37,7 @@ const SalesPage = () => {
   const [pieData, setPieData] = useState(null);
   const [interpretation, setInterpretation] = useState('');
   const [timeframe, setTimeframe] = useState('daily');
-  const [productData, setProductData] = useState(null);
-  const [loading, setLoading] = useState(true); // Add loading state to track fetching status
 
-  // Fetch product data
-  const fetchProductData = async () => {
-    try {
-      const response = await fetch(`/api/sales?groupBy=products`);
-      if (!response.ok) throw new Error("Failed to fetch product data");
-      const data = await response.json();
-
-      // Format the data to make it suitable for charts
-      const formattedProductData = data.reduce((acc, product) => {
-        acc[product._id] = product.totalSales;
-        return acc;
-      }, {});
-
-      setProductData(formattedProductData);
-    } catch (error) {
-      console.error("Error fetching product data:", error);
-    } finally {
-      setLoading(false); // Set loading to false after fetching data
-    }
-  };
-
-  useEffect(() => {
-    fetchProductData();
-  }, []);
-
-  // Fetch sales data periodically
   useEffect(() => {
     const fetchSalesData = async () => {
       try {
@@ -86,7 +56,6 @@ const SalesPage = () => {
     return () => clearInterval(interval);
   }, [timeframe]);
 
-  // Update chart and interpretation data when sales data changes
   useEffect(() => {
     if (Object.keys(salesData).length > 0) {
       updateChartData();
@@ -134,9 +103,9 @@ const SalesPage = () => {
     const averageSalesPerDay = totalSales / Object.keys(salesData).length;
 
     const salesEntries = Object.entries(salesData).map(([date, amount]) => ({
-        date,
-        amount: Number(amount) || 0,
-      }));
+      date,
+      amount: Number(amount) || 0,
+    }));
 
     salesEntries.sort((a, b) => b.amount - a.amount); // Sort descending
 
@@ -152,23 +121,11 @@ const SalesPage = () => {
   };
 
   const downloadExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(Object.entries(productData).map(([product, sales]) => ({
-      Product: product,
-      Sales: sales.toFixed(2),
-    })));
+    const worksheet = XLSX.utils.json_to_sheet(Object.entries(salesData).map(([date, amount]) => ({ Date: date, Amount: amount })));
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Product Sales");
-    XLSX.writeFile(workbook, "product_sales.xlsx");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sales Data");
+    XLSX.writeFile(workbook, "sales_data.xlsx");
   };
-
-  // Show loading spinner until data is fetched
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <CircularProgress /> {/* Show spinner while loading */}
-      </div>
-    );
-  }
 
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
@@ -176,11 +133,11 @@ const SalesPage = () => {
       <TimeframeButtons timeframe={timeframe} setTimeframe={setTimeframe} />
       <button
         onClick={downloadExcel}
-        className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 flex items-center gap-2"
+        className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
       >
-        <DownloadIcon /> Export to Excel
+        <DownloadIcon /> 
       </button>
-      <ChartSection chartData={chartData} pieData={pieData} productData={productData} />
+      <ChartSection chartData={chartData} pieData={pieData} />
       <InterpretationSection interpretation={interpretation} />
     </section>
   );
@@ -211,7 +168,7 @@ const TimeframeButtons = ({ timeframe, setTimeframe }) => (
 );
 
 // Chart section component
-const ChartSection = ({ chartData, pieData, productData }) => (
+const ChartSection = ({ chartData, pieData }) => (
   <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
     {chartData && (
       <>
@@ -229,58 +186,14 @@ const ChartSection = ({ chartData, pieData, productData }) => (
         </div>
       </>
     )}
-
-    {/* Render product data if available */}
-    {productData && (
-      <>
-        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
-          <h2 className="text-lg font-bold mb-4">Product Sales Trend (Line Chart)</h2>
-          <Line
-            data={{
-              labels: Object.keys(productData),
-              datasets: [
-                {
-                  label: 'Product Sales (₱)',
-                  data: Object.values(productData),
-                  borderColor: 'rgba(255,99,132, 1)',
-                  backgroundColor: 'rgba(255,99,132,0.2)',
-                  tension: 0.1,
-                },
-              ],
-            }}
-          />
-        </div>
-        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
-          <h2 className="text-lg font-bold mb-4">Product Sales Distribution (Pie Chart)</h2>
-          <Pie
-            data={{
-              labels: Object.keys(productData),
-              datasets: [
-                {
-                  data: Object.values(productData),
-                  backgroundColor: [
-                    'rgba(75,192,192,0.6)',
-                    'rgba(54,162,235,0.6)',
-                    'rgba(255,206,86,0.6)',
-                    'rgba(153,102,255,0.6)',
-                    'rgba(255,159,64,0.6)',
-                  ],
-                  borderWidth: 1,
-                },
-              ],
-            }}
-          />
-        </div>
-      </>
-    )}
   </div>
 );
 
 // Interpretation section component
 const InterpretationSection = ({ interpretation }) => (
-  <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
-    <h2 className="text-lg font-bold mb-4">Interpretation</h2>
-    <pre className="text-gray-700 whitespace-pre-wrap">{interpretation}</pre>
+  <div className="mt-6 bg-gray-100 p-4 rounded-lg shadow-md">
+    <h2 className="text-lg font-bold">Sales Interpretation</h2>
+    <p className="whitespace-pre-line">{interpretation}</p>
   </div>
 );
 
