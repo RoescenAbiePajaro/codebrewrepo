@@ -1,19 +1,18 @@
-import mongoose, {model, models, Schema} from "mongoose";
+import mongoose, { model, models, Schema } from "mongoose";
 
 const ExtraPriceSchema = new Schema({
   name: String,
   price: Number,
 });
 
-const MenuItemSchema = new Schema({
-  image: { type: String, default:null },
-  name: { type: String },
+const MenuItemSchema = new mongoose.Schema({
+  name: { type: String, required: true },
   description: { type: String },
-  category: { type: mongoose.Types.ObjectId, required: false },
-  basePrice: { type: Number },
-  sizes: { type: [ExtraPriceSchema] },
-  extraIngredientPrices: { type: [ExtraPriceSchema] },
-  stock: { type: Number, default: 0 }, // Add stock field
-}, { timestamps: true });
+  basePrice: { type: Number, required: true },
+  sizes: [{ type: String }],
+  extraIngredientPrices: [{ type: String }],
+  category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: null },
+  image: { type: String },
+});
 
-export const MenuItem = models?.MenuItem || model('MenuItem', MenuItemSchema);
+export const MenuItem = mongoose.models.MenuItem || mongoose.model('MenuItem', MenuItemSchema);
