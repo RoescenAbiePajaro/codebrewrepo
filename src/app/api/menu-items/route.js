@@ -2,11 +2,9 @@ import { isAdmin } from "@/app/api/auth/[...nextauth]/route";
 import { MenuItem } from "@/models/MenuItem";
 import mongoose from "mongoose";
 
-
 async function connectDB() {
   if (!mongoose.connection.readyState) {
-    await mongoose.connect(process.env.MONGO_URL, {
-    });
+    await mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });
   }
 }
 
@@ -15,7 +13,7 @@ export async function POST(req) {
     await connectDB();
     const data = await req.json();
 
-    if (await isAdmin()) {
+    if (await isAdmin(req)) {
       const menuItemDoc = await MenuItem.create(data);
       return new Response(JSON.stringify(menuItemDoc), { status: 201 });
     } else {
@@ -32,7 +30,7 @@ export async function PUT(req) {
     await connectDB();
     const { _id, ...data } = await req.json();
 
-    if (await isAdmin()) {
+    if (await isAdmin(req)) {
       await MenuItem.findByIdAndUpdate(_id, data);
       return new Response(JSON.stringify({ success: true }), { status: 200 });
     } else {
@@ -44,24 +42,13 @@ export async function PUT(req) {
   }
 }
 
-export async function GET() {
-  try {
-    await connectDB();
-    const menuItems = await MenuItem.find();
-    return new Response(JSON.stringify(menuItems), { status: 200 });
-  } catch (error) {
-    console.error("Error in GET /api/menu-items:", error);
-    return new Response(JSON.stringify({ error: "Failed to retrieve menu items" }), { status: 500 });
-  }
-}
-
 export async function DELETE(req) {
   try {
     await connectDB();
     const url = new URL(req.url);
     const _id = url.searchParams.get('_id');
 
-    if (await isAdmin()) {
+    if (await isAdmin(req)) {
       await MenuItem.deleteOne({ _id });
       return new Response(JSON.stringify({ success: true }), { status: 200 });
     } else {
@@ -70,5 +57,16 @@ export async function DELETE(req) {
   } catch (error) {
     console.error("Error in DELETE /api/menu-items:", error);
     return new Response(JSON.stringify({ error: "Failed to delete menu item" }), { status: 500 });
+  }
+}
+
+export async function GET() {
+  try {
+    await connectDB();
+    const menuItems = await MenuItem.find();
+    return new Response(JSON.stringify(menuItems), { status: 200 });
+  } catch (error) {
+    console.error("Error in GET /api/menu-items:", error);
+    return new Response(JSON.stringify({ error: "Failed to retrieve menu items" }), { status: 500 });
   }
 }
