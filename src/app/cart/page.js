@@ -1,4 +1,3 @@
-//src\app\cart
 'use client';
 import { CartContext, cartProductPrice } from "@/components/AppContext";
 import CustomerInputs from "@/components/layout/CustomerInputs"; 
@@ -26,7 +25,7 @@ export default function CartPage() {
       }
     }
   }, []);
- //this will be Receipt component to get the id
+
   useEffect(() => {
     if (profileData && (profileData.staffname)) {
       const { staffname} = profileData;
@@ -138,8 +137,8 @@ export default function CartPage() {
               Total:
             </div>
             <div className="font-semibold pl-2 text-right">
-              ₱{subtotal}<br />
-              ₱{subtotal}
+              ₱{subtotal.toFixed(2)}<br />
+              ₱{subtotal.toFixed(2)}
             </div>
           </div>
         </div>

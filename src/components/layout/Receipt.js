@@ -1,16 +1,15 @@
-// src\components\layout\Receipt.js
+// src/components/layout/Receipt.js
 'use client';
 import React from 'react';
 import Image from 'next/image'; 
 
-// Assuming cartProductPrice is passed correctly or defined properly
+// Function to calculate the price of a product
 const cartProductPrice = (product) => {
-  // Ensure this function correctly accesses the price, for now, using product.price directly
-  return product.price || 0; 
+  return product.price || 0; // Ensure this returns 0 if no price is found
 };
 
 const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0, createdAt }) => {
-  const { staffname } = customer; // Extract customer info
+  const { staffname } = customer; // Extract staff name from customer info
 
   return (
     <div id="receipt" className="p-6 bg-white shadow-lg rounded-lg">
@@ -29,32 +28,31 @@ const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0, createdAt }) 
 
       {/* Customer Information */}
       <div className="mt-4">
-        <h3 className="font-semibold text-gray-700">Tealerin Information</h3>
+        <h3 className="font-semibold text-gray-700">Customer Information</h3>
         <p>Name: <span className="font-medium">{staffname || "No Customer"}</span></p>
         <p>Date: <span className="font-medium">{createdAt ? new Date(createdAt).toLocaleString() : "N/A"}</span></p>
       </div>
 
       {/* Products List */}
-      <div className="mt-4">
-        <h3 className="font-semibold text-gray-700">Products</h3>
-        <ul className="divide-y divide-gray-200">
+      <div className="p-4">
+        <h2 className="text-center font-bold">Receipt</h2>
+        <div className="mt-4">
           {cartProducts.length > 0 ? (
             cartProducts.map((product, index) => (
-              <li key={index} className="flex justify-between py-2">
-                <span className="text-gray-600">{product.name} (x{product.quantity})</span>
-                <span className="font-medium">₱{(cartProductPrice(product) * product.quantity).toFixed(2)}</span>
-              </li>
+              <div key={index} className="flex justify-between">
+                <span>{product.name}</span>
+                <span>₱{cartProductPrice(product).toFixed(2)}</span>  {/* Displaying price */}
+              </div>
             ))
           ) : (
-            <p className="text-gray-500">No products in cart.</p>
+            <p>No products in the cart</p>
           )}
-        </ul>
-      </div>
-
-      {/* Subtotal */}
-      <div className="mt-4 flex justify-between font-bold text-gray-800">
-        <span>Subtotal:</span>
-        <span>₱{subtotal.toFixed(2)}</span>
+        </div>
+        
+        {/* Subtotal and Total */}
+        <div className="mt-4 text-right">
+          <p><strong>Total:</strong> ₱{subtotal.toFixed(2)}</p>
+        </div>
       </div>
 
       {/* Thank You Note */}
