@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-export default function Modal({ user, isOpen, onClose, onUpdate }) {
+export default function Modal({ user, isOpen, onClose }) {
   const [editedName, setEditedName] = useState(user?.name || "");
   const [editedEmail, setEditedEmail] = useState(user?.email || "");
   const [isAdminChecked, setIsAdminChecked] = useState(user?.admin || false);
 
   useEffect(() => {
-    // Reset modal fields when opening
     setEditedName(user?.name || "");
     setEditedEmail(user?.email || "");
     setIsAdminChecked(user?.admin || false);
@@ -26,16 +25,23 @@ export default function Modal({ user, isOpen, onClose, onUpdate }) {
     };
 
     try {
-      await onUpdate(updatedUser); // Trigger the update handler passed as a prop
+      const response = await fetch("/api/modal", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedUser),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update user");
+      }
+
+      const result = await response.json();
+      alert("User updated successfully");
       onClose(); // Close the modal on success
     } catch (err) {
       console.error("Error updating user:", err);
       alert("Failed to update user. Please try again.");
     }
-  };
-
-  const handleCancel = () => {
-    onClose(); // Simply close the modal without making changes
   };
 
   if (!isOpen) return null;
@@ -48,7 +54,7 @@ export default function Modal({ user, isOpen, onClose, onUpdate }) {
           <label className="block text-sm font-medium text-gray-700">Name</label>
           <input
             type="text"
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             value={editedName}
             onChange={(e) => setEditedName(e.target.value)}
           />
@@ -57,7 +63,7 @@ export default function Modal({ user, isOpen, onClose, onUpdate }) {
           <label className="block text-sm font-medium text-gray-700">Email</label>
           <input
             type="email"
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             value={editedEmail}
             onChange={(e) => setEditedEmail(e.target.value)}
           />
@@ -76,7 +82,7 @@ export default function Modal({ user, isOpen, onClose, onUpdate }) {
         <div className="flex justify-end gap-4">
           <button
             className="px-4 py-2 bg-gray-500 text-white rounded-md"
-            onClick={handleCancel}
+            onClick={onClose}
           >
             Cancel
           </button>

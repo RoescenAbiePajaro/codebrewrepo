@@ -8,4 +8,4 @@ const UserSchema = new Schema({
     admin: { type: Boolean, default: false }, 
 }, { timestamps: true });
 
-export const User = models?.User  || model('Users', UserSchema);
+export const User = models?.User  || model('User', UserSchema);

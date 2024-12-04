@@ -1,56 +1,154 @@
 'use client';
-import Left from "@/components/icons/Left";
-import MenuItemForm from "@/components/layout/MenuItemForm";
+import DeleteButton from "@/components/DeleteButton";
 import UserTabs from "@/components/layout/UserTabs";
+import { useEffect, useState } from "react";
 import { useProfile } from "@/components/UseProfile";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import { useState } from "react";
 import toast from "react-hot-toast";
+import TablePagination from '@mui/material/TablePagination'; // Make sure to import this
 
-export default function NewMenuItemPage() {
-  const [redirectToItems, setRedirectToItems] = useState(false);
-  const { loading, data } = useProfile();
+export default function CategoriesPage() {
+  const [categoryName, setCategoryName] = useState('');
+  const [categories, setCategories] = useState([]);
+  const { loading: profileLoading, data: profileData } = useProfile();
+  const [editedCategory, setEditedCategory] = useState(null);
+  
+  // Pagination state
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  async function handleFormSubmit(ev, data) {
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  function fetchCategories() {
+    fetch('/api/categories')
+      .then(res => res.json())
+      .then(categories => {
+        setCategories(categories);
+      })
+      .catch(err => {
+        toast.error('Failed to fetch categories');
+        console.error(err);
+      });
+  }
+
+  async function handleCategorySubmit(ev) {
     ev.preventDefault();
-    const savingPromise = fetch('/api/menu-items', {
-      method: 'POST',
-      body: JSON.stringify(data),
+    const data = { name: categoryName };
+    if (editedCategory) {
+      data._id = editedCategory._id;
+    }
+    
+    const method = editedCategory ? 'PUT' : 'POST';
+    const response = await fetch('/api/categories', {
+      method,
       headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
     });
 
-    await toast.promise(savingPromise, {
-      loading: 'Saving this tasty item',
-      success: 'Saved',
-      error: 'Error',
+    if (response.ok) {
+      setCategoryName('');
+      fetchCategories();
+      setEditedCategory(null);
+      toast.success(editedCategory ? 'Category updated' : 'Category created');
+    } else {
+      toast.error('Error, sorry...');
+    }
+  }
+
+  async function handleDeleteClick(_id) {
+    const response = await fetch(`/api/categories?_id=${_id}`, {
+      method: 'DELETE',
     });
 
-    setRedirectToItems(true);
+    if (response.ok) {
+      toast.success('Deleted');
+      fetchCategories();
+    } else {
+      toast.error('Error deleting category');
+    }
   }
 
-  if (redirectToItems) {
-    return redirect('/menu-items');
-  }
-
-  if (loading) {
+  if (profileLoading) {
     return 'Loading user info...';
   }
 
-  if (!data.admin) {
-    return 'Not an admin.';
+  if (!profileData?.admin) {
+    return 'Not an admin';
   }
 
   return (
-    <section className="mt-8">
+    <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
-      <div className="max-w-2xl mx-auto mt-8">
-        <Link href={'/menu-items'} className="button">
-          <Left />
-          <span>Show all menu items</span>
-        </Link>
+      <form className="mt-8" onSubmit={handleCategorySubmit}>
+        <div className="flex gap-2 items-end">
+          <div className="grow">
+            <label>
+              {editedCategory ? 'Update category' : 'New category name'}
+              {editedCategory && (
+                <>: <b>{editedCategory.name}</b></>
+              )}
+            </label>
+            <input
+              type="text"
+              value={categoryName}
+              onChange={ev => setCategoryName(ev.target.value)}
+            />
+          </div>
+          <div className="pb-2 flex gap-2">
+            <button className="border border-green-500" type="submit">
+              {editedCategory ? 'Update' : 'Create'}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setEditedCategory(null);
+                setCategoryName('');
+              }}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </form>
+      <div>
+        <h2 className="mt-8 text-sm text-gray-500">Existing categories</h2>
+        {categories?.length > 0 && categories.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(c => (
+          <div
+            key={c._id}
+            className="bg-gray-100 rounded-xl p- 2 px-4 flex gap-1 mb-1 items-center">
+            <div className="grow">
+              {c.name}
+            </div>
+            <div className="flex gap-1">
+              <button className="button bg-green-500 text-white rounded px-4 py-1"
+                      onClick={() => {
+                        setEditedCategory(c);
+                        setCategoryName(c.name);
+                      }}
+              >
+                Edit
+              </button>
+              <DeleteButton 
+                className="bg-red-500 text-white rounded px-4 py-1 hover:bg-red-600"
+                label="Delete"
+                onDelete={() => handleDeleteClick(c._id)} 
+              />
+            </div>
+          </div>
+        ))}
       </div>
-      <MenuItemForm menuItem={null} onSubmit={handleFormSubmit} />
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={categories.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={(event, newPage) => setPage(newPage)}
+        onRowsPerPageChange={(event) => {
+          setRowsPerPage(parseInt(event.target.value, 10));
+          setPage(0);
+        }}
+      />
     </section>
   );
 }
