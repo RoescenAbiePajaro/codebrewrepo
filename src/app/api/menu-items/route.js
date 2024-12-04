@@ -1,4 +1,83 @@
-// src\app\api\menu-items\route.js
+// // src\app\api\menu-items\route.js
+// import mongoose from "mongoose";
+// import { isAdmin } from "@/app/api/auth/[...nextauth]/route";
+// import { MenuItem } from "@/models/MenuItem";
+
+// async function connectDB() {
+//   if (!mongoose.connection.readyState) {
+//     try {
+//       await mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });
+//       console.log("Database connected successfully");
+//     } catch (error) {
+//       console.error("Database connection failed:", error);
+//       throw new Error("Database connection failed");
+//     }
+//   }
+// }
+
+// export async function GET() {
+//   try {
+//     await connectDB();
+//     const menuItems = await MenuItem.find();
+//     return new Response(JSON.stringify(menuItems), { status: 200 });
+//   } catch (error) {
+//     console.error("Error in GET /api/menu-items:", error);
+//     return new Response(JSON.stringify({ error: "Failed to retrieve menu items" }), { status: 500 });
+//   }
+// }
+
+// export async function POST(req) {
+//   try {
+//     await connectDB();
+//     const data = await req.json();
+
+//     if (data.category && !mongoose.Types.ObjectId.isValid(data.category)) {
+//       throw new Error("Invalid category ObjectId");
+//     }
+//     if (!data.category) {
+//       data.category = null;
+//     }
+
+//     const menuItemDoc = await MenuItem.create(data);
+//     return new Response(JSON.stringify(menuItemDoc), { status: 201 });
+//   } catch (error) {
+//     console.error("Error in POST /api/menu-items:", error);
+//     return new Response(JSON.stringify({ error: error.message || "Failed to create menu item" }), { status: 500 });
+//   }
+// }
+
+// export async function PUT(req) {
+//   try {
+//     await connectDB();
+//     const { _id, ...data } = await req.json();
+
+//     if (await isAdmin(req)) {
+//       await MenuItem.findByIdAndUpdate(_id, data);
+//       return new Response(JSON.stringify({ success: true }), { status: 200 });
+//     } else {
+//       return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 403 });
+//     }
+//   } catch (error) {
+//     console.error("Error in PUT /api/menu-items:", error);
+//     return new Response(JSON.stringify({ error: "Failed to update menu item" }), { status: 500 });
+//   }
+// }
+
+// export async function DELETE(req) {
+//   try {
+//     await connectDB();
+//     const url = new URL(req.url);
+//     const _id = url.searchParams.get("_id");
+
+//     await MenuItem.deleteOne({ _id });
+
+//     return new Response(JSON.stringify({ success: true }), { status: 200 });
+//   } catch (error) {
+//     console.error("Error in DELETE /api/menu-items:", error);
+//     return new Response(JSON.stringify({ error: "Failed to delete menu item" }), { status: 500 });
+//   }
+// }
+
 import mongoose from "mongoose";
 import { isAdmin } from "@/app/api/auth/[...nextauth]/route";
 import { MenuItem } from "@/models/MenuItem";
@@ -18,7 +97,7 @@ async function connectDB() {
 export async function GET() {
   try {
     await connectDB();
-    const menuItems = await MenuItem.find();
+    const menuItems = await MenuItem.find(); // Fetch all menu items, including stock
     return new Response(JSON.stringify(menuItems), { status: 200 });
   } catch (error) {
     console.error("Error in GET /api/menu-items:", error);
@@ -31,11 +110,17 @@ export async function POST(req) {
     await connectDB();
     const data = await req.json();
 
+    // Validate category if provided
     if (data.category && !mongoose.Types.ObjectId.isValid(data.category)) {
       throw new Error("Invalid category ObjectId");
     }
     if (!data.category) {
       data.category = null;
+    }
+
+    // Ensure that stock is provided and is a valid number
+    if (data.stock === undefined || isNaN(data.stock)) {
+      data.stock = 0; // Default stock to 0 if not provided or invalid
     }
 
     const menuItemDoc = await MenuItem.create(data);
@@ -49,11 +134,16 @@ export async function POST(req) {
 export async function PUT(req) {
   try {
     await connectDB();
-    const { _id, ...data } = await req.json();
+    const { _id, stock, ...data } = await req.json(); // Handle stock along with other updates
+
+    // If stock is provided, include it in the update
+    if (stock !== undefined && !isNaN(stock)) {
+      data.stock = stock;
+    }
 
     if (await isAdmin(req)) {
-      await MenuItem.findByIdAndUpdate(_id, data);
-      return new Response(JSON.stringify({ success: true }), { status: 200 });
+      const updatedItem = await MenuItem.findByIdAndUpdate(_id, data, { new: true });
+      return new Response(JSON.stringify(updatedItem), { status: 200 });
     } else {
       return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 403 });
     }
@@ -69,6 +159,7 @@ export async function DELETE(req) {
     const url = new URL(req.url);
     const _id = url.searchParams.get("_id");
 
+    // Optionally handle stock before deletion (e.g., set to 0 or keep it)
     await MenuItem.deleteOne({ _id });
 
     return new Response(JSON.stringify({ success: true }), { status: 200 });

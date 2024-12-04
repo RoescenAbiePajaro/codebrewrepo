@@ -4,9 +4,9 @@ import UserTabs from "@/components/layout/UserTabs";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import Modal from "@/components/layout/Modal";
-import TablePagination from '@mui/material/TablePagination'; // Ensure this is the correct import
-import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress for loading spinner
+import StockModal from "@/components/layout/StockModal"; // Updated import
+import TablePagination from '@mui/material/TablePagination';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const StocksPage = () => {
   const [stocks, setStocks] = useState([]);
@@ -16,12 +16,10 @@ const StocksPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStock, setSelectedStock] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  
-  // Pagination state
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   
-  // New state for filtering
   const [filterOption, setFilterOption] = useState('all');
 
   const fetchStocks = async () => {
@@ -38,28 +36,28 @@ const StocksPage = () => {
   };
 
   useEffect(() => {
-    fetchStocks(); // Initial fetch
+    fetchStocks();
   }, []);
 
   const handleUpdateStock = async (id, newStock) => {
-    if (newStock < 0) return; // Prevent negative stock updates
+    if (newStock < 0) return;
     console.log('Updating stock for:', id, 'New stock:', newStock);
-    setUpdateLoading((prev) => ({ ...prev, [id]: true })); // Set loading for this stock
+    setUpdateLoading((prev) => ({ ...prev, [id]: true }));
     try {
       const response = await axios.put('/api/menu-items', { _id: id, stock: newStock });
       console.log('Updated stock response:', response.data);
       setStocks((prev) =>
-        prev.map((item) => (item._id === id ? { ...item, stock: newStock } : item)) // Update stock immediately
+        prev.map((item) => (item._id === id ? { ...item, stock: newStock } : item))
       );
       toast.success('Stock updated successfully');
     } catch (error) {
       console.error('Error updating stock:', error);
       toast.error('Failed to update stock');
     } finally {
-      setUpdateLoading((prev) => ({ ...prev, [id]: false })); // Reset loading for this stock
+      setUpdateLoading((prev) => ({ ...prev, [id]: false }));
     }
   };
-  
+
   const openModal = (item) => {
     setSelectedStock(item);
     setIsModalOpen(true);
@@ -84,14 +82,13 @@ const StocksPage = () => {
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // Reset to first page on rows per page change
+    setPage(0); 
   };
 
-  // Show loading spinner while stocks are being fetched
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <CircularProgress /> {/* Show spinner while loading */}
+        <CircularProgress />
       </div>
     );
   }
@@ -150,7 +147,7 @@ const StocksPage = () => {
                           }
                         }}
                         className="border rounded p-1 w-20"
-                        disabled={updateLoading[item._id]} // Disable input if loading
+                        disabled={updateLoading[item._id]} 
                       />
                     ) : (
                       <span className="text-red-500 font-bold cursor-pointer">
@@ -174,7 +171,7 @@ const StocksPage = () => {
           <p className="text-gray-500">No stocks found.</p>
         )}
       </div>
-      <Modal 
+      <StockModal 
         isOpen={isModalOpen} 
         onClose={closeModal} 
         onUpdate={handleUpdateStock} 

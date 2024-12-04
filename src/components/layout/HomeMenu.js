@@ -85,11 +85,7 @@ export default function HomeMenu() {
       </div>
 
       {/* Call to Action */}
-      <div className="mt-10 text-center relative z-10">
-        <a href="/menu" className="inline-block bg-white text-green-600 font-semibold py-2 px-6 rounded-lg shadow-lg transition-transform duration-300 hover:scale-105">
-          Explore Our Menu
-        </a>
-      </div>
+      
     </section>
   );
 }

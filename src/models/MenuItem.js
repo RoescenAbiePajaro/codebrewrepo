@@ -13,6 +13,7 @@ const MenuItemSchema = new mongoose.Schema({
   extraIngredientPrices: [{ type: String }],
   category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: null },
   image: { type: String },
+  stock: { type: Number, required: true, default: 0 }, // Added stock field
 });
 
 export const MenuItem = mongoose.models.MenuItem || mongoose.model('MenuItem', MenuItemSchema);
