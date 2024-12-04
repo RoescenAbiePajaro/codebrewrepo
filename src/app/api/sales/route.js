@@ -25,15 +25,16 @@ export async function GET(req) {
     // Handle the groupBy logic
     if (groupBy === "products") {
       salesData = await Receipt.aggregate([
-        { $unwind: "$products" }, // Unwind products array in each receipt
+        { $unwind: "$products" }, // Unwind products array
         {
           $group: {
             _id: "$products.name", // Group by product name
-            totalSales: { $sum: "$products.price" }, // Sum up product prices
+            totalSales: { $sum: "$products.price" }, // Sum up product sales
           },
         },
-        { $sort: { totalSales: -1 } }, // Sort by total sales in descending order
+        { $sort: { totalSales: -1 } }, // Sort by total sales descending
       ]);
+      
     } else {
       // Handle the timeframe logic
       switch (timeframe) {
