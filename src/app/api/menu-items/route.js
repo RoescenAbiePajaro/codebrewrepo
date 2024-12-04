@@ -1,3 +1,4 @@
+// src\app\api\menu-items\route.js
 import mongoose from "mongoose";
 import { isAdmin } from "@/app/api/auth/[...nextauth]/route";
 import { MenuItem } from "@/models/MenuItem";
@@ -17,7 +18,7 @@ async function connectDB() {
 export async function GET() {
   try {
     await connectDB();
-    const menuItems = await MenuItem.find();
+    const menuItems = await MenuItem.find(); // Fetch all menu items, including stock
     return new Response(JSON.stringify(menuItems), { status: 200 });
   } catch (error) {
     console.error("Error in GET /api/menu-items:", error);
@@ -30,11 +31,17 @@ export async function POST(req) {
     await connectDB();
     const data = await req.json();
 
+    // Validate category if provided
     if (data.category && !mongoose.Types.ObjectId.isValid(data.category)) {
       throw new Error("Invalid category ObjectId");
     }
     if (!data.category) {
       data.category = null;
+    }
+
+    // Ensure that stock is provided and is a valid number
+    if (data.stock === undefined || isNaN(data.stock)) {
+      data.stock = 0; // Default stock to 0 if not provided or invalid
     }
 
     const menuItemDoc = await MenuItem.create(data);
@@ -48,11 +55,21 @@ export async function POST(req) {
 export async function PUT(req) {
   try {
     await connectDB();
-    const { _id, ...data } = await req.json();
+    const { _id, stock, sizes, ...data } = await req.json(); // Include sizes in the update
+
+    // If sizes is provided and is not empty, make sure it's an array of objects
+    if (sizes && Array.isArray(sizes)) {
+      data.sizes = sizes;
+    }
+
+    // If stock is provided, include it in the update
+    if (stock !== undefined && !isNaN(stock)) {
+      data.stock = stock;
+    }
 
     if (await isAdmin(req)) {
-      await MenuItem.findByIdAndUpdate(_id, data);
-      return new Response(JSON.stringify({ success: true }), { status: 200 });
+      const updatedItem = await MenuItem.findByIdAndUpdate(_id, data, { new: true });
+      return new Response(JSON.stringify(updatedItem), { status: 200 });
     } else {
       return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 403 });
     }
@@ -62,12 +79,14 @@ export async function PUT(req) {
   }
 }
 
+
 export async function DELETE(req) {
   try {
     await connectDB();
     const url = new URL(req.url);
     const _id = url.searchParams.get("_id");
 
+    // Optionally handle stock before deletion (e.g., set to 0 or keep it)
     await MenuItem.deleteOne({ _id });
 
     return new Response(JSON.stringify({ success: true }), { status: 200 });

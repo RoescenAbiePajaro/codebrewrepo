@@ -1,3 +1,4 @@
+// src\app\api\categories\route.js
 import { Category } from "@/models/Category";
 import mongoose from "mongoose";
 
