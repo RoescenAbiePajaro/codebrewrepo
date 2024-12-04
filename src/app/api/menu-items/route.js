@@ -1,3 +1,4 @@
+// src\app\api\menu-items\route.js
 import mongoose from "mongoose";
 import { isAdmin } from "@/app/api/auth/[...nextauth]/route";
 import { MenuItem } from "@/models/MenuItem";

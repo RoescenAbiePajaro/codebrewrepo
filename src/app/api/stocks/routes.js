@@ -1,3 +1,4 @@
+// src\app\api\stocks\routes.js
 import Receipt from "@/models/Receipt";
 import MenuItem from "@/models/MenuItem"; // Ensure this is imported
 import mongoose from "mongoose";
