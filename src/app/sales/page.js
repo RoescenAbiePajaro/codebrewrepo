@@ -131,12 +131,14 @@ const SalesPage = () => {
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
       <TimeframeButtons timeframe={timeframe} setTimeframe={setTimeframe} />
-      <button
-        onClick={downloadExcel}
-        className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-      >
-        <DownloadIcon /> 
-      </button>
+      <div className="flex justify-end mt-4">
+        <button
+          onClick={downloadExcel}
+          className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all flex items-center gap-2"
+        >
+          <DownloadIcon /> Download Excel
+        </button>
+      </div>
       <ChartSection chartData={chartData} pieData={pieData} />
       <InterpretationSection interpretation={interpretation} />
     </section>
@@ -145,21 +147,21 @@ const SalesPage = () => {
 
 // Timeframe button component
 const TimeframeButtons = ({ timeframe, setTimeframe }) => (
-  <div className="flex gap-4 mt-4">
+  <div className="flex gap-4 mt-4 mb-6 justify-center">
     <button
-      className={`px-4 py-2 rounded-lg transition duration-300 ${timeframe === 'daily' ? 'bg-green-600 text-white' : 'bg-gray-200'}`}
+      className={`px-6 py-3 rounded-lg transition duration-300 ${timeframe === 'daily' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
       onClick={() => setTimeframe('daily')}
     >
       Daily
     </button>
     <button
-      className={`px-4 py-2 rounded-lg transition duration-300 ${timeframe === 'weekly' ? 'bg-green-600 text-white' : 'bg-gray-200'}`}
+      className={`px-6 py-3 rounded-lg transition duration-300 ${timeframe === 'weekly' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
       onClick={() => setTimeframe('weekly')}
     >
       Weekly
     </button>
     <button
-      className={`px-4 py-2 rounded-lg transition duration-300 ${timeframe === 'monthly' ? 'bg-green-600 text-white' : 'bg-gray-200'}`}
+      className={`px-6 py-3 rounded-lg transition duration-300 ${timeframe === 'monthly' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
       onClick={() => setTimeframe('monthly')}
     >
       Monthly
@@ -172,16 +174,16 @@ const ChartSection = ({ chartData, pieData }) => (
   <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
     {chartData && (
       <>
-        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
-          <h2 className="text-lg font-bold mb-4">Sales Trend (Line Chart)</h2>
+        <div className="bg-gray-100 p-6 rounded-lg shadow-xl">
+          <h2 className="text-xl font-semibold mb-4 text-center">Sales Trend (Line Chart)</h2>
           <Line data={chartData} />
         </div>
-        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
-          <h2 className="text-lg font-bold mb-4">Sales Distribution (Bar Chart)</h2>
+        <div className="bg-gray-100 p-6 rounded-lg shadow-xl">
+          <h2 className="text-xl font-semibold mb-4 text-center">Sales Distribution (Bar Chart)</h2>
           <Bar data={chartData} />
         </div>
-        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
-          <h2 className="text-lg font-bold mb-4">Revenue Streams (Pie Chart)</h2>
+        <div className="bg-gray-100 p-6 rounded-lg shadow-xl">
+          <h2 className="text-xl font-semibold mb-4 text-center">Revenue Streams (Pie Chart)</h2>
           <Pie data={pieData} />
         </div>
       </>
@@ -191,8 +193,8 @@ const ChartSection = ({ chartData, pieData }) => (
 
 // Interpretation section component
 const InterpretationSection = ({ interpretation }) => (
-  <div className="mt-6 bg-gray-100 p-4 rounded-lg shadow-md">
-    <h2 className="text-lg font-bold">Sales Interpretation</h2>
+  <div className="mt-8 bg-gray-100 p-6 rounded-lg shadow-xl">
+    <h2 className="text-xl font-semibold mb-4">Sales Interpretation</h2>
     <p className="whitespace-pre-line">{interpretation}</p>
   </div>
 );

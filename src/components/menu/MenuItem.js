@@ -10,23 +10,32 @@ export default function MenuItem(menuItem) {
     image, name, description, basePrice, stock,
     sizes, extraIngredientPrices,
   } = menuItem;
-  const [selectedSize, setSelectedSize] = useState(sizes?.[0] || null);
+
+  // State hooks
+  const [selectedSize, setSelectedSize] = useState(null); // Start with no selection
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useContext(CartContext);
+
+  // Function to calculate total price
+  function calculateTotalPrice() {
+    const sizePrice = selectedSize?.price || 0;
+    const extrasPrice = selectedExtras.reduce((total, extra) => total + extra.price, 0);
+    return (basePrice + sizePrice + extrasPrice) * quantity;
+  }
 
   async function handleAddToCartButtonClick() {
     if (stock <= 0) {
       toast.error('This item is sold out and cannot be added to the cart.');
       return;
     }
-    const hasOptions = sizes.length > 0 || extraIngredientPrices.length > 0;
+    const hasOptions = sizes?.length > 0 || extraIngredientPrices?.length > 0;
     if (hasOptions && !showPopup) {
       setShowPopup(true);
       return;
     }
-    // Add item to cart with quantity
+    // Add item to cart with selected options and quantity
     addToCart(menuItem, selectedSize, selectedExtras, quantity);
     await new Promise(resolve => setTimeout(resolve, 1000));
     setShowPopup(false);
@@ -37,23 +46,9 @@ export default function MenuItem(menuItem) {
     if (checked) {
       setSelectedExtras(prev => [...prev, extraThing]);
     } else {
-      setSelectedExtras(prev => {
-        return prev.filter(e => e._id !== extraThing._id);
-      });
+      setSelectedExtras(prev => prev.filter(e => e._id !== extraThing._id));
     }
   }
-
-  // Adjust price calculation based on selected options and quantity
-  let selectedPrice = basePrice;
-  if (selectedSize) {
-    selectedPrice += selectedSize.price;
-  }
-  if (selectedExtras?.length > 0) {
-    for (const extra of selectedExtras) {
-      selectedPrice += extra.price;
-    }
-  }
-  selectedPrice *= quantity;  // Multiply by quantity
 
   return (
     <>
@@ -68,7 +63,7 @@ export default function MenuItem(menuItem) {
               className="overflow-y-scroll p-2"
               style={{ maxHeight: 'calc(100vh - 100px)' }}>
               <Image
-                src={image || null}  // Check if `image` is empty and set to null if so
+                src={image || null} // Check if `image` is empty and set to null if so
                 alt={name}
                 width={300}
                 height={200}
@@ -87,9 +82,10 @@ export default function MenuItem(menuItem) {
                       <input
                         type="radio"
                         onChange={() => setSelectedSize(size)}
-                        checked={selectedSize?.name === size.name}
-                        name="size" />
-                      {size.name} ₱{basePrice + size.price}
+                        checked={selectedSize?._id === size._id}
+                        name="size"
+                      />
+                      {size.name} ₱{size.price}
                     </label>
                   ))}
                 </div>
@@ -104,8 +100,9 @@ export default function MenuItem(menuItem) {
                       <input
                         type="checkbox"
                         onChange={ev => handleExtraThingClick(ev, extraThing)}
-                        checked={selectedExtras.map(e => e._id).includes(extraThing._id)}
-                        name={extraThing.name} />
+                        checked={selectedExtras.some(e => e._id === extraThing._id)}
+                        name={extraThing.name}
+                      />
                       {extraThing.name} +₱{extraThing.price}
                     </label>
                   ))}
@@ -124,7 +121,7 @@ export default function MenuItem(menuItem) {
                 <button
                   onClick={handleAddToCartButtonClick}
                   className="w-full p-3 bg-green-500 text-white rounded-md">
-                  Add to cart ₱{selectedPrice}
+                  Add to cart ₱{calculateTotalPrice()}
                 </button>
               </div>
               <button

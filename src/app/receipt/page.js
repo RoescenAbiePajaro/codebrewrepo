@@ -101,13 +101,14 @@ const ReceiptPage = () => {
       <UserTabs isAdmin={true} />
       <div className="flex justify-between items-center mt-8">
         <h2 className="text-xl font-bold">Receipts</h2>
-        <button
-          onClick={handleDownloadExcel}
-          className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 flex items-center gap-2"
-        >
-          <DownloadIcon /> Download
-        </button>
+        
       </div>
+      <button
+          onClick={handleDownloadExcel}
+          className=" bg-green-500 text-white rounded-md hover:bg-green-600"
+        >
+          <DownloadIcon /> Download Excel
+        </button>
       <div className="mt-8">
         {loading ? (
           <div className="flex justify-center items-center">
