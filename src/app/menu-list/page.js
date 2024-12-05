@@ -1,6 +1,7 @@
 'use client';
 import SectionHeaders from "@/components/layout/SectionHeaders";
 import MenuItem from "@/components/menu/MenuItem";
+import UserTabs from "../../components/layout/UserTabs";
 import { useEffect, useState } from "react";
 
 export default function MenuPage() {
@@ -8,6 +9,7 @@ export default function MenuPage() {
   const [menuItems, setMenuItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Fetch categories and menu items
   useEffect(() => {
     fetch('/api/categories').then(res => {
       res.json().then(categories => setCategories(categories));
@@ -23,7 +25,10 @@ export default function MenuPage() {
   );
 
   return (
-    <section className="mt-8">
+    <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+      {/* User Tabs Section */}
+      <UserTabs isAdmin={false} /> {/* Pass props like `isAdmin` as needed */}
+
       {/* Search Bar */}
       <div className="text-center mb-8">
         <input

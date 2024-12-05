@@ -60,15 +60,23 @@ const StockModal = ({ isOpen, onClose, onUpdate, stockItem }) => {
               fullWidth
               margin="normal"
             />
-            
-            <div className="flex justify-end mt-4">
-              <Button onClick={onClose} variant="outlined" className="mr-2">
-                Cancel
-              </Button>
-              <Button onClick={handleSave} variant="contained" color="success">
-                Save
-              </Button>
-            </div>
+           <div className="flex justify-end mt-4">
+  <Button
+    onClick={onClose}
+    variant="outlined"
+    sx={{ color: 'red', borderColor: 'red', '&:hover': { backgroundColor: 'rgba(255, 0, 0, 0.1)' } }}
+    className="mr-2"
+  >
+    Cancel
+  </Button>
+  <Button
+    onClick={handleSave}
+    variant="contained"
+    sx={{ backgroundColor: 'green', '&:hover': { backgroundColor: 'darkgreen' } }}
+  >
+    Save
+  </Button>
+</div>
 
           </>
         )}
