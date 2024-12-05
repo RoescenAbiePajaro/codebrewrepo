@@ -9,29 +9,23 @@ const StockModal = ({ isOpen, onClose, onUpdate, stockItem }) => {
 
   useEffect(() => {
     if (stockItem) {
-      setNewStock(stockItem.stock); // Set the initial stock value when stockItem changes
+      setNewStock(stockItem.stock || 0); // Initialize stock value
     }
   }, [stockItem]);
 
   const handleSave = () => {
-    // Ensure newStock is a valid number and greater than or equal to 0
     if (newStock >= 0) {
-      onUpdate(stockItem._id, newStock);  // Update the stock value for the item
-      onClose(); // Close the modal
+      onUpdate(stockItem._id, newStock);
+      onClose();
     } else {
-      // Handle invalid stock input if needed, like showing an alert
-      alert("Stock cannot be negative");
+      alert('Stock value must be 0 or higher');
     }
   };
 
   const handleStockChange = (e) => {
     const value = e.target.value;
-    // Only set newStock if it's a valid number
-    if (!isNaN(value) && value !== '') {
-      setNewStock(parseInt(value, 10));
-    } else {
-      // Reset to 0 if the input is invalid
-      setNewStock(0);
+    if (/^\d*$/.test(value)) {
+      setNewStock(value === '' ? 0 : parseInt(value, 10));
     }
   };
 
@@ -55,12 +49,11 @@ const StockModal = ({ isOpen, onClose, onUpdate, stockItem }) => {
             <TextField
               label="Stock"
               type="number"
-              value={newStock.toString()}  // Ensure the value is a string
+              value={newStock.toString()}
               onChange={handleStockChange}
               fullWidth
               margin="normal"
             />
-            
             <div className="flex justify-end mt-4">
               <Button onClick={onClose} variant="outlined" className="mr-2">
                 Cancel
@@ -69,7 +62,6 @@ const StockModal = ({ isOpen, onClose, onUpdate, stockItem }) => {
                 Save
               </Button>
             </div>
-
           </>
         )}
       </Box>
