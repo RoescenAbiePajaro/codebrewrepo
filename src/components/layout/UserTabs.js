@@ -1,9 +1,21 @@
+// UserTabs.js
 'use client';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
-export default function UserTabs({ isAdmin }) {
+export default function UserTabs({ isAdmin, isNewUser }) {
   const path = usePathname();
+  const [showWarning, setShowWarning] = useState(false);
+
+  const handleClickUsersTab = () => {
+    if (isNewUser) {
+      setShowWarning(true);
+      setTimeout(() => {
+        setShowWarning(false);
+      }, 5000); // Display the warning for 5 seconds
+    }
+  };
 
   return (
     <div className="flex mx-auto gap-2 tabs justify-center flex-wrap">
@@ -27,7 +39,7 @@ export default function UserTabs({ isAdmin }) {
           <Link href={'/menu-items'} className={path.includes('menu-items') ? 'active' : ''}>
             Add Items
           </Link>
-          <Link className={path.includes('/users') ? 'active' : ''} href={'/users'}>
+          <Link className={path.includes('/users') ? 'active' : ''} href={'/users'} onClick={handleClickUsersTab}>
             Staff
           </Link>
           <Link className={path.includes('/sales') ? 'active' : ''} href={'/sales'}>
@@ -40,6 +52,13 @@ export default function UserTabs({ isAdmin }) {
             Stocks
           </Link>
         </>
+      )}
+
+      {/* Warning message if the user is new */}
+      {showWarning && (
+        <div className="text-red-500 mt-2">
+          Wait for admin permission on this account.
+        </div>
       )}
     </div>
   );
