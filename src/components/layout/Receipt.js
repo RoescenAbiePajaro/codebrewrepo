@@ -1,15 +1,12 @@
-// src/components/layout/Receipt.js
 'use client';
 import React from 'react';
-import Image from 'next/image'; 
+import Image from 'next/image';
+import {cartProductPrice} from "@/components/AppContext";
 
-// Function to calculate the price of a product
-const cartProductPrice = (product) => {
-  return product.price || 0; // Ensure this returns 0 if no price is found
-};
+
 
 const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0, createdAt }) => {
-  const { staffname } = customer; // Extract staff name from customer info
+  const { staffname } = customer; 
 
   return (
     <div id="receipt" className="p-6 bg-white shadow-lg rounded-lg">
@@ -39,15 +36,16 @@ const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0, createdAt }) 
         <div className="mt-4">
           {cartProducts.length > 0 ? (
             cartProducts.map((product, index) => (
-              <div key={index} className="flex justify-between">
-                <span>{product.name}</span>
-                <span>₱{cartProductPrice(product).toFixed(2)}</span>  {/* Displaying price */}
+              <div key={index} className="flex justify-between items-center mb-2">
+                <span>{product.name} (x{product.quantity})</span>
+                <span>₱{cartProductPrice(product).toFixed(2)}</span>
               </div>
             ))
           ) : (
             <p>No products in the cart</p>
           )}
         </div>
+
         
         {/* Subtotal and Total */}
         <div className="mt-4 text-right">

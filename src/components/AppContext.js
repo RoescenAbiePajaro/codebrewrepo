@@ -8,17 +8,21 @@ import toast from "react-hot-toast";
 export const CartContext = createContext({});
 
 export function cartProductPrice(cartProduct) {
-  let price = cartProduct.basePrice;
-  if (cartProduct.size) {
-    price += cartProduct.size.price;
+  let price = cartProduct.basePrice || 0; // Default basePrice to 0 if undefined
+  
+  if (cartProduct.size?.price) {
+    price += cartProduct.size.price; // Add size price if it exists
   }
-  if (cartProduct.extras?.length > 0) {
+
+  if (Array.isArray(cartProduct.extras)) {
     for (const extra of cartProduct.extras) {
-      price += extra.price;
+      price += extra.price || 0; // Add extra price, defaulting to 0 if undefined
     }
   }
-  return price * cartProduct.quantity; // Multiply by quantity
+
+  return price * (cartProduct.quantity || 1); // Multiply by quantity, defaulting to 1 if undefined
 }
+
 
 export function AppProvider({ children }) {
   const [cartProducts, setCartProducts] = useState([]);
