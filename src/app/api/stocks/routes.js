@@ -1,4 +1,4 @@
-// src\app\api\stocks\routes.js
+// src/app/api/stocks/route.js
 import mongoose from 'mongoose';
 import MenuItem from '@/models/MenuItem';
 
