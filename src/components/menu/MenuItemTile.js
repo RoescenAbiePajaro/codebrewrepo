@@ -42,19 +42,22 @@ export default function MenuItemTile({ onAddToCart, stock, ...item }) {
         )}
       </div>
       <h4 className="font-semibold text-xl my-3">{name}</h4>
-      
+
+      {/* Description */}
+      <p className="text-gray-600 text-sm">{description}</p>
+
       <p className={`text-lg font-semibold flex items-center justify-center space-x-2`}>
-  {isAvailable ? (
-    <>
-      <span className="text-green-600">Available</span>
-    </>
-  ) : (
-    <>
-      <span className="text-red-600">Sold Out</span>
-    </>
-  )}
-</p>
- {/* Availability status */}
+        {isAvailable ? (
+          <>
+            <span className="text-green-600">Available</span>
+          </>
+        ) : (
+          <>
+            <span className="text-red-600">Sold Out</span>
+          </>
+        )}
+      </p>
+
       <AddToCartButton
         image={image}
         hasSizesOrExtras={hasSizesOrExtras}
