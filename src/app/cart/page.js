@@ -126,6 +126,8 @@ export default function CartPage() {
     );
   }
 
+  
+
   return (
     <section className="mt-8 px-4">
       <div className="text-center">

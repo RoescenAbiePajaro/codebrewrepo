@@ -31,12 +31,14 @@ export default function MenuItemsPage() {
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
       <div className="mt-8">
+        
         <Link
           className="button flex items-center justify-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600"
           href={'/menu-items/new'}>
           <span>Create new menu item</span>
           <Right />
         </Link>
+
       </div>
       <div>
         <h2 className="text-sm text-gray-500 mt-8">Edit menu item:</h2>
