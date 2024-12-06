@@ -54,14 +54,7 @@ const StockModal = ({ isOpen, onClose, onUpdate, stockItem }) => {
               fullWidth
               margin="normal"
             />
-            <div className="flex justify-end mt-4">
-              <Button onClick={onClose} variant="outlined" className="mr-2">
-                Cancel
-              </Button>
-              <Button onClick={handleSave} variant="contained" color="success">
-                Save
-              </Button>
-            </div>
+
           </>
         )}
       </Box>
