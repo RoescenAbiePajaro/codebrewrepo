@@ -31,6 +31,13 @@ export default function MenuItemForm({ onSubmit, menuItem }) {
       return;
     }
 
+    if (!image) {
+      alert("Please upload an image.");
+      return;
+    }
+
+    
+
     if (basePrice < 0) {
       alert("Base price cannot be negative.");
       return;

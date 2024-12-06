@@ -1,6 +1,6 @@
 'use client';
 import AddressInputs from "@/components/layout/AddressInputs";
-import EditableImage from "@/components/layout/EditableImage";
+import UserEditableImage from "./UserEditableImage";
 import {useProfile} from "@/components/UseProfile";
 import {useState} from "react";
 
@@ -26,9 +26,11 @@ export default function UserForm({user,onSave}) {
   return (
     <div className="md:flex gap-4">
       <div>
+
         <div className="p-2 rounded-lg relative max-w-[120px]">
-          <EditableImage link={image} setLink={setImage} />
+          <UserEditableImage link={image} setLink={setImage} />
         </div>
+
       </div>
       <form
         className="grow"
