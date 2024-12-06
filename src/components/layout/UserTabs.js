@@ -1,4 +1,3 @@
-// UserTabs.js
 'use client';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -23,16 +22,27 @@ export default function UserTabs({ isAdmin, isNewUser }) {
       <Link className={path === '/profile' ? 'active' : ''} href={'/profile'}>
         Profile
       </Link>
-      <Link className={path === '/menu-list' ? 'active' : ''} href={'/menu-list'}>
-        Menu Here
-      </Link>
-      <Link className={path === '/staffreceipt' ? 'active' : ''} href={'/staffreceipt'}>
-        Staff Receipt
-      </Link>
+
+      {/* Staff-only links */}
+      {!isAdmin && (
+        <>
+          <Link className={path === '/menu-notadmin' ? 'active' : ''} href={'/menu-notadmin'}>
+            Staff Menu Here
+          </Link>
+          
+          <Link className={path === '/staffreceipt' ? 'active' : ''} href={'/staffreceipt'}>
+            Staff Receipt
+          </Link>
+        </>
+      )}
 
       {/* Admin-only routes */}
       {isAdmin && (
         <>
+          <Link className={path === '/menu-list' ? 'active' : ''} href={'/menu-list'}>
+            Menu Here
+          </Link>
+
           <Link href={'/categories'} className={path === '/categories' ? 'active' : ''}>
             Categories
           </Link>
@@ -46,7 +56,7 @@ export default function UserTabs({ isAdmin, isNewUser }) {
             Sales
           </Link>
           <Link className={path.includes('/receipt') ? 'active' : ''} href={'/receipt'}>
-            Admin Receipt
+            Receipt
           </Link>
           <Link className={path.includes('/stocks') ? 'active' : ''} href={'/stocks'}>
             Stocks

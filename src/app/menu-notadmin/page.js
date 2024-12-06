@@ -27,7 +27,7 @@ export default function MenuPage() {
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       {/* User Tabs Section */}
-      <UserTabs isAdmin={true} /> {/* Pass props like `isAdmin` as needed */}
+      <UserTabs isAdmin={false} /> {/* Pass props like `isAdmin` as needed */}
 
       {/* Search Bar */}
       <div className="text-center mb-8">
