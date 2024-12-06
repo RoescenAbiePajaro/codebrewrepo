@@ -25,8 +25,8 @@ const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0, createdAt }) 
 
       {/* Customer Information */}
       <div className="mt-4">
-        <h3 className="font-semibold text-gray-700">Customer Information</h3>
-        <p>Name: <span className="font-medium">{staffname || "No Customer"}</span></p>
+        <h3 className="font-semibold text-gray-700">Staff Information</h3>
+        <p>Name: <span className="font-medium">{staffname || "No Name"}</span></p>
         <p>Date: <span className="font-medium">{createdAt ? new Date(createdAt).toLocaleString() : "N/A"}</span></p>
       </div>
 
