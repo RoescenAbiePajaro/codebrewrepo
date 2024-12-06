@@ -1,3 +1,4 @@
+//MenuItem.js
 'use client';
 import { CartContext } from "@/components/AppContext";
 import MenuItemTile from "@/components/menu/MenuItemTile";
@@ -7,12 +8,13 @@ import { toast } from "react-hot-toast";
 
 export default function MenuItem(menuItem) {
   const {
-    image, name, description, basePrice, stock,
+    image, name, description, basePrice, stock: initialStock,
     sizes, extraIngredientPrices,
   } = menuItem;
 
   // State hooks
-  const [selectedSize, setSelectedSize] = useState(null); // Start with no selection
+  const [stock, setStock] = useState(initialStock); // Track stock separately
+  const [selectedSize, setSelectedSize] = useState(null);
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -30,15 +32,46 @@ export default function MenuItem(menuItem) {
       toast.error('This item is sold out and cannot be added to the cart.');
       return;
     }
+
     const hasOptions = sizes?.length > 0 || extraIngredientPrices?.length > 0;
     if (hasOptions && !showPopup) {
       setShowPopup(true);
       return;
     }
+
+    // Deduct stock and handle sold-out behavior
+    const newStock = stock - 1;
+    setStock(newStock); // Update stock locally
+
+    // Update stock in the database
+    await updateStock(newStock);
+
+    if (newStock === 0) {
+      toast.success('Item is now sold out!');
+    }
+
     // Add item to cart with selected options and quantity
     addToCart(menuItem, selectedSize, selectedExtras, quantity);
     await new Promise(resolve => setTimeout(resolve, 1000));
     setShowPopup(false);
+  }
+
+  // Function to update stock on the server
+  async function updateStock(newStock) {
+    try {
+      const response = await fetch('/api/menu-items', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ _id: menuItem._id, stock: newStock }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update stock');
+      }
+    } catch (error) {
+      console.error('Error updating stock:', error);
+      toast.error('Could not update stock. Please try again.');
+    }
   }
 
   function handleExtraThingClick(ev, extraThing) {
