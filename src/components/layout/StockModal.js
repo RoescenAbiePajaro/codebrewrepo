@@ -26,14 +26,16 @@ const StockModal = ({ isOpen, onClose, onUpdate, stockItem }) => {
 
   const handleStockChange = (e) => {
     const value = e.target.value;
-    // Only set newStock if it's a valid number
+    // Ensure the value is a number and is not negative
     if (!isNaN(value) && value !== '') {
-      setNewStock(parseInt(value, 10));
+      const parsedValue = parseInt(value, 10);
+      setNewStock(parsedValue >= 0 ? parsedValue : 0); // Prevent negative stock
     } else {
       // Reset to 0 if the input is invalid
       setNewStock(0);
     }
   };
+  
 
   return (
     <Modal open={isOpen} onClose={onClose}>
