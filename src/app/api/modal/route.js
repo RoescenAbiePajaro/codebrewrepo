@@ -34,7 +34,7 @@ export async function PUT(req) {
     // Update UserInfo data
     const updatedUserInfo = await UserInfo.findOneAndUpdate(
       { email: updatedUser.email },
-      { $set: { email, admin } },
+      { $set: { name, email, admin } },
       { upsert: true, new: true }
     );
 
