@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { cartProductPrice } from "@/components/AppContext";
 
-const Modal = ({ isOpen, onClose, receipt }) => {
+const ReceiptModal = ({ isOpen, onClose, receipt }) => {
   if (!isOpen) return null;
 
   if (!receipt) {
@@ -76,4 +76,4 @@ const Modal = ({ isOpen, onClose, receipt }) => {
   );
 };
 
-export default Modal;
+export default ReceiptModal;

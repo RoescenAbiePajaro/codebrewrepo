@@ -12,7 +12,6 @@ export default function AddToCartButton({
     await new Promise((resolve) => setTimeout(resolve, 300)); // Simulate any async operation (e.g., API call)
 
     onClick(basePrice); // Add to cart callback
-    alert('Item added to cart!'); // Show alert
     setIsAdding(false); // Re-enable button
   };
 
