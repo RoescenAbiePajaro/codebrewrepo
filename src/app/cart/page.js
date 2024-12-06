@@ -101,29 +101,38 @@ export default function CartPage() {
   }
 
   return (
-    <section className="mt-8">
-      <div className="text-center">
-        <SectionHeaders mainHeader="Cart" />
-      </div>
-      <div className="mt-8 grid gap-8 grid-cols-2">
+    <section className="mt-8 px-4">
+    <div className="text-center">
+      <SectionHeaders mainHeader="Your Cart" />
+    </div>
+  
+    {(!cartProducts || cartProducts.length === 0) ? (
+      <section className="mt-8 text-center space-y-4">
+        <p className="text-gray-500 text-lg">Your cart is currently empty 😔</p>
+        <button 
+          onClick={() => router.push('/menu')}
+          className="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+        >
+          Browse Menu
+        </button>
+      </section>
+    ) : (
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Cart Items */}
         <div>
           {cartProducts.map((product, index) => (
-            <div key={index} className="mb-4 flex items-center justify-between">
-              <CartProduct
-                product={product}
-                index={index} 
-                onRemove={removeCartProduct}
-              />
+            <div key={index} className="mb-4 flex items-center justify-between border-b pb-4">
+              <CartProduct product={product} index={index} onRemove={removeCartProduct} />
               <div className="flex items-center space-x-2">
                 <button
-                  className="bg-gray-200 p-2 rounded-full no-print"
+                  className="bg-gray-200 px-2 py-1 rounded-full hover:bg-gray-300"
                   onClick={() => updateQuantity(index, product.quantity - 1)}
                 >
                   -
                 </button>
-                <span>{product.quantity}</span>
+                <span className="text-lg font-semibold">{product.quantity}</span>
                 <button
-                  className="bg-gray-200 p-2 rounded-full no-print"
+                  className="bg-gray-200 px-2 py-1 rounded-full hover:bg-gray-300"
                   onClick={() => updateQuantity(index, product.quantity + 1)}
                 >
                   +
@@ -131,67 +140,60 @@ export default function CartPage() {
               </div>
             </div>
           ))}
-          <div className="py-2 pr-16 flex justify-end items-center">
-            <div className="text-gray-500">
-              Subtotal:<br />
-              Total:
-            </div>
-            <div className="font-semibold pl-2 text-right">
-              ₱{subtotal.toFixed(2)}<br />
-              ₱{subtotal.toFixed(2)}
-            </div>
+  
+          <div className="mt-6 flex justify-between items-center text-lg font-semibold">
+            <span>Subtotal:</span>
+            <span>₱{subtotal.toFixed(2)}</span>
           </div>
         </div>
-
+  
         {/* Checkout Form */}
-        <div className="bg-gray-100 p-4 rounded-lg no-print">
-          <h2>Checkout</h2>
+        <div className="bg-gray-100 p-6 rounded-lg shadow-md space-y-6">
+          <h2 className="text-xl font-bold">Checkout</h2>
           <form onSubmit={saveReceipt}>
-            <CustomerInputs
-              customerProps={customer}  
-              setCustomerProp={handleCustomerChange} 
-            />
-            <button type="submit" className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md no-print">
+            <CustomerInputs customerProps={customer} setCustomerProp={handleCustomerChange} />
+            <button
+              type="submit"
+              className="w-full mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+            >
               Save Receipt
             </button>
           </form>
-
-          <button 
-            onClick={() => setShowReceipt(true)} 
-            className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md no-print"
+          <button
+            onClick={() => setShowReceipt(true)}
+            className="w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
           >
             Print Receipt
           </button>
         </div>
       </div>
-
-      {showReceipt && (
-        <div className="fixed inset-0 bg-white z-50 overflow-auto">
-          <div className="relative p-8 max-w-lg mx-auto bg-white rounded-lg shadow-lg">
-            <Receipt 
-              customer={customer} 
-              cartProducts={cartProducts} 
-              subtotal={subtotal} 
-              createdAt={new Date().toLocaleString()} 
-            />
-            <button 
+    )}
+  
+    {/* Receipt Modal */}
+    {showReceipt && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
+          <Receipt customer={customer} cartProducts={cartProducts} subtotal={subtotal} createdAt={new Date().toLocaleString()} />
+          <div className="mt-4 flex justify-between">
+            <button
               onClick={() => {
                 window.print();
                 setShowReceipt(false);
-              }} 
-              className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md no-print"
+              }}
+              className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
             >
               Print
             </button>
-            <button 
-              onClick={() => setShowReceipt(false)} 
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md no-print"
+            <button
+              onClick={() => setShowReceipt(false)}
+              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
             >
               Close
             </button>
           </div>
         </div>
-      )}
-    </section>
-  );
+      </div>
+    )}
+  </section>
+  )  
 }

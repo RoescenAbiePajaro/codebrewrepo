@@ -40,16 +40,21 @@ const StocksPage = () => {
   }, []);
 
   const handleUpdateStock = async (id, newStock) => {
-    if (newStock < 0) return;
-    console.log('Updating stock for:', id, 'New stock:', newStock);
+    if (newStock < 0 || isNaN(newStock)) return; // Ensure valid stock value
+  
     setUpdateLoading((prev) => ({ ...prev, [id]: true }));
+  
     try {
       const response = await axios.put('/api/menu-items', { _id: id, stock: newStock });
-      console.log('Updated stock response:', response.data);
-      setStocks((prev) =>
-        prev.map((item) => (item._id === id ? { ...item, stock: newStock } : item))
-      );
-      toast.success('Stock updated successfully');
+  
+      if (response.status === 200) {
+        setStocks((prev) =>
+          prev.map((item) => (item._id === id ? { ...item, stock: newStock } : item))
+        );
+        toast.success('Stock updated successfully');
+      } else {
+        toast.error('Failed to update stock');
+      }
     } catch (error) {
       console.error('Error updating stock:', error);
       toast.error('Failed to update stock');
@@ -57,6 +62,8 @@ const StocksPage = () => {
       setUpdateLoading((prev) => ({ ...prev, [id]: false }));
     }
   };
+  
+  
 
   const openModal = (item) => {
     setSelectedStock(item);

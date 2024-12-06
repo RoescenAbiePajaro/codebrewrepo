@@ -5,6 +5,7 @@ import ShoppingCart from "@/components/icons/ShoppingCart";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useContext, useState } from "react";
+import Image from 'next/image';
 
 // AuthLinks component to handle login/logout and display user info
 function AuthLinks({ status, userName }) {
@@ -56,8 +57,14 @@ export default function Header() {
     <header>
       {/* Mobile Navigation */}
       <div className="flex items-center md:hidden justify-between">
-        <Link className="text-green font-semibold text-2xl" href={'/'}>
-          Tealerin Milktea
+        <Link href={'/'}>
+        <Image 
+          src="/tealerinlogo.png" 
+          alt="Company Logo" 
+          width={100} 
+          height={50} 
+          className="mx-auto mb-4" 
+        />
         </Link>
         <div className="flex gap-8 items-center">
           {status === 'authenticated' && (
@@ -91,8 +98,14 @@ export default function Header() {
       {/* Desktop Navigation */}
       <div className="hidden md:flex items-center justify-between">
         <nav className="flex items-center gap-8 text-gray-500 font-semibold">
-          <Link className="text-green font-semibold text-2xl" href={'/'}>
-            Tealerin Milktea
+          <Link href={'/'}>
+          <Image 
+          src="/tealerinlogo.png" 
+          alt="Company Logo" 
+          width={100} 
+          height={50} 
+          className="mx-auto mb-4" 
+        />
           </Link>
           <Link href={'/'}>Home</Link>
         </nav>
