@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 export default function AddToCartButton({
   hasSizesOrExtras, onClick, basePrice, image, stock,
 }) {
@@ -26,7 +25,7 @@ export default function AddToCartButton({
           className={`w-full ${isDisabled ? 'bg-gray-500' : 'bg-green-500'} text-white rounded-full px-8 py-2`}
           disabled={isDisabled}
         >
-          <span>{isAdding ? 'Adding...' : `Add to cart ₱${basePrice}`}</span>
+          <span>{`Add to cart ₱${basePrice}`}</span>
         </button>
       </div>
     );
@@ -39,7 +38,7 @@ export default function AddToCartButton({
       className={`mt-4 ${isDisabled ? 'bg-gray-500' : 'bg-green-500'} text-white rounded-full px-8 py-2`}
       disabled={isDisabled}
     >
-      <span>{isAdding ? 'Adding...' : `Add to cart (from ₱${basePrice})`}</span>
+      <span>{`Add to cart (from ₱${basePrice})`}</span>
     </button>
   );
 }

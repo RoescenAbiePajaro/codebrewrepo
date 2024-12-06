@@ -58,6 +58,7 @@ export default function MenuItemForm({ onSubmit, menuItem }) {
         <div>
           <EditableImage link={image} setLink={setImage} />
         </div>
+        
         <div className="grow">
           <label>Item name</label>
           <input
@@ -89,23 +90,23 @@ export default function MenuItemForm({ onSubmit, menuItem }) {
               ))}
           </select>
           <label>Base price</label>
-          <input
-            type="number"
-            value={basePrice}
-            onChange={(ev) => setBasePrice(ev.target.value)}
-            required
-            min="0"
-            step="0.01" // Allow decimal values
-            style={{
-              appearance: "textfield", // Disables arrows
-              padding: "8px 12px", // Adds padding inside the input
-              fontSize: "16px", // Sets font size
-              borderRadius: "4px", // Rounds the corners
-              border: "1px solid #ddd", // Adds a border
-              width: "100%", // Makes it full width
-              boxSizing: "border-box", // Ensures padding doesn't affect width
-            }}
-          />
+<input
+  type="number"
+  value={basePrice}
+  onChange={(ev) => setBasePrice(ev.target.value)}
+  min="0"
+  step="0.01" // Allow decimal values
+  style={{
+    appearance: "textfield", // Disables arrows
+    padding: "8px 12px", // Adds padding inside the input
+    fontSize: "16px", // Sets font size
+    borderRadius: "4px", // Rounds the corners
+    border: "1px solid #ddd", // Adds a border
+    width: "100%", // Makes it full width
+    boxSizing: "border-box", // Ensures padding doesn't affect width
+  }}
+/>
+
           <MenuItemPriceProps
             name={"Sizes"}
             addLabel={"Add item size"}
