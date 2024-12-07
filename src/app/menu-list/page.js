@@ -1,3 +1,4 @@
+// src\app\menu-list\page.js
 'use client';
 
 import SectionHeaders from "@/components/layout/SectionHeaders";

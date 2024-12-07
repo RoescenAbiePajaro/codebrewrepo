@@ -1,3 +1,4 @@
+// src\app\menu-notadmin\page.js
 'use client';
 import SectionHeaders from "@/components/layout/SectionHeaders";
 import MenuItem from "@/components/menu/MenuItem";

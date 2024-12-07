@@ -55,29 +55,27 @@ export async function POST(req) {
 export async function PUT(req) {
   try {
     await connectDB();
-    const { _id, stock, sizes, ...data } = await req.json(); // Include sizes in the update
+    const { _id, stock, ...data } = await req.json();
 
-    // If sizes is provided and is not empty, make sure it's an array of objects
-    if (sizes && Array.isArray(sizes)) {
-      data.sizes = sizes;
-    }
-
-    // If stock is provided, include it in the update
+    // Allow stock updates for non-admin users
     if (stock !== undefined && !isNaN(stock)) {
-      data.stock = stock;
+      const updatedItem = await MenuItem.findByIdAndUpdate(_id, { stock }, { new: true });
+      return new Response(JSON.stringify(updatedItem), { status: 200 });
     }
 
+    // Allow admins to update other fields
     if (await isAdmin(req)) {
       const updatedItem = await MenuItem.findByIdAndUpdate(_id, data, { new: true });
       return new Response(JSON.stringify(updatedItem), { status: 200 });
-    } else {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 403 });
     }
+
+    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 403 });
   } catch (error) {
     console.error("Error in PUT /api/menu-items:", error);
     return new Response(JSON.stringify({ error: "Failed to update menu item" }), { status: 500 });
   }
 }
+
 
 
 export async function DELETE(req) {

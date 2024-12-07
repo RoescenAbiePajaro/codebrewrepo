@@ -12,7 +12,7 @@ export default function MenuItem(menuItem) {
   } = menuItem;
 
   // State hooks
-  const [stock, setStock] = useState(initialStock); // Track stock separately
+  const [stock] = useState(initialStock); // Track stock but don't modify
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
@@ -26,6 +26,7 @@ export default function MenuItem(menuItem) {
     return (basePrice + sizePrice + extrasPrice) * quantity;
   }
 
+  // Function to handle Add to Cart button click
   async function handleAddToCartButtonClick() {
     if (stock <= 0) {
       toast.error('This item is sold out and cannot be added to the cart.');
@@ -38,41 +39,18 @@ export default function MenuItem(menuItem) {
       return;
     }
 
-    // Deduct stock and handle sold-out behavior
-    const newStock = stock - quantity;
-    setStock(newStock); // Update stock locally
-
-    // Update stock in the database
-    await updateStock(newStock);
-
-    if (newStock === 0) {
-      toast.success('Item is now sold out!');
-    }
-
     // Add item to cart with selected options and quantity
     addToCart(menuItem, selectedSize, selectedExtras, quantity);
+
+    // Show success message
+    toast.success('Item added to cart successfully!');
+
+    // Close the popup after a delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     setShowPopup(false);
   }
 
-  // Function to update stock on the server
-  async function updateStock(newStock) {
-    try {
-      const response = await fetch('/api/menu-items', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ _id: menuItem._id, stock: newStock }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update stock');
-      }
-    } catch (error) {
-      console.error('Error updating stock:', error);
-      toast.error('Could not update stock. Please try again.');
-    }
-  }
-
+  // Handle selecting extras
   function handleExtraThingClick(ev, extraThing) {
     const checked = ev.target.checked;
     if (checked) {
