@@ -51,7 +51,7 @@ export default function UserTabs({ isAdmin, isNewUser }) {
             Add Items
           </Link>
           <Link className={path.includes('/users') ? 'active' : ''} href={'/users'} onClick={handleClickUsersTab}>
-            Staff
+            Users
           </Link>
           <Link className={path.includes('/sales') ? 'active' : ''} href={'/sales'}>
             Sales

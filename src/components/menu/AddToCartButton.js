@@ -1,4 +1,3 @@
-// src\components\menu\AddToCartButton.js
 import { useState } from 'react';
 export default function AddToCartButton({
   hasSizesOrExtras, onClick, basePrice, image, stock,

@@ -14,7 +14,6 @@ export default function MenuItemTile({ onAddToCart, stock, ...item }) {
 
     setIsAdding(true); // Disable the button
     onAddToCart(); // Call the original onAddToCart function
-    alert(`${name} has been added to the cart!`); // Show alert when item is added
 
     // Re-enable the button after a short delay
     setTimeout(() => {

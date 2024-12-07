@@ -48,11 +48,6 @@ const ReceiptPage = () => {
   };
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this receipt?"
-    );
-    if (!confirmDelete) return;
-
     setDeleteLoading(true);
     try {
       const response = await fetch(`/api/receipt?id=${id}`, { method: "DELETE" });
