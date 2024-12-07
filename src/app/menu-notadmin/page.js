@@ -41,7 +41,7 @@ export default function MenuPage() {
         />
         <button
           onClick={() => setSearchQuery('')}
-          className="ml-2 px-4 py-2 bg-green-500 text-white rounded"
+          className="ml-27 px-4 py-2 bg-green-500 text-white rounded"
         >
           Clear
         </button>

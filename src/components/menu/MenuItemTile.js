@@ -15,6 +15,7 @@ export default function MenuItemTile({ onAddToCart, stock, ...item }) {
     setIsAdding(true); // Disable the button
     onAddToCart(); // Call the original onAddToCart function
 
+
     // Re-enable the button after a short delay
     setTimeout(() => {
       setIsAdding(false);
