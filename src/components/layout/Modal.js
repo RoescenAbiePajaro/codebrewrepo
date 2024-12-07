@@ -1,17 +1,18 @@
 // src/components/layout/Modal.js
+'use client';
 import React, { useState, useEffect } from "react";
 
 export default function Modal({ user, isOpen, onClose }) {
   const [editedName, setEditedName] = useState(user?.name || "");
   const [editedEmail, setEditedEmail] = useState(user?.email || "");
   const [isAdminChecked, setIsAdminChecked] = useState(user?.admin || false);
-  const [isAccepted, setIsAccepted] = useState(user?.accepted || false); // State for 'Accept User To Access'
+  const [isPermission, setIsPermission] = useState(user?.accepted || false); // State for 'Accept User To Access'
 
   useEffect(() => {
     setEditedName(user?.name || "");
     setEditedEmail(user?.email || "");
     setIsAdminChecked(user?.admin || false);
-    setIsAccepted(user?.accepted || false); // Sync with user.isAccepted
+    setIsPermission(user?.permissions || false);
   }, [user, isOpen]);
 
   const handleSave = async () => {
@@ -25,7 +26,7 @@ export default function Modal({ user, isOpen, onClose }) {
       name: editedName,
       email: editedEmail,
       admin: isAdminChecked,
-      accepted:isAccepted, // Include the new state here
+      permissions:isPermission, // Include the new state here
     };
 
     try {
@@ -88,8 +89,8 @@ export default function Modal({ user, isOpen, onClose }) {
             <input
               type="checkbox"
               className="form-checkbox"
-              checked={isAccepted}
-              onChange={(e) => setIsAccepted(e.target.checked)} // Handle this checkbox
+              checked={isPermission}
+              onChange={(e) => setIsPermission(e.target.checked)} // Handle this checkbox
             />
             <span className="ml-2">Accept User To Access</span>
           </label>
