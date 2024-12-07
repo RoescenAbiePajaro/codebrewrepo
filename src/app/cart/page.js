@@ -15,6 +15,8 @@ export default function CartPage() {
   const [customer, setCustomer] = useState({});
   const { data: profileData } = useProfile();
   const [showReceipt, setShowReceipt] = useState(false);
+  const [inputAmount, setInputAmount] = useState('');
+  const [change, setChange] = useState(null);
   const router = useRouter();
   const { status } = useSession(); 
 
@@ -55,6 +57,7 @@ export default function CartPage() {
           customer,
           cartProducts,
           subtotal,
+          change,
         }),
       }).then(async (response) => {
         if (response.ok) {
@@ -126,8 +129,6 @@ export default function CartPage() {
     );
   }
 
-  
-
   return (
     <section className="mt-8 px-4">
       <div className="text-center">
@@ -180,6 +181,33 @@ export default function CartPage() {
             <h2 className="text-xl font-bold">Checkout</h2>
             <form onSubmit={saveReceipt}>
               <CustomerInputs customerProps={customer} setCustomerProp={handleCustomerChange} />
+              
+              {/* Amount Input */}
+              <input
+                type="number"
+                value={inputAmount}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setInputAmount(value);
+                  if (value && !isNaN(value)) {
+                    const calculatedChange = parseFloat(value) - subtotal;
+                    setChange(calculatedChange >= 0 ? calculatedChange : 0);
+                  } else {
+                    setChange(null);
+                  }
+                }}
+                placeholder="Enter amount (e.g., 20 pesos)"
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+
+              {/* Display Change */}
+              {change !== null && (
+                <div className="mt-2 text-lg font-semibold">
+                  <span>Change: </span>
+                  <span>₱{change.toFixed(2)}</span>
+                </div>
+              )}
+              
               <button
                 type="submit"
                 className="w-full mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
