@@ -7,6 +7,7 @@ import ReceiptModal from "@/components/layout/ReceiptModal";
 import TablePagination from '@mui/material/TablePagination'; 
 import CircularProgress from '@mui/material/CircularProgress'; 
 import { useSession } from "next-auth/react"; 
+import NotAdminTabs from "../../components/layout/NotAdminTabs";
 
 const ReceiptPage = () => {
   const [receipts, setReceipts] = useState([]);
@@ -60,6 +61,7 @@ const ReceiptPage = () => {
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={false} /> {/* Pass isAdmin to UserTabs */}
+      <NotAdminTabs isPermission={true} />
       
       <div className="flex justify-between items-center mt-8">
         <h2 className="text-xl font-bold">Receipts</h2>
