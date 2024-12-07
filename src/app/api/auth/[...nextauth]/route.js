@@ -29,6 +29,29 @@ export async function isAdmin() {
   return userInfo.admin;
 }
 
+// Permission check function
+export async function isPermission(permissions) {
+  const session = await getServerSession(authOptions);
+  const userEmail = session?.user?.email;
+  if (!userEmail) {
+    return false;
+  }
+  
+  const userInfo = await UserInfo.findOne({ email: userEmail });
+  if (!userInfo) {
+    return false;
+  }
+
+  // Check if user has the required permission
+  if (permissions === 'user') {
+    return userInfo.user;
+  }
+
+  // Default return false if permission is not recognized
+  return false;
+}
+
+
 // NextAuth options
 export const authOptions = {
   secret: process.env.SECRET,
