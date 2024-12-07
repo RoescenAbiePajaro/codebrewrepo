@@ -6,6 +6,16 @@ const ReceiptSchema = new mongoose.Schema({
   customer: {
     staffname: String,
   },
+
+  product: [
+    {
+      name: String,
+      price: Number,
+      // other product details
+    },
+  ],
+  total: Number, // Total price for all products
+  // other receipt details
   cartProducts: [
     {
       name: String,

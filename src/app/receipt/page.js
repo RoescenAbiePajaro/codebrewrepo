@@ -132,7 +132,7 @@ const ReceiptPage = () => {
                     {receipt.customer ? (
                       <span>{receipt.customer.staffname}</span>
                     ) : (
-                      <span className="italic">No customer</span>
+                      <span className="italic">No Name</span>
                     )}
                   </div>
                   <span className="text-gray-500">
