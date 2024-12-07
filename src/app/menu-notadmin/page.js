@@ -9,6 +9,7 @@ export default function MenuPage() {
   const [categories, setCategories] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [user, setUser] = useState([]); // State to store user data
 
   // Fetch categories and menu items
   useEffect(() => {
@@ -27,8 +28,9 @@ export default function MenuPage() {
 
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      {/* User Tabs Section */}
-      <UserTabs isAdmin={false} /> {/* Pass props like `isAdmin` as needed */}
+     <UserTabs
+        isAdmin={false}
+      />
 
       {/* Search Bar */}
       <div className="text-center mb-8">

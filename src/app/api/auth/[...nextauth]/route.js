@@ -89,7 +89,7 @@ export async function PUT(req) {
     const { _id, name, image, ...otherUser } = data;
 
     // Convert specific fields to booleans if they're strings
-    const booleanFields = ['isActive', 'admin'];
+    const booleanFields = ['isActive', 'admin' , 'accepted'];
     booleanFields.forEach(field => {
       if (typeof otherUser[field] === 'string') {
         otherUser[field] = otherUser[field].trim() === 'true';

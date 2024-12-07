@@ -15,7 +15,7 @@ export async function POST(req) {
   await connectToDatabase();
 
   try {
-    const { name, email, password, admin = false } = await req.json();
+    const { name, email, password, admin = false, accepted = false, } = await req.json();
 
     if (!email || !password) {
       return new Response(
@@ -31,6 +31,7 @@ export async function POST(req) {
       email,
       password: hashedPassword,
       admin,
+      accepted,
     });
 
     await newUser.save();
@@ -95,7 +96,7 @@ export async function PUT(req) {
 
   try {
     const data = await req.json();
-    const { _id, name, email, admin } = data;
+    const { _id, name, email, admin, accepted, } = data;
 
     if (!_id) {
       return new Response(
@@ -113,7 +114,7 @@ export async function PUT(req) {
 
     const updatedUser = await User.findByIdAndUpdate(
       _id,
-      { $set: { name, email, admin } },
+      { $set: { name, email, admin, accepted, } }, // Include isAccepted here too
       { new: true } // Return the updated document
     );
 

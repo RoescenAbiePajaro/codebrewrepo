@@ -1,18 +1,21 @@
+// src/components/layout/UserTabs.js
 'use client';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-export default function UserTabs({ isAdmin, isNewUser }) {
+export default function UserTabs({ isAdmin, isNewUser, isAccepted }) {
   const path = usePathname();
   const [showWarning, setShowWarning] = useState(false);
+  
 
   const handleClickUsersTab = () => {
-    if (isNewUser) {
+    if (isNewUser || !isAccepted) {  // Show warning if the user is new or not accepted
+      alert("Wait for admin approval.");
       setShowWarning(true);
       setTimeout(() => {
         setShowWarning(false);
-      }, 5000); // Display the warning for 5 seconds
+      }, 5000);  // Display the warning for 5 seconds
     }
   };
 
@@ -24,13 +27,21 @@ export default function UserTabs({ isAdmin, isNewUser }) {
       </Link>
 
       {/* Staff-only links */}
-      {!isAdmin && (
+      {!isAdmin && isAccepted && (  // Only show if isAccepted is true
         <>
-          <Link className={path === '/menu-notadmin' ? 'active' : ''} href={'/menu-notadmin'}>
+          <Link 
+            className={path === '/menu-notadmin' ? 'active' : ''} 
+            href={'/menu-notadmin'} 
+            onClick={handleClickUsersTab}
+          >
             Staff Menu Here
           </Link>
           
-          <Link className={path === '/staffreceipt' ? 'active' : ''} href={'/staffreceipt'}>
+          <Link 
+            className={path === '/staffreceipt' ? 'active' : ''} 
+            href={'/staffreceipt'} 
+            onClick={handleClickUsersTab}
+          >
             Staff Receipt
           </Link>
         </>
@@ -42,14 +53,13 @@ export default function UserTabs({ isAdmin, isNewUser }) {
           <Link className={path === '/menu-list' ? 'active' : ''} href={'/menu-list'}>
             Menu Here
           </Link>
-
           <Link href={'/categories'} className={path === '/categories' ? 'active' : ''}>
             Categories
           </Link>
           <Link href={'/menu-items'} className={path.includes('menu-items') ? 'active' : ''}>
             Add Items
           </Link>
-          <Link className={path.includes('/users') ? 'active' : ''} href={'/users'} onClick={handleClickUsersTab}>
+          <Link className={path.includes('/users') ? 'active' : ''} href={'/users'}>
             Staff
           </Link>
           <Link className={path.includes('/sales') ? 'active' : ''} href={'/sales'}>
@@ -62,13 +72,6 @@ export default function UserTabs({ isAdmin, isNewUser }) {
             Stocks
           </Link>
         </>
-      )}
-
-      {/* Warning message if the user is new */}
-      {showWarning && (
-        <div className="text-red-500 mt-2">
-          Wait for admin permission on this account.
-        </div>
       )}
     </div>
   );
