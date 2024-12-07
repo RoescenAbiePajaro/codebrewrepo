@@ -4,9 +4,12 @@
 import SectionHeaders from "@/components/layout/SectionHeaders";
 import MenuItem from "@/components/menu/MenuItem";
 import UserTabs from "../../components/layout/UserTabs";
+import { useProfile } from "@/components/UseProfile";
+
 import { useEffect, useState } from "react";
 
 export default function MenuPage() {
+  const { loading: profileLoading, data: profileData } = useProfile();
   const [categories, setCategories] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -32,7 +35,13 @@ export default function MenuPage() {
 
   const hasSearchQuery = searchQuery.trim().length > 0;
 
-  
+  if (profileLoading) {
+    return 'Loading user info...';
+  }
+
+  if (!profileData?.admin) {
+    return 'Not an admin';
+  }
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       {/* User Tabs Section */}
