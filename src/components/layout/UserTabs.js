@@ -1,4 +1,3 @@
-// src\components\layout\UserTabs.js
 'use client';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -51,7 +50,7 @@ export default function UserTabs({ isAdmin, isNewUser }) {
             Add Items
           </Link>
           <Link className={path.includes('/users') ? 'active' : ''} href={'/users'} onClick={handleClickUsersTab}>
-            Users
+            Staff
           </Link>
           <Link className={path.includes('/sales') ? 'active' : ''} href={'/sales'}>
             Sales

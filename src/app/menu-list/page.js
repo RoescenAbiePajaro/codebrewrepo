@@ -32,6 +32,7 @@ export default function MenuPage() {
 
   const hasSearchQuery = searchQuery.trim().length > 0;
 
+  
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       {/* User Tabs Section */}
