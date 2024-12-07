@@ -27,7 +27,7 @@ export default function UserTabs({ isAdmin, isNewUser, isPermission }) {
       </Link>
 
       {/* Staff-only links */}
-      {!isAdmin && isPermission && (  
+      {!isPermission && (  
         <>
           <Link 
             className={path === '/menu-notadmin' ? 'active' : ''} 
