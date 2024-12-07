@@ -2,9 +2,8 @@
 'use client';
 import SectionHeaders from "@/components/layout/SectionHeaders";
 import MenuItem from "@/components/menu/MenuItem";
-import NotAdminTabs from "@/components/layout/NotAdminTabs";
-import { useEffect, useState } from "react";
 import UserTabs from "../../components/layout/UserTabs";
+import { useEffect, useState } from "react";
 
 export default function MenuPage() {
   const [categories, setCategories] = useState([]);
@@ -29,12 +28,8 @@ export default function MenuPage() {
 
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-     <NotAdminTabs
-        isPermission={true}
-      />
-
-<UserTabs
-        isAdmin={false}
+     <UserTabs
+        isPermission={user?.permissions}
       />
 
       {/* Search Bar */}

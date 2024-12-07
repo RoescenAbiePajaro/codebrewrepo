@@ -1,12 +1,20 @@
+'use client';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-export default function UserTabs({ isAdmin, isNewUser }) {
+export default function UserTabs({ isAdmin, isNewUser, isPermission }) {
   const path = usePathname();
   const [showWarning, setShowWarning] = useState(false);
 
   const handleClickUsersTab = () => {
+    if (isNewUser || !isPermission) { // Show warning if the user is new or not permitted
+      alert("Wait for admin approval.");
+      setShowWarning(true);
+      setTimeout(() => {
+        setShowWarning(false);
+      }, 5000); // Display the warning for 5 seconds
+    }
   };
 
   return (
@@ -16,8 +24,8 @@ export default function UserTabs({ isAdmin, isNewUser }) {
         Profile
       </Link>
 
-      {/* Links for non-admin users */}
-      {!isAdmin && (
+      {/* Staff-only links */}
+      {!isPermission && ( // Show these links only if isPermission is true
         <>
           <Link 
             className={path === '/menu-notadmin' ? 'active' : ''} 

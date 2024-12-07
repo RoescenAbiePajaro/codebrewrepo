@@ -6,7 +6,7 @@ export default function Modal({ user, isOpen, onClose }) {
   const [editedName, setEditedName] = useState(user?.name || "");
   const [editedEmail, setEditedEmail] = useState(user?.email || "");
   const [isAdminChecked, setIsAdminChecked] = useState(user?.admin || false);
-  const [isPermission, setIsPermission] = useState(user?.accepted || false); // State for 'Accept User To Access'
+  const [isPermission, setIsPermission] = useState(user?.permissions || false); // State for 'Accept User To Access'
 
   useEffect(() => {
     setEditedName(user?.name || "");
