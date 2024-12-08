@@ -1,6 +1,7 @@
 // src\app\menu-notadmin\page.js
 'use client';
 import SectionHeaders from "@/components/layout/SectionHeaders";
+import {useProfile} from "@/components/UseProfile";
 import MenuItem from "@/components/menu/MenuItem";
 import UserTabs from "../../components/layout/UserTabs";
 import { useEffect, useState } from "react";
@@ -10,6 +11,7 @@ export default function MenuPage() {
   const [menuItems, setMenuItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [user, setUser] = useState([]); // State to store user data
+  const {loading, data} = useProfile();
 
   // Fetch categories and menu items
   useEffect(() => {
@@ -26,6 +28,14 @@ export default function MenuPage() {
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  if (loading) {
+    return 'Loading user info...';
+  }
+
+  if (!data.user) {
+    return 'Not an User.';
+  }
+  
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
      <UserTabs

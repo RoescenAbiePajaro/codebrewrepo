@@ -7,10 +7,11 @@ import ReceiptModal from "@/components/layout/ReceiptModal";
 import TablePagination from '@mui/material/TablePagination'; 
 import CircularProgress from '@mui/material/CircularProgress'; 
 import { useSession } from "next-auth/react"; 
+import {useProfile} from "@/components/UseProfile";
 
 const ReceiptPage = () => {
-  const [receipts, setReceipts] = useState([]);
-  const [loading, setLoading] = useState(true); // Set loading to true initially
+  const [receipts, setReceipts,user] = useState([]);
+  const [loading, setLoading,data,] = useState(true); // Set loading to true initially
   const router = useRouter();
   const [selectedReceipt, setSelectedReceipt] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,6 +57,16 @@ const ReceiptPage = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  if (loading) {
+    return 'Loading user info...';
+  }
+  
+  if (!session?.user) {
+    return 'Not an User.'; // Check if session and session.user are available
+  }
+  
+  
 
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
