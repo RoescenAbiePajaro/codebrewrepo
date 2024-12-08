@@ -1,7 +1,8 @@
 // src\app\api\menu-items\route.js
 import mongoose from "mongoose";
-import { isAdmin } from "@/app/api/auth/[...nextauth]/route";
+import { isAdmin } from "@/libs/userService";
 import { MenuItem } from "@/models/MenuItem";
+
 
 async function connectDB() {
   if (!mongoose.connection.readyState) {
