@@ -1,4 +1,4 @@
-// src\app\api\modal\route.js
+// src/app/api/modal/route.js
 import { User } from "@/models/User";
 import { UserInfo } from "@/models/UserInfo";
 import mongoose from "mongoose";

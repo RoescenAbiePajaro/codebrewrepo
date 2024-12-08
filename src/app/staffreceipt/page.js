@@ -1,3 +1,4 @@
+// src\app\staffreceipt\page.js
 'use client';
 import UserTabs from "@/components/layout/UserTabs";
 import React, { useEffect, useState } from 'react';

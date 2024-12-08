@@ -5,6 +5,7 @@ import {useProfile} from "@/components/UseProfile";
 import MenuItem from "@/components/menu/MenuItem";
 import UserTabs from "../../components/layout/UserTabs";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react"; 
 
 export default function MenuPage() {
   const [categories, setCategories] = useState([]);
@@ -12,6 +13,10 @@ export default function MenuPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [user, setUser] = useState([]); // State to store user data
   const {loading, data} = useProfile();
+  const { data: session } = useSession();
+  
+  const isAdmin = session?.user?.isAdmin || false;
+  const isPermissions = session?.user?.permissions || true; // Check permissions
 
   // Fetch categories and menu items
   useEffect(() => {
@@ -31,9 +36,13 @@ export default function MenuPage() {
   if (loading) {
     return 'Loading user info...';
   }
+  
+  if (!session?.user) {
+    return 'Not an User.'; // Check if session and session.user are available
+  }
 
-  if (!data.user) {
-    return 'Not an User.';
+  if (!isPermissions) {
+    return 'You do not have access to this menu.';
   }
   
   return (

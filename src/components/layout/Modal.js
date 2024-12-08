@@ -26,7 +26,7 @@ export default function Modal({ user, isOpen, onClose }) {
       name: editedName,
       email: editedEmail,
       admin: isAdminChecked,
-      permissions:isPermission, // Include the new state here
+      permissions: isPermission, // Include the new state here
     };
 
     try {
