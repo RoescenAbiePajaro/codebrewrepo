@@ -75,9 +75,9 @@ async function connectDB() {
     }
   }
   
-  export async function POST(request) {
+  export async function POST(req) {
     try {
-      const { email, password } = await request.json();
+      const { email, password } = await req.json();
   
       // Check if email and password are provided
       if (!email || !password) {
