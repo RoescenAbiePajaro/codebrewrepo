@@ -40,10 +40,6 @@ export default function MenuPage() {
   if (!session?.user) {
     return 'Not an User.'; // Check if session and session.user are available
   }
-
-  if (!isPermissions) {
-    return 'You do not have access to this menu.';
-  }
   
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">

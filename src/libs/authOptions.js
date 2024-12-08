@@ -21,7 +21,8 @@ export const authOptions = {
         email: { label: "Email", type: "email", placeholder: "test@example.com" },
         password: { label: "Password", type: "password" },
       },
-     
+      
+      
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Email and password are required");
@@ -69,5 +70,7 @@ export const authOptions = {
       session.name = token.name;
       return session;
     },
+
+    
   },
 };

@@ -72,6 +72,8 @@ const ReceiptPage = () => {
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={isAdmin} /> {/* Pass isAdmin to UserTabs */}
+
+      
       <div className="flex justify-between items-center mt-8">
         <h2 className="text-xl font-bold">Receipts</h2>
       </div>
