@@ -1,14 +1,18 @@
+// src/components/layout/Modal.js
+'use client';
 import React, { useState, useEffect } from "react";
 
 export default function Modal({ user, isOpen, onClose }) {
   const [editedName, setEditedName] = useState(user?.name || "");
   const [editedEmail, setEditedEmail] = useState(user?.email || "");
   const [isAdminChecked, setIsAdminChecked] = useState(user?.admin || false);
+  const [isPermission, setIsPermission] = useState(user?.permissions || false); // State for 'Accept User To Access'
 
   useEffect(() => {
     setEditedName(user?.name || "");
     setEditedEmail(user?.email || "");
     setIsAdminChecked(user?.admin || false);
+    setIsPermission(user?.permissions || false);
   }, [user, isOpen]);
 
   const handleSave = async () => {
@@ -22,6 +26,7 @@ export default function Modal({ user, isOpen, onClose }) {
       name: editedName,
       email: editedEmail,
       admin: isAdminChecked,
+      permissions: isPermission, // Include the new state here
     };
 
     try {
@@ -77,6 +82,17 @@ export default function Modal({ user, isOpen, onClose }) {
               onChange={(e) => setIsAdminChecked(e.target.checked)}
             />
             <span className="ml-2">Admin</span>
+          </label>
+        </div>
+        <div className="mb-4">
+          <label className="inline-flex items-center">
+            <input
+              type="checkbox"
+              className="form-checkbox"
+              checked={isPermission}
+              onChange={(e) => setIsPermission(e.target.checked)} // Handle this checkbox
+            />
+            <span className="ml-2">Accept User To Access</span>
           </label>
         </div>
         <div className="flex justify-end gap-4">

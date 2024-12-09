@@ -1,3 +1,4 @@
+// src/app/api/modal/route.js
 import { User } from "@/models/User";
 import { UserInfo } from "@/models/UserInfo";
 import mongoose from "mongoose";
@@ -14,7 +15,7 @@ export async function PUT(req) {
 
   try {
     const data = await req.json();
-    const { _id, name, email, admin } = data;
+    const { _id, name, email, admin, permissions } = data;
 
     if (!_id) {
       return new Response(JSON.stringify({ error: "Missing user ID" }), { status: 400 });
@@ -23,7 +24,7 @@ export async function PUT(req) {
     // Update User data
     const updatedUser = await User.findOneAndUpdate(
       { _id },
-      { $set: { name, email, admin } },
+      { $set: { name, email, admin, permissions } },
       { new: true }
     );
 
@@ -34,7 +35,7 @@ export async function PUT(req) {
     // Update UserInfo data
     const updatedUserInfo = await UserInfo.findOneAndUpdate(
       { email: updatedUser.email },
-      { $set: { email, admin } },
+      { $set: { name, email, admin, permissions } },
       { upsert: true, new: true }
     );
 

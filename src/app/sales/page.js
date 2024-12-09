@@ -16,6 +16,7 @@ import { Line, Bar, Pie } from 'react-chartjs-2';
 import UserTabs from "@/components/layout/UserTabs";
 import * as XLSX from 'xlsx'; 
 import DownloadIcon from '@mui/icons-material/Download'; 
+import { useProfile } from "@/components/UseProfile";
 
 // Register Chart.js components
 ChartJS.register(
@@ -32,6 +33,7 @@ ChartJS.register(
 
 // Main SalesPage component
 const SalesPage = () => {
+  const { loading: profileLoading, data: profileData } = useProfile();
   const [salesData, setSalesData] = useState({});
   const [chartData, setChartData] = useState(null);
   const [pieData, setPieData] = useState(null);
@@ -127,6 +129,13 @@ const SalesPage = () => {
     XLSX.writeFile(workbook, "sales_data.xlsx");
   };
 
+  if (profileLoading) {
+    return 'Loading user info...';
+  }
+
+  if (!profileData?.admin) {
+    return 'Not an admin';
+  }
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />

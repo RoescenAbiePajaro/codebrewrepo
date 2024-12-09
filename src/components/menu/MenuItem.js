@@ -7,12 +7,13 @@ import { toast } from "react-hot-toast";
 
 export default function MenuItem(menuItem) {
   const {
-    image, name, description, basePrice, stock,
+    image, name, description, basePrice, stock: initialStock,
     sizes, extraIngredientPrices,
   } = menuItem;
 
   // State hooks
-  const [selectedSize, setSelectedSize] = useState(null); // Start with no selection
+  const [stock] = useState(initialStock); // Track stock but don't modify
+  const [selectedSize, setSelectedSize] = useState(null);
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -25,22 +26,31 @@ export default function MenuItem(menuItem) {
     return (basePrice + sizePrice + extrasPrice) * quantity;
   }
 
+  // Function to handle Add to Cart button click
   async function handleAddToCartButtonClick() {
     if (stock <= 0) {
       toast.error('This item is sold out and cannot be added to the cart.');
       return;
     }
+
     const hasOptions = sizes?.length > 0 || extraIngredientPrices?.length > 0;
     if (hasOptions && !showPopup) {
       setShowPopup(true);
       return;
     }
+
     // Add item to cart with selected options and quantity
     addToCart(menuItem, selectedSize, selectedExtras, quantity);
+
+    // Show success message
+    toast.success('Item added to cart successfully!');
+
+    // Close the popup after a delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     setShowPopup(false);
   }
 
+  // Handle selecting extras
   function handleExtraThingClick(ev, extraThing) {
     const checked = ev.target.checked;
     if (checked) {
@@ -111,11 +121,19 @@ export default function MenuItem(menuItem) {
               <div className="flex justify-between items-center py-2">
                 <button
                   className="text-gray-700 p-2 border rounded"
-                  onClick={() => setQuantity(prev => Math.max(prev - 1, 1))}>-</button>
+                  onClick={() => setQuantity(prev => Math.max(prev - 1, 1))}
+                  disabled={stock <= 0} // Disable button when sold out
+                >
+                  -
+                </button>
                 <span className="text-lg">{quantity}</span>
                 <button
                   className="text-gray-700 p-2 border rounded"
-                  onClick={() => setQuantity(prev => prev + 1)}>+</button>
+                  onClick={() => setQuantity(prev => Math.min(prev + 1, stock))} // Limit to stock
+                  disabled={stock <= 0} // Disable button when sold out
+                >
+                  +
+                </button>
               </div>
               <div className="primary sticky bottom-2">
                 <button

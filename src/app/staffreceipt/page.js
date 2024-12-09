@@ -1,3 +1,4 @@
+// src\app\staffreceipt\page.js
 'use client';
 import UserTabs from "@/components/layout/UserTabs";
 import React, { useEffect, useState } from 'react';
@@ -7,10 +8,11 @@ import ReceiptModal from "@/components/layout/ReceiptModal";
 import TablePagination from '@mui/material/TablePagination'; 
 import CircularProgress from '@mui/material/CircularProgress'; 
 import { useSession } from "next-auth/react"; 
+import {useProfile} from "@/components/UseProfile";
 
 const ReceiptPage = () => {
-  const [receipts, setReceipts] = useState([]);
-  const [loading, setLoading] = useState(true); // Set loading to true initially
+  const [receipts, setReceipts,user] = useState([]);
+  const [loading, setLoading,data,] = useState(true); // Set loading to true initially
   const router = useRouter();
   const [selectedReceipt, setSelectedReceipt] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -57,9 +59,21 @@ const ReceiptPage = () => {
     setPage(0);
   };
 
+  if (loading) {
+    return 'Loading user info...';
+  }
+  
+  if (!session?.user) {
+    return 'Not an User.'; // Check if session and session.user are available
+  }
+  
+  
+
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={isAdmin} /> {/* Pass isAdmin to UserTabs */}
+
+      
       <div className="flex justify-between items-center mt-8">
         <h2 className="text-xl font-bold">Receipts</h2>
       </div>
@@ -74,7 +88,7 @@ const ReceiptPage = () => {
             receipts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((receipt) => (
               <div key={receipt._id} className="bg-gray-100 rounded-lg mb-2 p-4 flex items-center gap-4">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 grow">
-                  <div className="text-gray-900">{receipt.customer ? <span>{receipt.customer.staffname}</span> : <span className="italic">No customer</span>}</div>
+                  <div className="text-gray-900">{receipt.customer ? <span>{receipt.customer.staffname}</span> : <span className="italic">No Name</span>}</div>
                   <span className="text-gray-500">₱{receipt.subtotal.toFixed(2)}</span>
                   <span className="text-gray-500 text-sm">{new Date(receipt.createdAt).toLocaleString('en-PH')}</span>
                 </div>

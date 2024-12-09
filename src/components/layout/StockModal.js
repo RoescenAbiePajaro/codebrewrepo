@@ -9,25 +9,33 @@ const StockModal = ({ isOpen, onClose, onUpdate, stockItem }) => {
 
   useEffect(() => {
     if (stockItem) {
-      setNewStock(stockItem.stock || 0); // Initialize stock value
+      setNewStock(stockItem.stock); // Set the initial stock value when stockItem changes
     }
   }, [stockItem]);
 
   const handleSave = () => {
+    // Ensure newStock is a valid number and greater than or equal to 0
     if (newStock >= 0) {
-      onUpdate(stockItem._id, newStock);
-      onClose();
+      onUpdate(stockItem._id, newStock);  // Update the stock value for the item
+      onClose(); // Close the modal
     } else {
-      alert('Stock value must be 0 or higher');
+      // Handle invalid stock input if needed, like showing an alert
+      alert("Stock cannot be negative");
     }
   };
 
   const handleStockChange = (e) => {
     const value = e.target.value;
-    if (/^\d*$/.test(value)) {
-      setNewStock(value === '' ? 0 : parseInt(value, 10));
+    // Ensure the value is a number and is not negative
+    if (!isNaN(value) && value !== '') {
+      const parsedValue = parseInt(value, 10);
+      setNewStock(parsedValue >= 0 ? parsedValue : 0); // Prevent negative stock
+    } else {
+      // Reset to 0 if the input is invalid
+      setNewStock(0);
     }
   };
+  
 
   return (
     <Modal open={isOpen} onClose={onClose}>
@@ -49,11 +57,28 @@ const StockModal = ({ isOpen, onClose, onUpdate, stockItem }) => {
             <TextField
               label="Stock"
               type="number"
-              value={newStock.toString()}
+              value={newStock.toString()}  // Ensure the value is a string
               onChange={handleStockChange}
               fullWidth
               margin="normal"
             />
+           <div className="flex justify-end mt-4">
+  <Button
+    onClick={onClose}
+    variant="outlined"
+    sx={{ color: 'red', borderColor: 'red', '&:hover': { backgroundColor: 'rgba(255, 0, 0, 0.1)' } }}
+    className="mr-2"
+  >
+    Cancel
+  </Button>
+  <Button
+    onClick={handleSave}
+    variant="contained"
+    sx={{ backgroundColor: 'green', '&:hover': { backgroundColor: 'darkgreen' } }}
+  >
+    Save
+  </Button>
+</div>
 
           </>
         )}

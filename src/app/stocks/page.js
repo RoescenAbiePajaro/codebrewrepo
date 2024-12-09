@@ -4,15 +4,16 @@ import UserTabs from "@/components/layout/UserTabs";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useProfile } from "@/components/UseProfile";
 import StockModal from "@/components/layout/StockModal"; // Updated import
 import TablePagination from '@mui/material/TablePagination';
-import CircularProgress from '@mui/material/CircularProgress';
 
 const StocksPage = () => {
   const [stocks, setStocks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [updateLoading, setUpdateLoading] = useState({});
+  const { loading: profileLoading, data: profileData } = useProfile();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStock, setSelectedStock] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -92,15 +93,13 @@ const StocksPage = () => {
     setPage(0); 
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <CircularProgress />
-      </div>
-    );
+  if (profileLoading) {
+    return 'Loading user info...';
   }
 
-  if (error) return <p>{error}</p>;
+  if (!profileData?.admin) {
+    return 'Not an admin';
+  }
 
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">

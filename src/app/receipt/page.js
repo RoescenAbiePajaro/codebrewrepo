@@ -3,6 +3,7 @@ import UserTabs from "@/components/layout/UserTabs";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { useProfile } from "@/components/UseProfile";
 import ReceiptModal from "@/components/layout/ReceiptModal";
 import * as XLSX from "xlsx";
 import TablePagination from "@mui/material/TablePagination";
@@ -14,6 +15,7 @@ const ReceiptPage = () => {
   const [loading, setLoading] = useState(true);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [selectedReceipt, setSelectedReceipt] = useState(null);
+  const { loading: profileLoading, data: profileData } = useProfile();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [page, setPage] = useState(0);
@@ -48,11 +50,6 @@ const ReceiptPage = () => {
   };
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this receipt?"
-    );
-    if (!confirmDelete) return;
-
     setDeleteLoading(true);
     try {
       const response = await fetch(`/api/receipt?id=${id}`, { method: "DELETE" });
@@ -96,6 +93,14 @@ const ReceiptPage = () => {
     setPage(0);
   };
 
+  if (profileLoading) {
+    return 'Loading user info...';
+  }
+
+  if (!profileData?.admin) {
+    return 'Not an admin';
+  }
+
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
@@ -127,7 +132,7 @@ const ReceiptPage = () => {
                     {receipt.customer ? (
                       <span>{receipt.customer.staffname}</span>
                     ) : (
-                      <span className="italic">No customer</span>
+                      <span className="italic">No Name</span>
                     )}
                   </div>
                   <span className="text-gray-500">

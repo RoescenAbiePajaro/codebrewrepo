@@ -13,8 +13,8 @@
     "@aws-sdk/client-s3": "^3.685.0",
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
-    "@mui/icons-material": "^6.1.9",
-    "@mui/material": "^6.1.9",
+    "@mui/icons-material": "^6.1.10",
+    "@mui/material": "^6.1.10",
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.3",
@@ -37,6 +37,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@types/next-auth": "^3.13.0",
     "@types/node": "22.8.6",
     "@types/react": "18.3.12",
     "eslint": "^8",

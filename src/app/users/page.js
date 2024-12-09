@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import UserTabs from '@/components/layout/UserTabs';
 import TablePagination from '@mui/material/TablePagination';
+import { useProfile } from "@/components/UseProfile";
 import Modal from '@/components/layout/Modal';
 import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress for loading spinner
 
@@ -10,6 +11,7 @@ export default function UsersPage() {
   const [users, setUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const { loading: profileLoading, data: profileData } = useProfile();
   const [loading, setLoading] = useState(true); // Track loading state
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -89,6 +91,15 @@ export default function UsersPage() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  if (profileLoading) {
+    return 'Loading user info...';
+  }
+
+  if (!profileData?.admin) {
+    return 'Not an admin';
+  }
+
 
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">

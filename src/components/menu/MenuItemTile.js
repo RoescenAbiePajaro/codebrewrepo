@@ -14,7 +14,7 @@ export default function MenuItemTile({ onAddToCart, stock, ...item }) {
 
     setIsAdding(true); // Disable the button
     onAddToCart(); // Call the original onAddToCart function
-    alert(`${name} has been added to the cart!`); // Show alert when item is added
+
 
     // Re-enable the button after a short delay
     setTimeout(() => {
@@ -42,10 +42,22 @@ export default function MenuItemTile({ onAddToCart, stock, ...item }) {
         )}
       </div>
       <h4 className="font-semibold text-xl my-3">{name}</h4>
-      <p className="text-gray-500 text-sm line-clamp-3">{description}</p>
-      <p className={`text-lg ${isAvailable ? 'text-green-600' : 'text-red-600'} font-semibold`}>
-        {isAvailable ? 'Available' : 'Sold Out'}
-      </p> {/* Availability status */}
+
+      {/* Description */}
+      <p className="text-gray-600 text-sm">{description}</p>
+
+      <p className={`text-lg font-semibold flex items-center justify-center space-x-2`}>
+        {isAvailable ? (
+          <>
+            <span className="text-green-600">Available</span>
+          </>
+        ) : (
+          <>
+            <span className="text-red-600">Sold Out</span>
+          </>
+        )}
+      </p>
+
       <AddToCartButton
         image={image}
         hasSizesOrExtras={hasSizesOrExtras}
