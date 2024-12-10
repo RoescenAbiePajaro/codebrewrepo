@@ -2,7 +2,7 @@ import { MongoClient } from "mongodb";
 
 // Ensure MONGO_URL is available in environment variables
 if (!process.env.MONGO_URL) {
-  throw new Error('Invalid/Missing environment variable: "MONGO_URL"');
+  throw new Error('Invalid/Missing environment variable: MONGO_URL');
 }
 
 const uri = process.env.MONGO_URL;
