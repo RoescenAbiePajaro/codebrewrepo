@@ -36,7 +36,7 @@ export default function UserEditableImage({link, setLink}) {
       )}
       {!link && (
         <div className="text-center bg-gray-200 p-4 text-gray-500 rounded-lg mb-1">
-          Staff Only
+          Hello!
         </div>
       )}
       

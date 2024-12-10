@@ -33,6 +33,13 @@ export const authOptions = {
         if (typeof credentials.password !== 'string' || credentials.password.trim() === '') {
           throw new Error("Password is required and cannot be empty");
         }
+
+
+    // Check if the email domain is tealerin.com
+    const emailDomain = credentials.email.split('@')[1];
+    if (emailDomain !== 'tealerin.com') {
+      throw new Error("Only users with the domain are allowed to log in");
+    }
       
         await connectDB(); // Ensure DB connection
         const user = await getUserByEmail(credentials.email);
