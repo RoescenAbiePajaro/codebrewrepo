@@ -42,6 +42,8 @@ export default function MenuPage() {
   if (!profileData?.admin) {
     return 'Not an admin';
   }
+
+  
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       {/* User Tabs Section */}

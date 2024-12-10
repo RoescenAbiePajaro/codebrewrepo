@@ -1,4 +1,3 @@
-// src/components/layout/Modal.js
 'use client';
 import React, { useState, useEffect } from "react";
 
@@ -6,13 +5,13 @@ export default function Modal({ user, isOpen, onClose }) {
   const [editedName, setEditedName] = useState(user?.name || "");
   const [editedEmail, setEditedEmail] = useState(user?.email || "");
   const [isAdminChecked, setIsAdminChecked] = useState(user?.admin || false);
-  const [isPermission, setIsPermission] = useState(user?.permissions || false); // State for 'Accept User To Access'
+  const [isVerified, setIsVerified] = useState(user?.isVerified || false); // State for 'Verified'
 
   useEffect(() => {
     setEditedName(user?.name || "");
     setEditedEmail(user?.email || "");
     setIsAdminChecked(user?.admin || false);
-    setIsPermission(user?.permissions || false);
+    setIsVerified(user?.isVerified || false);
   }, [user, isOpen]);
 
   const handleSave = async () => {
@@ -26,7 +25,7 @@ export default function Modal({ user, isOpen, onClose }) {
       name: editedName,
       email: editedEmail,
       admin: isAdminChecked,
-      permissions: isPermission, // Include the new state here
+      isVerified, // Include the new state here
     };
 
     try {
@@ -89,10 +88,10 @@ export default function Modal({ user, isOpen, onClose }) {
             <input
               type="checkbox"
               className="form-checkbox"
-              checked={isPermission}
-              onChange={(e) => setIsPermission(e.target.checked)} // Handle this checkbox
+              checked={isVerified}
+              onChange={(e) => setIsVerified(e.target.checked)} // Handle verification checkbox
             />
-            <span className="ml-2">Accept User To Access</span>
+            <span className="ml-2">Verify User</span>
           </label>
         </div>
         <div className="flex justify-end gap-4">

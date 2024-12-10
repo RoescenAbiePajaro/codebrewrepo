@@ -6,6 +6,7 @@ import clientPromise from "@/libs/mongoConnect";
 import { connectDB } from "@/libs/db";
 import { getUserByEmail } from "./userService";
 import { verifyPassword } from "./userService";
+import {UserInfo} from "@/models/UserInfo";
 
 export const authOptions = {
   secret: process.env.SECRET,
@@ -15,14 +16,14 @@ export const authOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
+
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
         email: { label: "Email", type: "email", placeholder: "test@example.com" },
         password: { label: "Password", type: "password" },
       },
-      
-      
+
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Email and password are required");
@@ -44,11 +45,15 @@ export const authOptions = {
         if (!isPasswordValid) {
           throw new Error("Invalid password");
         }
-      
+
+         // Check if the user is verified
+  const userInfo = await UserInfo.findOne({ email: credentials.email });
+  if (!userInfo || !userInfo.isVerified) {
+    throw new Error("Your account is not verified by the admin");
+  }
         // Return the user object with email and name
         return { email: user.email, name: user.name };
       }
-
     })
   ],
   pages: {

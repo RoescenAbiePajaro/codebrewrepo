@@ -5,9 +5,10 @@ const UserInfoSchema = new Schema({
   email: { type: String, required: true, unique: true },
   image: { type: String },
   admin: { type: Boolean, default: false },
-  permissions: { type: Boolean, default: false }, // New field for user acceptance
+  isVerified: { type: Boolean, default: false }, // New field for verification
   phone: { type: String },
   streetAddress: { type: String },
+
 
 }, { timestamps: true });
 

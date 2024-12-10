@@ -15,7 +15,7 @@ export async function PUT(req) {
 
   try {
     const data = await req.json();
-    const { _id, name, email, admin, permissions } = data;
+    const { _id, name, email, admin, isVerified } = data;
 
     if (!_id) {
       return new Response(JSON.stringify({ error: "Missing user ID" }), { status: 400 });
@@ -24,7 +24,7 @@ export async function PUT(req) {
     // Update User data
     const updatedUser = await User.findOneAndUpdate(
       { _id },
-      { $set: { name, email, admin, permissions } },
+      { $set: { name, email, admin, isVerified } },
       { new: true }
     );
 
@@ -35,7 +35,7 @@ export async function PUT(req) {
     // Update UserInfo data
     const updatedUserInfo = await UserInfo.findOneAndUpdate(
       { email: updatedUser.email },
-      { $set: { name, email, admin, permissions } },
+      { $set: { name, email, admin,isVerified } },
       { upsert: true, new: true }
     );
 

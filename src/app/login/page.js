@@ -75,15 +75,15 @@ export default function LoginPage() {
           </a>
         </p>
 
-        <div className="my-4 text-center text-gray-500">or login with</div>
-        <button
+        <div className="my-4 text-center text-gray-500"></div>
+        {/* <button
           type="button"
           onClick={() => signIn("google", { callbackUrl: "/" })}
           className="flex items-center justify-center gap-4 w-full py-2 border border-gray-300 rounded hover:bg-gray-100 transition-colors"
         >
           <Image src="/google-icon.png" alt="Google icon" width={24} height={24} />
           Login with Google
-        </button>
+        </button> */}
       </div>
     </section>
   );
