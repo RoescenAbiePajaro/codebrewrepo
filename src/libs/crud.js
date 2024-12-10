@@ -63,7 +63,7 @@ export async function PUT(req) {
 export async function GET() {
   await connectDB();
   const session = await getServerSession(authOptions);
-  if (session?.user?.email === 'admin@example.com') {  // Assuming 'admin@example.com' is the admin email
+  if (session?.user?.email === 'admin@tealerin.com') {  // Assuming 'admin@example.com' is the admin email
     const users = await User.find();
     return new Response(JSON.stringify(users), { status: 200 });
   } else {

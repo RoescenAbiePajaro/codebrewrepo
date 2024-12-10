@@ -37,7 +37,7 @@ export default function RegisterPage() {
         <h1 className="text-center text-green-500 text-4xl mb-4">Register</h1>
 
         {userCreated ? (
-          <p className="text-center my-4">User  created! <Link href="/login">Click Here and Wait for Admin Approval </Link>.</p>
+          <p className="text-center my-4">User  created! <Link href="/login">Wait for Admin Approval</Link></p>
         ) : (
           <form className="space-y-4" onSubmit={handleSubmit}>
             <input
