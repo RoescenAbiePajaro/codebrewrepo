@@ -10,7 +10,7 @@ import { verifyPassword } from "./userService";
 import {UserInfo} from "@/models/UserInfo";
 
 export const authOptions = {
-    const: process.env.MONGO_URL,
+    secret: process.env.MONGO_URL,
   adapter: MongoDBAdapter(clientPromise),
   providers: [
     GoogleProvider({
