@@ -2,6 +2,7 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
+import { MongoClient } from "mongodb";
 import clientPromise from "@/libs/mongoConnect";
 import { connectDB } from "@/libs/db";
 import { getUserByEmail } from "./userService";
@@ -9,7 +10,7 @@ import { verifyPassword } from "./userService";
 import {UserInfo} from "@/models/UserInfo";
 
 export const authOptions = {
-  secret: process.env.SECRET,
+    const: process.env.MONGO_URL,
   adapter: MongoDBAdapter(clientPromise),
   providers: [
     GoogleProvider({
