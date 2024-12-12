@@ -92,10 +92,10 @@ export default function CartPage() {
   }
 
   function updateQuantity(index, newQuantity) {
-    if (newQuantity < 1) return; 
-
+    if (newQuantity < 1) return;
+  
     const productStock = cartProducts[index].stock;
-
+  
     // Check if the requested quantity exceeds available stock
     if (newQuantity > productStock) {
       toast(`You can only purchase up to ${productStock} of this product.`, {
@@ -107,13 +107,24 @@ export default function CartPage() {
       });
       return;
     }
-
+  
     setCartProducts(prevProducts => {
       const updatedProducts = [...prevProducts];
       updatedProducts[index].quantity = newQuantity;
+  
+      // Recalculate subtotal
+      let newSubtotal = 0;
+      for (const product of updatedProducts) {
+        newSubtotal += cartProductPrice(product);
+      }
+  
+      // Update change based on the new subtotal
+      setChange(inputAmount ? inputAmount - newSubtotal : null);
+  
       return updatedProducts;
     });
   }
+  
 
   if (status === 'unauthenticated') {
     router.push('/login'); 
@@ -183,15 +194,18 @@ export default function CartPage() {
               <CustomerInputs customerProps={customer} setCustomerProp={handleCustomerChange} />
               
               {/* Amount Input */}
+              {/* Amount Input */}
               <input
                 type="number"
                 value={inputAmount}
                 onChange={(e) => {
-                  const value = e.target.value;
+                  const value = parseFloat(e.target.value);
                   setInputAmount(value);
+
+                  // Ensure valid input and calculate change
                   if (value && !isNaN(value)) {
-                    const calculatedChange = parseFloat(value) - subtotal;
-                    setChange(calculatedChange >= 0 ? calculatedChange : 0);
+                    const calculatedChange = value - subtotal;
+                    setChange(calculatedChange);
                   } else {
                     setChange(null);
                   }
@@ -203,10 +217,17 @@ export default function CartPage() {
               {/* Display Change */}
               {change !== null && (
                 <div className="mt-2 text-lg font-semibold">
-                  <span>Change: </span>
-                  <span>₱{change.toFixed(2)}</span>
+                  {change >= 0 ? (
+                    <>
+                      <span>Change: </span>
+                      <span>₱{change.toFixed(2)}</span>
+                    </>
+                  ) : (
+                    <span className="text-red-500">Amount entered is insufficient!</span>
+                  )}
                 </div>
               )}
+
               
               <button
                 type="submit"
@@ -229,7 +250,14 @@ export default function CartPage() {
       {showReceipt && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
-            <Receipt customer={customer} cartProducts={cartProducts} subtotal={subtotal} createdAt={new Date().toLocaleString()} />
+          <Receipt 
+            customer={customer} 
+            cartProducts={cartProducts} 
+            subtotal={subtotal} 
+            change={change} 
+            createdAt={new Date().toLocaleString()} 
+          />
+
             <div className="mt-4 flex justify-between">
               <button
                 onClick={() => {

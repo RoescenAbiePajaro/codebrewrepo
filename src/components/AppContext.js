@@ -30,17 +30,20 @@ export function AppProvider({ children }) {
 
   useEffect(() => {
     if (ls && ls.getItem('cart')) {
+      let storedCart = [];
       try {
-        const storedCart = JSON.parse(ls.getItem('cart'));
-        if (Array.isArray(storedCart)) {
-          setCartProducts(storedCart);
-        }
+        storedCart = JSON.parse(ls.getItem('cart')) || [];
       } catch (error) {
         console.error("Failed to parse cart from localStorage:", error);
         ls.removeItem('cart');
       }
+  
+      if (Array.isArray(storedCart)) {
+        setTimeout(() => setCartProducts(storedCart), 0);
+      }
     }
   }, [ls]);
+  
 
   function clearCart() {
     setCartProducts([]);
