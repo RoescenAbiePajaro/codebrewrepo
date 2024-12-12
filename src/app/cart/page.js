@@ -66,7 +66,7 @@ export default function CartPage() {
           // After saving the receipt, update stock for each cart item
           await Promise.all(cartProducts.map(async (product) => {
             const updatedStock = product.stock - product.quantity;
-            await fetch('/api/menu-items', {
+            await fetch('https://codebrewrepo-zeta.vercel.app//api/menu-items', {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ _id: product._id, stock: updatedStock }),

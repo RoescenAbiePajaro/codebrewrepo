@@ -20,10 +20,10 @@ export default function MenuPage() {
 
   // Fetch categories and menu items
   useEffect(() => {
-    fetch('/api/categories').then(res => {
+    fetch('https://codebrewrepo-zeta.vercel.app/api/categories').then(res => {
       res.json().then(categories => setCategories(categories));
     });
-    fetch('/api/menu-items').then(res => {
+    fetch('https://codebrewrepo-zeta.vercel.app/api/menu-items').then(res => {
       res.json().then(menuItems => setMenuItems(menuItems));
     });
   }, []);

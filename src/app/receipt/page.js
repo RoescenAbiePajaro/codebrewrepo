@@ -26,7 +26,7 @@ const ReceiptPage = () => {
   const fetchReceipts = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/receipt", { cache: "no-store" });
+      const response = await fetch("https://codebrewrepo-zeta.vercel.app/api/receipt", { cache: "no-store" });
       if (!response.ok) throw new Error("Failed to fetch receipts");
       const data = await response.json();
       setReceipts(data);
@@ -52,7 +52,7 @@ const ReceiptPage = () => {
   const handleDelete = async (id) => {
     setDeleteLoading(true);
     try {
-      const response = await fetch(`/api/receipt?id=${id}`, { method: "DELETE" });
+      const response = await fetch(`https://codebrewrepo-zeta.vercel.app/api/receipt?id=${id}`, { method: "DELETE" });
       if (!response.ok) throw new Error("Failed to delete receipt");
       setReceipts((prevReceipts) =>
         prevReceipts.filter((receipt) => receipt._id !== id)
