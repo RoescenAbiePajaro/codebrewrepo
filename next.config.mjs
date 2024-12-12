@@ -19,4 +19,15 @@ const nextConfig = {
     
 };
 
+module.exports = {
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:3000/api/:path*', // Backend URL in development
+      },
+    ];
+  },
+};
+
 export default nextConfig;
