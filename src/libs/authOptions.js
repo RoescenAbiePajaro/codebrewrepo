@@ -71,10 +71,7 @@ export const authOptions = {
     strategy: "jwt", // Use JWT session strategy
   },
   callbacks: {
-    async redirect({ url, baseUrl }) {
-      // Redirect to production domain
-      return baseUrl;
-  },
+   
     async jwt({ token, user }) {
       if (user) {
         token.email = user.email;
