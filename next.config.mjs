@@ -23,8 +23,8 @@ module.exports = {
   async rewrites() {
     return [
       {
-        source: '/api/:path*',
-        destination: 'http://localhost:3000/api/:path*', // Backend URL in development
+        source: '/api/*.js',
+        destination: 'http://localhost:3000/api/*.js', // Backend URL in development
       },
     ];
   },
