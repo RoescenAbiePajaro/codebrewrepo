@@ -6,12 +6,11 @@
       "dom.iterable",
       "esnext"
     ],
-
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     },
-
-    
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -27,17 +26,17 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "strictNullChecks": true
   },
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "src/app/api/auth/[...nextauth]/route.js"  ],
+    "**/*.tsx",
+    "src/app/api/auth/[...nextauth]/route.js"
+  ],
   "exclude": [
     "node_modules"
-  ],
-  
-
+  ]
 }
