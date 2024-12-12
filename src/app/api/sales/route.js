@@ -1,3 +1,4 @@
+
 import Receipt from "@/models/Receipt";
 import mongoose from "mongoose";
 
