@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import DeleteButton from "@/components/DeleteButton";
 import UserTabs from "@/components/layout/UserTabs";
 import { useEffect, useState } from "react";
@@ -11,7 +11,7 @@ export default function CategoriesPage() {
   const [categories, setCategories] = useState([]);
   const { loading: profileLoading, data: profileData } = useProfile();
   const [editedCategory, setEditedCategory] = useState(null);
-  
+
   // Pagination state
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -38,7 +38,7 @@ export default function CategoriesPage() {
     if (editedCategory) {
       data._id = editedCategory._id;
     }
-    
+
     const method = editedCategory ? 'PUT' : 'POST';
     const response = await fetch('/api/categories', {
       method,
@@ -81,9 +81,9 @@ export default function CategoriesPage() {
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
       <form className="mt-8" onSubmit={handleCategorySubmit}>
-        <div className="flex gap-2 items-end">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
           <div className="grow">
-            <label>
+            <label className="block text-gray-700 font-semibold mb-2">
               {editedCategory ? 'Update category' : 'New category name'}
               {editedCategory && (
                 <>: <b>{editedCategory.name}</b></>
@@ -93,10 +93,15 @@ export default function CategoriesPage() {
               type="text"
               value={categoryName}
               onChange={ev => setCategoryName(ev.target.value)}
+              placeholder="Enter category name"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
-          <div className="pb-2 flex gap-2">
-            <button className="border border-green-500" type="submit">
+          <div className="flex gap-2">
+            <button
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              type="submit"
+            >
               {editedCategory ? 'Update' : 'Create'}
             </button>
             <button
@@ -104,7 +109,9 @@ export default function CategoriesPage() {
               onClick={() => {
                 setEditedCategory(null);
                 setCategoryName('');
-              }}>
+              }}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            >
               Cancel
             </button>
           </div>
@@ -115,23 +122,25 @@ export default function CategoriesPage() {
         {categories?.length > 0 && categories.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(c => (
           <div
             key={c._id}
-            className="bg-gray-100 rounded-xl p- 2 px-4 flex gap-1 mb-1 items-center">
-            <div className="grow">
+            className="bg-gray-100 rounded-xl p-2 px-4 flex gap-2 mb-1 items-center shadow-sm"
+          >
+            <div className="grow font-medium text-gray-700">
               {c.name}
             </div>
-            <div className="flex gap-1">
-              <button className="button bg-green-500 text-white rounded px-4 py-1"
-                      onClick={() => {
-                        setEditedCategory(c);
-                        setCategoryName(c.name);
-                      }}
+            <div className="flex gap-2">
+              <button
+                className="px-4 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                onClick={() => {
+                  setEditedCategory(c);
+                  setCategoryName(c.name);
+                }}
               >
                 Edit
               </button>
-              <DeleteButton 
-                className="bg-red-500 text-white rounded px-4 py-1 hover:bg-red-600"
+              <DeleteButton
+                className="px-4 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                 label="Delete"
-                onDelete={() => handleDeleteClick(c._id)} 
+                onDelete={() => handleDeleteClick(c._id)}
               />
             </div>
           </div>

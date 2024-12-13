@@ -5,14 +5,14 @@ import UserTabs from '@/components/layout/UserTabs';
 import TablePagination from '@mui/material/TablePagination';
 import { useProfile } from "@/components/UseProfile";
 import Modal from '@/components/layout/Modal';
-import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress for loading spinner
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const { loading: profileLoading, data: profileData } = useProfile();
-  const [loading, setLoading] = useState(true); // Track loading state
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -21,7 +21,7 @@ export default function UsersPage() {
   }, []);
 
   const fetchUsers = async () => {
-    setLoading(true); // Set loading to true when starting to fetch data
+    setLoading(true);
     try {
       const response = await fetch('/api/users');
       if (!response.ok) throw new Error('Failed to fetch users');
@@ -31,7 +31,7 @@ export default function UsersPage() {
       console.error('Error fetching users:', error);
       alert('Failed to load users. Please try again later.');
     } finally {
-      setLoading(false); // Set loading to false when fetching is done
+      setLoading(false);
     }
   };
 
@@ -93,60 +93,72 @@ export default function UsersPage() {
   };
 
   if (profileLoading) {
-    return 'Loading user info...';
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <CircularProgress size={60} />
+      </div>
+    );
   }
 
   if (!profileData?.admin) {
-    return 'Not an admin';
+    return <p className="text-center text-red-500 mt-10">Access Denied. You are not an admin.</p>;
   }
 
-
   return (
-    <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <section className="mt-8 max-w-5xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
       <div className="mt-8">
-        {loading ? ( // Show loading spinner while fetching data
+        {loading ? (
           <div className="flex justify-center items-center">
-            <CircularProgress />
+            <CircularProgress size={50} />
           </div>
         ) : (
-          users.length > 0 ? (
-            users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
-              <div key={user._id} className="bg-gray-100 rounded-lg mb-2 p-1 px-4 flex items-center gap-4">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 grow">
-                  <div className="text-gray-900">{user.name || <span className="italic">No name</span>}</div>
-                  <span className="text-gray-500">{user.email}</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {users.length > 0 ? (
+              users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
+                <div
+                  key={user._id}
+                  className="bg-gray-100 shadow-sm rounded-lg p-4 flex flex-col justify-between gap-4"
+                >
+                  <div className="flex flex-col">
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      {user.name || <span className="italic text-gray-500">No Name</span>}
+                    </h3>
+                    <p className="text-sm text-gray-600 break-words">{user.email}</p>
+                  </div>
+                  <div className="flex justify-end gap-2">
+                    <button
+                      onClick={() => handleEdit(user)}
+                      className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(user._id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleEdit(user)}
-                    className="button bg-green-500 text-white rounded px-4 py-1"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(user._id)}
-                    className="button bg-red-500 text-white rounded px-4 py-1"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500">No users found.</p>
-          )
+              ))
+            ) : (
+              <p className="text-gray-500 col-span-full text-center">No users found.</p>
+            )}
+          </div>
         )}
       </div>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={users.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      <div className="mt-6">
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={users.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </div>
       {selectedUser && (
         <Modal
           user={selectedUser}
