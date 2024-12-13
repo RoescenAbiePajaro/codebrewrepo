@@ -21,7 +21,7 @@ export default function CategoriesPage() {
   }, []);
 
   function fetchCategories() {
-    fetch('/api/categories')
+    fetch('https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/categories')
       .then(res => res.json())
       .then(categories => {
         setCategories(categories);
@@ -40,7 +40,7 @@ export default function CategoriesPage() {
     }
     
     const method = editedCategory ? 'PUT' : 'POST';
-    const response = await fetch('/api/categories', {
+    const response = await fetch('https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/categories', {
       method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -57,7 +57,7 @@ export default function CategoriesPage() {
   }
 
   async function handleDeleteClick(_id) {
-    const response = await fetch(`/api/categories?_id=${_id}`, {
+    const response = await fetch(`https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/categories?_id=${_id}`, {
       method: 'DELETE',
     });
 

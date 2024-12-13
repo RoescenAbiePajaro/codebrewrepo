@@ -20,7 +20,7 @@ export default function CustomerPage() {
     }
     if (id) {
       setLoadingCustomer(true);
-      fetch('/api/customers?_id=' + id).then(res => {
+      fetch('https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/customers?_id=' + id).then(res => {
         res.json().then(customerData => {
           setCustomer(customerData);
           setLoadingCustomer(false);

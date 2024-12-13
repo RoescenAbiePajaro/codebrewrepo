@@ -18,7 +18,7 @@ export default function MenuItemForm({ onSubmit, menuItem }) {
   );
 
   useEffect(() => {
-    fetch("/api/categories")
+    fetch("https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/categories")
       .then((res) => res.json())
       .then((categories) => setCategories(categories))
       .catch((err) => console.error("Failed to fetch categories:", err));

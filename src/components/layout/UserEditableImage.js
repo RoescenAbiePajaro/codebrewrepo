@@ -9,7 +9,7 @@ export default function UserEditableImage({link, setLink}) {
       const data = new FormData;
       data.set('file', files[0]);
 
-      const uploadPromise = fetch('/api/upload', {
+      const uploadPromise = fetch('https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/upload', {
         method: 'POST',
         body: data,
       }).then(response => {

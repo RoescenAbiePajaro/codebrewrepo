@@ -29,7 +29,7 @@ export default function Modal({ user, isOpen, onClose }) {
     };
 
     try {
-      const response = await fetch("/api/modal", {
+      const response = await fetch("https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/modal", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedUser),

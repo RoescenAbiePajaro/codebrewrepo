@@ -43,7 +43,7 @@ const SalesPage = () => {
   useEffect(() => {
     const fetchSalesData = async () => {
       try {
-        const response = await fetch(`/api/sales?timeframe=${timeframe}`);
+        const response = await fetch(`https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/sales?timeframe=${timeframe}`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         setSalesData(data);

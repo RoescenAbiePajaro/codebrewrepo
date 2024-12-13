@@ -50,7 +50,7 @@ export default function CartPage() {
     ev.preventDefault();
 
     const promise = new Promise((resolve, reject) => {
-      fetch('/api/receipt', {
+      fetch('https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/receipt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -66,7 +66,7 @@ export default function CartPage() {
           // After saving the receipt, update stock for each cart item
           await Promise.all(cartProducts.map(async (product) => {
             const updatedStock = product.stock - product.quantity;
-            await fetch('/api/menu-items', {
+            await fetch('https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/menu-items', {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ _id: product._id, stock: updatedStock }),
