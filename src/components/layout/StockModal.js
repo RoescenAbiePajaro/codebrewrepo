@@ -20,7 +20,7 @@ const StockModal = ({ isOpen, onClose, onUpdate, stockItem }) => {
       onClose(); // Close the modal
     } else {
       // Handle invalid stock input if needed, like showing an alert
-      alert("Stock cannot be negative");
+      toast.error("Stock cannot be negative");
     }
   };
 

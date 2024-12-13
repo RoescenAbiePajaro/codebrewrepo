@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 export default function Modal({ user, isOpen, onClose }) {
   const [editedName, setEditedName] = useState(user?.name || "");
@@ -16,7 +17,7 @@ export default function Modal({ user, isOpen, onClose }) {
 
   const handleSave = async () => {
     if (!user?._id) {
-      alert("User ID is missing.");
+      toast.error("User ID is missing.");
       return;
     }
 
@@ -40,11 +41,11 @@ export default function Modal({ user, isOpen, onClose }) {
       }
 
       const result = await response.json();
-      alert("User updated successfully");
+      toast.success("User updated successfully");
       onClose(); // Close the modal on success
     } catch (err) {
       console.error("Error updating user:", err);
-      alert("Failed to update user. Please try again.");
+      toast.error("Failed to update user. Please try again.");
     }
   };
 

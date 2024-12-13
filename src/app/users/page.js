@@ -6,6 +6,7 @@ import TablePagination from '@mui/material/TablePagination';
 import { useProfile } from "@/components/UseProfile";
 import Modal from '@/components/layout/Modal';
 import CircularProgress from '@mui/material/CircularProgress';
+import toast from 'react-hot-toast';
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
@@ -29,7 +30,7 @@ export default function UsersPage() {
       setUsers(usersData);
     } catch (error) {
       console.error('Error fetching users:', error);
-      alert('Failed to load users. Please try again later.');
+      toast.error('Failed to load users. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -44,10 +45,10 @@ export default function UsersPage() {
           throw new Error(errorData.error || 'Failed to delete user');
         }
         setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
-        alert('User deleted successfully.');
+        toast.success('User deleted successfully.');
       } catch (error) {
         console.error('Error deleting user:', error);
-        alert('An error occurred while deleting the user.');
+        toast.error('An error occurred while deleting the user.');
       }
     }
   };
@@ -74,10 +75,13 @@ export default function UsersPage() {
         prevUsers.map((user) => (user._id === updatedUser._id ? updatedUser : user))
       );
 
-      alert('User updated successfully.');
+      const result = await response.json();
+      toast.success("User updated successfully");
+      onClose(); // Close the modal on success
+
     } catch (error) {
       console.error('Error updating user:', error);
-      alert(`An error occurred while updating the user: ${error.message}`);
+      toast.error(`An error occurred while updating the user: ${error.message}`);
     }
   };
 
