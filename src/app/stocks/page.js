@@ -1,11 +1,10 @@
-// src\app\stocks\page.js
 'use client';
 import UserTabs from "@/components/layout/UserTabs";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useProfile } from "@/components/UseProfile";
-import StockModal from "@/components/layout/StockModal"; // Updated import
+import StockModal from "@/components/layout/StockModal"; 
 import TablePagination from '@mui/material/TablePagination';
 
 const StocksPage = () => {
@@ -41,7 +40,7 @@ const StocksPage = () => {
   }, []);
 
   const handleUpdateStock = async (id, newStock) => {
-    if (newStock < 0 || isNaN(newStock)) return; // Ensure valid stock value
+    if (newStock < 0 || isNaN(newStock)) return; 
   
     setUpdateLoading((prev) => ({ ...prev, [id]: true }));
   
@@ -64,8 +63,6 @@ const StocksPage = () => {
     }
   };
   
-  
-
   const openModal = (item) => {
     setSelectedStock(item);
     setIsModalOpen(true);
@@ -111,14 +108,14 @@ const StocksPage = () => {
           placeholder="Search stocks..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="border rounded p-2 mb-4 w-full"
+          className="border rounded p-2 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4"
         />
-        <div className="flex justify-end mb-4">
+        <div className="flex flex-col sm:flex-row justify-between mb-4">
           <label>
             <select
               value={filterOption}
               onChange={(e) => setFilterOption(e.target.value)}
-              className="border rounded p-2"
+              className="border rounded p-2 w-full sm:w-auto"
             >
               <option value="all">All</option>
               <option value="soldOut">Sold Out</option>
