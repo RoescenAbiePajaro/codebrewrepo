@@ -9,10 +9,10 @@ export default function MenuPage() {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    fetch('/api/categories').then(res => {
+    fetch('https://codebrewrepo-1.onrender.com/api/categories').then(res => {
       res.json().then(categories => setCategories(categories));
     });
-    fetch('/api/menu-items').then(res => {
+    fetch('https://codebrewrepo-1.onrender.com/api/menu-items').then(res => {
       res.json().then(menuItems => setMenuItems(menuItems));
     });
   }, []);
