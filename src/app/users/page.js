@@ -58,7 +58,7 @@ export default function UsersPage() {
         throw new Error('User ID is required for update');
       }
 
-      const response = await fetch('https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/users', {
+      const response = await fetch('/api/users', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedUserData),

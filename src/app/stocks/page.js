@@ -46,7 +46,7 @@ const StocksPage = () => {
     setUpdateLoading((prev) => ({ ...prev, [id]: true }));
   
     try {
-      const response = await axios.put('https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/menu-items', { _id: id, stock: newStock });
+      const response = await axios.put('/api/menu-items', { _id: id, stock: newStock });
   
       if (response.status === 200) {
         setStocks((prev) =>

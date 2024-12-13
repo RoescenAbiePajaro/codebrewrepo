@@ -27,7 +27,7 @@ const ReceiptPage = () => {
   const fetchReceipts = async () => {
     setLoading(true); // Set loading to true when starting to fetch
     try {
-      const response = await fetch('https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/receipt', { cache: 'no-store' });
+      const response = await fetch('/api/receipt', { cache: 'no-store' });
       if (!response.ok) throw new Error('Failed to fetch receipts');
       const data = await response.json();
       setReceipts(data);

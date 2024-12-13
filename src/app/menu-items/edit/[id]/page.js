@@ -19,7 +19,7 @@ export default function EditMenuItemPage() {
   const {loading, data} = useProfile();
 
   useEffect(() => {
-    fetch('https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/menu-items').then(res => {
+    fetch('/api/menu-items').then(res => {
       res.json().then(items => {
         const item = items.find(i => i._id === id);
         setMenuItem(item);
@@ -31,7 +31,7 @@ export default function EditMenuItemPage() {
     ev.preventDefault();
     data = {...data, _id:id};
     const savingPromise = new Promise(async (resolve, reject) => {
-      const response = await fetch('https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/menu-items', {
+      const response = await fetch('/api/menu-items', {
         method: 'PUT',
         body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json' },

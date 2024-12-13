@@ -15,7 +15,7 @@ export default function RegisterPage() {
     setIsLoading(true);
     setError("");
   
-    const response = await fetch("https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/register", {
+    const response = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
