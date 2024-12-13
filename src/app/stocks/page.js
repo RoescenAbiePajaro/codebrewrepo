@@ -25,7 +25,7 @@ const StocksPage = () => {
 
   const fetchStocks = async () => {
     try {
-      const response = await axios.get('https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/menu-items');
+      const response = await axios.get('/api/menu-items');
       console.log('Fetched stocks:', response.data);
       setStocks(response.data);
     } catch (error) {

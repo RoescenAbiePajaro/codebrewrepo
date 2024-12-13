@@ -21,7 +21,7 @@ export default function CategoriesPage() {
   }, []);
 
   function fetchCategories() {
-    fetch('https://tealerin-koih0jxmd-codebrew-8f15525b.vercel.app/api/categories')
+    fetch('/api/categories')
       .then(res => res.json())
       .then(categories => {
         setCategories(categories);
