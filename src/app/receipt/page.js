@@ -9,6 +9,8 @@ import * as XLSX from "xlsx";
 import TablePagination from "@mui/material/TablePagination";
 import DownloadIcon from "@mui/icons-material/Download";
 import CircularProgress from "@mui/material/CircularProgress";
+import Trash from "@/components/icons/Trash";
+import EyeIcon from "@/components/icons/EyeIcon";
 
 const ReceiptPage = () => {
   const [receipts, setReceipts] = useState([]);
@@ -143,20 +145,20 @@ const ReceiptPage = () => {
                   </span>
                 </div>
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => handleView(receipt)}
-                    className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-                  >
-                    View
-                  </button>
-                  <button
-                    onClick={() => handleDelete(receipt._id)}
-                    className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                    disabled={deleteLoading}
-                  >
-                    {deleteLoading ? "Deleting..." : "Delete"}
-                  </button>
-                </div>
+  <button
+    onClick={() => handleView(receipt)}
+    className="px-4 py-2 text-black  flex items-center gap-2"
+  >
+    <EyeIcon className="h-5 w-5" />
+  </button>
+  <button
+    onClick={() => handleDelete(receipt._id)}
+    className="px-4 py-2  text-black flex items-center gap-2"
+    disabled={deleteLoading}
+  >
+    <Trash className="h-5 w-5" />
+  </button>
+</div>
               </div>
             ))
         ) : (

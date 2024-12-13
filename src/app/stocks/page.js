@@ -5,6 +5,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useProfile } from "@/components/UseProfile";
 import StockModal from "@/components/layout/StockModal"; 
+import PencilIcon from "@/components/icons/PencilIcon";
 import TablePagination from '@mui/material/TablePagination';
 
 const StocksPage = () => {
@@ -159,12 +160,12 @@ const StocksPage = () => {
                     )}
                   </td>
                   <td className="border-b p-2 text-center">
-                    <button
-                      onClick={() => openModal(item)}
-                      className="bg-green-500 text-white rounded px-2 py-1"
-                    >
-                      Update
-                    </button>
+                  <button
+      onClick={() => openModal(item)}
+      className=" text-black rounded px-2 py-1 flex items-center justify-center"
+    >
+      <PencilIcon className="w-4 h-4" />
+    </button>
                   </td>
                 </tr>
               ))}
