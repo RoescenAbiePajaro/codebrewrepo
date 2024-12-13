@@ -84,7 +84,5 @@ export const authOptions = {
       session.name = token.name;
       return session;
     },
-
-    secret: process.env.NEXTAUTH_SECRET,
   },
 };

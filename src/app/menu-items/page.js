@@ -12,7 +12,7 @@ export default function MenuItemsPage() {
   const {loading, data} = useProfile();
 
   useEffect(() => {
-    fetch('https://codebrewrepo-zeta.vercel.app/api/menu-items').then(res => {
+    fetch('/api/menu-items').then(res => {
       res.json().then(menuItems => {
         setMenuItems(menuItems);
       });

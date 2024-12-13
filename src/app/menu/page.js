@@ -9,10 +9,10 @@ export default function MenuPage() {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    fetch('https://codebrewrepo-zeta.vercel.app/api/categories').then(res => {
+    fetch('/api/categories').then(res => {
       res.json().then(categories => setCategories(categories));
     });
-    fetch('https://codebrewrepo-zeta.vercel.app/api/menu-items').then(res => {
+    fetch('/api/menu-items').then(res => {
       res.json().then(menuItems => setMenuItems(menuItems));
     });
   }, []);

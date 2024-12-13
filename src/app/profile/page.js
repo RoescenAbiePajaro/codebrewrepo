@@ -26,7 +26,7 @@ export default function ProfilePage() {
 
     if (status === 'authenticated') {
       setLoading(true); // Set loading to true while fetching
-      fetch('https://codebrewrepo-zeta.vercel.app/api/profile')
+      fetch('/api/profile')
         .then(response => response.json())
         .then(data => {
           if (data) {
@@ -48,7 +48,7 @@ export default function ProfilePage() {
     ev.preventDefault();
 
     const savingPromise = new Promise(async (resolve, reject) => {
-      const response = await fetch('https://codebrewrepo-zeta.vercel.app/api/profile', {
+      const response = await fetch('/api/profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
