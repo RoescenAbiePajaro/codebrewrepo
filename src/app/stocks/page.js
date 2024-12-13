@@ -25,7 +25,7 @@ const StocksPage = () => {
 
   const fetchStocks = async () => {
     try {
-      const response = await axios.get('https://tealerinmilktea.onrender.com/api/menu-items');
+      const response = await axios.get('/api/menu-items');
       console.log('Fetched stocks:', response.data);
       setStocks(response.data);
     } catch (error) {
@@ -46,7 +46,7 @@ const StocksPage = () => {
     setUpdateLoading((prev) => ({ ...prev, [id]: true }));
   
     try {
-      const response = await axios.put('https://tealerinmilktea.onrender.com/api/menu-items', { _id: id, stock: newStock });
+      const response = await axios.put('/api/menu-items', { _id: id, stock: newStock });
   
       if (response.status === 200) {
         setStocks((prev) =>

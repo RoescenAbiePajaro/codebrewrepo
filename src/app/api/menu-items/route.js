@@ -22,7 +22,7 @@ export async function GET() {
     const menuItems = await MenuItem.find(); // Fetch all menu items, including stock
     return new Response(JSON.stringify(menuItems), { status: 200 });
   } catch (error) {
-    console.error("Error in GET https://tealerinmilktea.onrender.com/api/menu-items:", error);
+    console.error("Error in GET /api/menu-items:", error);
     return new Response(JSON.stringify({ error: "Failed to retrieve menu items" }), { status: 500 });
   }
 }
@@ -48,7 +48,7 @@ export async function POST(req) {
     const menuItemDoc = await MenuItem.create(data);
     return new Response(JSON.stringify(menuItemDoc), { status: 201 });
   } catch (error) {
-    console.error("Error in POST https://tealerinmilktea.onrender.com/api/menu-items:", error);
+    console.error("Error in POST /api/menu-items:", error);
     return new Response(JSON.stringify({ error: error.message || "Failed to create menu item" }), { status: 500 });
   }
 }
@@ -72,7 +72,7 @@ export async function PUT(req) {
 
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 403 });
   } catch (error) {
-    console.error("Error in PUT https://tealerinmilktea.onrender.com/api/menu-items:", error);
+    console.error("Error in PUT /api/menu-items:", error);
     return new Response(JSON.stringify({ error: "Failed to update menu item" }), { status: 500 });
   }
 }
@@ -90,7 +90,7 @@ export async function DELETE(req) {
 
     return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (error) {
-    console.error("Error in DELETE https://tealerinmilktea.onrender.com/api/menu-items:", error);
+    console.error("Error in DELETE /api/menu-items:", error);
     return new Response(JSON.stringify({ error: "Failed to delete menu item" }), { status: 500 });
   }
 }
