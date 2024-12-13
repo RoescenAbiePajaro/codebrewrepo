@@ -15,7 +15,7 @@ export default function RegisterPage() {
     setIsLoading(true);
     setError("");
   
-    const response = await fetch("https://codebrewrepo-1.onrender.com/api/register", {
+    const response = await fetch("https://codebrewrepo.onrender.com/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),

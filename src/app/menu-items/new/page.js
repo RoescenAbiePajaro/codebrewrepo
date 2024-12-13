@@ -18,7 +18,7 @@ export default function NewMenuItemPage() {
   async function handleFormSubmit(ev, data) {
     ev.preventDefault();
     const savingPromise = new Promise(async (resolve, reject) => {
-      const response = await fetch('https://codebrewrepo-1.onrender.com/api/menu-items', {
+      const response = await fetch('https://codebrewrepo.onrender.com/api/menu-items', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json' },

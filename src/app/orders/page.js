@@ -17,7 +17,7 @@ export default function OrdersPage() {
 
   function fetchOrders() {
     setLoadingOrders(true);
-    fetch('https://codebrewrepo-1.onrender.com/api/orders').then(res => {
+    fetch('https://codebrewrepo.onrender.com/api/orders').then(res => {
       res.json().then(orders => {
         setOrders(orders.reverse());
         setLoadingOrders(false);

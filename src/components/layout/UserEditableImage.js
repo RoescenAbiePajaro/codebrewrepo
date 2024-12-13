@@ -9,7 +9,7 @@ export default function UserEditableImage({link, setLink}) {
       const data = new FormData;
       data.set('file', files[0]);
 
-      const uploadPromise = fetch('https://codebrewrepo-1.onrender.com/api/upload', {
+      const uploadPromise = fetch('https://codebrewrepo.onrender.com/api/upload', {
         method: 'POST',
         body: data,
       }).then(response => {

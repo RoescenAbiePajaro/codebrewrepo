@@ -12,7 +12,7 @@ export default function MenuItemsPage() {
   const {loading, data} = useProfile();
 
   useEffect(() => {
-    fetch('https://codebrewrepo-1.onrender.com/api/menu-items').then(res => {
+    fetch('https://codebrewrepo.onrender.com/api/menu-items').then(res => {
       res.json().then(menuItems => {
         setMenuItems(menuItems);
       });

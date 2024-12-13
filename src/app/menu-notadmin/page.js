@@ -20,10 +20,10 @@ export default function MenuPage() {
 
   // Fetch categories and menu items
   useEffect(() => {
-    fetch('https://codebrewrepo-1.onrender.com/api/categories').then(res => {
+    fetch('https://codebrewrepo.onrender.com/api/categories').then(res => {
       res.json().then(categories => setCategories(categories));
     });
-    fetch('https://codebrewrepo-1.onrender.com/api/menu-items').then(res => {
+    fetch('https://codebrewrepo.onrender.com/api/menu-items').then(res => {
       res.json().then(menuItems => setMenuItems(menuItems));
     });
   }, []);
