@@ -46,7 +46,7 @@ const StocksPage = () => {
     setUpdateLoading((prev) => ({ ...prev, [id]: true }));
   
     try {
-      const response = await axios.put('https://tealerinmilktea.onrender.com/menu-items', { _id: id, stock: newStock });
+      const response = await axios.put('https://tealerinmilktea.onrender.com/api/menu-items', { _id: id, stock: newStock });
   
       if (response.status === 200) {
         setStocks((prev) =>
