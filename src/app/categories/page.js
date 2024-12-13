@@ -139,7 +139,7 @@ export default function CategoriesPage() {
               </button>
               
               <DeleteButton
-                className="px-4 py-1 bg-red-500 text-black rounded hover:bg-red-600"
+                className="px-4 py-1 bg-red-500 text- rounded hover:bg-red-600"
                 label="Delete"
                 onDelete={() => handleDeleteClick(c._id)}
               />

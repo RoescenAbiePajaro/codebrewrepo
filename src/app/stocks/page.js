@@ -5,7 +5,6 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useProfile } from "@/components/UseProfile";
 import StockModal from "@/components/layout/StockModal"; 
-import PencilIcon from "@/components/icons/PencilIcon";
 import TablePagination from '@mui/material/TablePagination';
 
 const StocksPage = () => {
@@ -40,14 +39,18 @@ const StocksPage = () => {
     fetchStocks();
   }, []);
 
+  useEffect(() => {
+    setPage(0);  // Reset page when search or filter option changes
+  }, [searchQuery, filterOption]);
+
   const handleUpdateStock = async (id, newStock) => {
     if (newStock < 0 || isNaN(newStock)) return; 
-  
+
     setUpdateLoading((prev) => ({ ...prev, [id]: true }));
-  
+
     try {
       const response = await axios.put('/api/menu-items', { _id: id, stock: newStock });
-  
+
       if (response.status === 200) {
         setStocks((prev) =>
           prev.map((item) => (item._id === id ? { ...item, stock: newStock } : item))
@@ -63,7 +66,7 @@ const StocksPage = () => {
       setUpdateLoading((prev) => ({ ...prev, [id]: false }));
     }
   };
-  
+
   const openModal = (item) => {
     setSelectedStock(item);
     setIsModalOpen(true);
@@ -160,12 +163,12 @@ const StocksPage = () => {
                     )}
                   </td>
                   <td className="border-b p-2 text-center">
-                  <button
-      onClick={() => openModal(item)}
-      className=" text-black rounded px-2 py-1 flex items-center justify-center"
-    >
-      <PencilIcon className="w-4 h-4" />
-    </button>
+                    <button
+                      onClick={() => openModal(item)}
+                      className="bg-green-500 text-white rounded px-2 py-1"
+                    >
+                      Update
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -184,7 +187,7 @@ const StocksPage = () => {
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={filteredStocks.length}
+        count={filteredStocks.length}  // This should be filteredStocks length
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

@@ -33,7 +33,7 @@ export default function MenuItemsPage() {
       <div className="mt-8">
         
         <Link
-          className="button flex items-center justify-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600"
+          className="font-semibold flex items-center justify-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600"
           href={'/menu-items/new'}>
           <span>Create new menu item</span>
           <Right />
