@@ -1,9 +1,9 @@
-// src\app\menu-notadmin\page.js
 'use client';
+
 import SectionHeaders from "@/components/layout/SectionHeaders";
-import {useProfile} from "@/components/UseProfile";
 import MenuItem from "@/components/menu/MenuItem";
 import UserTabs from "../../components/layout/UserTabs";
+import { useProfile } from "@/components/UseProfile";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react"; 
 
@@ -11,12 +11,10 @@ export default function MenuPage() {
   const [categories, setCategories] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [user, setUser] = useState([]); // State to store user data
-  const {loading, data} = useProfile();
+  const { loading: profileLoading, data: profileData } = useProfile();
   const { data: session } = useSession();
-  
+
   const isAdmin = session?.user?.isAdmin || false;
-  const isPermissions = session?.user?.permissions || true; // Check permissions
 
   // Fetch categories and menu items
   useEffect(() => {
@@ -33,25 +31,30 @@ export default function MenuPage() {
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (loading) {
+  const filteredCategories = categories.filter(category =>
+    category.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const hasSearchQuery = searchQuery.trim().length > 0;
+
+  if (profileLoading) {
     return 'Loading user info...';
   }
-  
+
   if (!session?.user) {
-    return 'Not an User.'; // Check if session and session.user are available
+    return 'Not a User.'; // Ensure user is authenticated
   }
-  
+
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-     <UserTabs
-        isPermission={user?.permissions}
-      />
+      {/* User Tabs Section */}
+      <UserTabs isAdmin={isAdmin} />
 
       {/* Search Bar */}
       <div className="text-center mb-8">
         <input
           type="text"
-          placeholder="Search products..."
+          placeholder="Search products or categories..."
           className="px-4 py-2 border rounded"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -64,21 +67,49 @@ export default function MenuPage() {
         </button>
       </div>
 
-      {categories?.length > 0 && categories.map(c => (
-        <div key={c._id}>
-          <div className="text-center">
-            <SectionHeaders mainHeader={c.name} />
-          </div>
-          <div className="grid sm:grid-cols-3 gap-4 mt-6 mb-12">
-            {/* Filtered items */}
-            {filteredMenuItems
-              .filter(item => item.category === c._id)
-              .map(item => (
-                <MenuItem key={item._id} {...item} />
-              ))}
-          </div>
+      {hasSearchQuery && (
+        <div className="mb-8">
+          <h2 className="text-xl font-bold mb-4">Search Results</h2>
+          {/* Show matched categories */}
+          {filteredCategories.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold">Categories</h3>
+              <ul className="list-disc list-inside">
+                {filteredCategories.map(category => (
+                  <li key={category._id} className="mt-1">{category.name}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {/* Show matched products */}
+          {filteredMenuItems.length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold">Products</h3>
+              <div className="grid sm:grid-cols-3 gap-4 mt-4">
+                {filteredMenuItems.map(item => (
+                  <MenuItem key={item._id} {...item} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-      ))}
+      )}
+
+      {!hasSearchQuery &&
+        categories.map(category => (
+          <div key={category._id}>
+            <div className="text-center">
+              <SectionHeaders mainHeader={category.name} />
+            </div>
+            <div className="grid sm:grid-cols-3 gap-4 mt-6 mb-12">
+              {menuItems
+                .filter(item => item.category === category._id)
+                .map(item => (
+                  <MenuItem key={item._id} {...item} />
+                ))}
+            </div>
+          </div>
+        ))}
     </section>
   );
 }
