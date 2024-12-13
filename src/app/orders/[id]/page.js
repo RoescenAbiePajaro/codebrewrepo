@@ -20,7 +20,7 @@ export default function CustomerPage() {
     }
     if (id) {
       setLoadingCustomer(true);
-      fetch('https://codebrewrepo.onrender.com/api/customers?_id=' + id).then(res => {
+      fetch('https://tealerinmilktea.onrender.com/api/customers?_id=' + id).then(res => {
         res.json().then(customerData => {
           setCustomer(customerData);
           setLoadingCustomer(false);

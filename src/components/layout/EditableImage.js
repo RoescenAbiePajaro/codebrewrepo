@@ -9,7 +9,7 @@ export default function EditableImage({link, setLink}) {
       const data = new FormData;
       data.set('file', files[0]);
 
-      const uploadPromise = fetch('https://codebrewrepo.onrender.com/api/upload', {
+      const uploadPromise = fetch('https://tealerinmilktea.onrender.com/api/upload', {
         method: 'POST',
         body: data,
       }).then(response => {

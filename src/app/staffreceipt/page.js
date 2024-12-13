@@ -27,7 +27,7 @@ const ReceiptPage = () => {
   const fetchReceipts = async () => {
     setLoading(true); // Set loading to true when starting to fetch
     try {
-      const response = await fetch('https://codebrewrepo.onrender.com/api/receipt', { cache: 'no-store' });
+      const response = await fetch('https://tealerinmilktea.onrender.com/api/receipt', { cache: 'no-store' });
       if (!response.ok) throw new Error('Failed to fetch receipts');
       const data = await response.json();
       setReceipts(data);

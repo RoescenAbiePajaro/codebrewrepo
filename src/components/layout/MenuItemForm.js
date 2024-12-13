@@ -18,7 +18,7 @@ export default function MenuItemForm({ onSubmit, menuItem }) {
   );
 
   useEffect(() => {
-    fetch("https://codebrewrepo.onrender.com/api/categories")
+    fetch("https://tealerinmilktea.onrender.com/api/categories")
       .then((res) => res.json())
       .then((categories) => setCategories(categories))
       .catch((err) => console.error("Failed to fetch categories:", err));

@@ -7,7 +7,7 @@ export function useProfile() {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     setLoading(true);
-    fetch('https://codebrewrepo.onrender.com/api/profile').then(response => {
+    fetch('https://tealerinmilktea.onrender.com/api/profile').then(response => {
       response.json().then(data => {
         setData(data);
         setLoading(false);
