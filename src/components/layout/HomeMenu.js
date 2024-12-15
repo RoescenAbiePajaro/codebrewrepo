@@ -64,8 +64,7 @@ export default function HomeMenu() {
         </div>
         {/* Section Headers */}
         <SectionHeaders
-          subHeader="Refreshing Flavors Await"
-          mainHeader={<span className="text-white">Welcome to Tealerin Milktea</span>} 
+          mainHeader={<span className="text-white">Tealerin Milktea</span>} 
         />
       </div>
 
