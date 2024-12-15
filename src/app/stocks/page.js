@@ -112,7 +112,7 @@ const StocksPage = () => {
           placeholder="Search stocks..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className=" rounded p-2 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4  focus:ring-green-500"
+          className=" rounded p-2 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4  border focus:outline-black"
         />
         <div className="flex flex-col sm:flex-row justify-between mb-4">
           <label>
