@@ -1,11 +1,12 @@
-//Receipt.js
+// src\components\layout\Receipt.js
 'use client';
 import React from 'react';
 import Image from 'next/image';
-import {cartProductPrice} from "@/components/AppContext";
+import { cartProductPrice } from "@/components/AppContext";
 
-const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0, createdAt }) => {
-  const { staffname } = customer; 
+const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0, createdAt, amountPaid = 0 }) => {
+  const { staffname } = customer;
+  const change = amountPaid - subtotal;
 
   return (
     <div id="receipt" className="p-6 bg-white shadow-lg rounded-lg">
@@ -22,7 +23,7 @@ const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0, createdAt }) 
         <p>Contact: 0927-368-5006 | Block 10 Lot 23 Long Road</p>
       </div>
 
-      {/* Staff Information */}
+      {/* Customer Information */}
       <div className="mt-4">
         <h3 className="font-semibold text-gray-700">Staff Information</h3>
         <p>Name: <span className="font-medium">{staffname || "No Name"}</span></p>
@@ -34,32 +35,55 @@ const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0, createdAt }) 
         <h2 className="text-center font-bold">Receipt</h2>
         <div className="mt-4">
           {cartProducts.length > 0 ? (
-            cartProducts.map((product, index) => (
-              <div key={index} className="flex justify-between items-center mb-2">
-                <span>{product.name} (x{product.quantity})</span>
-                <span>₱{cartProductPrice(product).toFixed(2)}</span>
-              </div>
-            ))
+            cartProducts.map((product, index) => {
+              const productPrice = cartProductPrice(product) || product.price || 0;
+              const totalProductPrice = (productPrice * product.quantity).toFixed(2);
+
+              return (
+                <div key={index} className="mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span>{product.name} (x{product.quantity})</span>
+                    <span>₱{totalProductPrice}</span>
+                  </div>
+
+                  {/* Size Details */}
+                  {product.size && (
+                    <div className="ml-4 text-sm text-gray-500">
+                      <span>Size: </span><span className="font-medium">{product.size.name}</span>
+                      {product.size.price && <span> - ₱{product.size.price}</span>}
+                    </div>
+                  )}
+
+                  {/* Extras Details */}
+                  {product.extras?.length > 0 && (
+                    <div className="ml-4 text-sm text-gray-500">
+                      {product.extras.map((extra) => (
+                        <div key={extra.name}>
+                          <span>{extra.name}</span> - <span>₱{extra.price}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })
           ) : (
             <p>No products in the cart</p>
           )}
         </div>
 
-        
         {/* Subtotal and Total */}
         <div className="mt-4 text-right">
           <p><strong>Total:</strong> ₱{subtotal.toFixed(2)}</p>
-        </div>
-      </div>
 
-      {/* Thank You Note */}
-      <div className="mt-4 border-t pt-4 text-center text-gray-600">
-        <p>Thank you for your purchase!</p>
-        <p>Visit us again!</p>
-        <p>
-          Please note that this is a non-refundable amount. For any assistance, please email 
-          <b> paolonavarrosa@gmail.com</b>.
-        </p>
+          {/* Money Paid and Change */}
+          {amountPaid > 0 && (
+            <div className="mt-2">
+              <p><strong>Amount Paid:</strong> ₱{amountPaid.toFixed(2)}</p>
+              <p><strong>Change:</strong> ₱{change.toFixed(2)}</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

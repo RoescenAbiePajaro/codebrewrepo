@@ -1,15 +1,15 @@
 'use client';
 import Right from "@/components/icons/Right";
 import UserTabs from "@/components/layout/UserTabs";
-import {useProfile} from "@/components/UseProfile";
+import { useProfile } from "@/components/UseProfile";
 import Image from "next/image";
 import Link from "next/link";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
 export default function MenuItemsPage() {
-
   const [menuItems, setMenuItems] = useState([]);
-  const {loading, data} = useProfile();
+  const [searchQuery, setSearchQuery] = useState(""); // State for the search query
+  const { loading, data } = useProfile();
 
   useEffect(() => {
     fetch('/api/menu-items').then(res => {
@@ -27,23 +27,38 @@ export default function MenuItemsPage() {
     return 'Not an admin.';
   }
 
+  // Filter the menu items based on the search query
+  const filteredMenuItems = menuItems.filter(item =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
       <div className="mt-8">
-        
         <Link
           className="font-semibold flex items-center justify-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600"
           href={'/menu-items/new'}>
           <span>Create new menu item</span>
           <Right />
         </Link>
-
       </div>
+
+      {/* Search Bar */}
+      <div className="mt-8">
+        <input
+          type="text"
+          placeholder="Search menu items..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+        />
+      </div>
+
       <div>
         <h2 className="text-sm text-gray-500 mt-8">Edit menu item:</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
-          {menuItems?.length > 0 && menuItems.map(item => (
+          {filteredMenuItems?.length > 0 && filteredMenuItems.map(item => (
             <Link
               key={item._id}
               href={'/menu-items/edit/' + item._id}

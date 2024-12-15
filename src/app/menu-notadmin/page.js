@@ -51,11 +51,11 @@ export default function MenuPage() {
       <UserTabs isAdmin={isAdmin} />
 
       {/* Search Bar */}
-      <div className="text-center mb-8">
+      <div className="text-center mb-8 p-2 rounded-lg">
         <input
           type="text"
           placeholder="Search products or categories..."
-          className="px-4 py-2 border rounded"
+          className="p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />

@@ -29,7 +29,7 @@ export default function MenuPage() {
         <input
           type="text"
           placeholder="Search products..."
-          className="px-4 py-2 border rounded"
+          className="p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
