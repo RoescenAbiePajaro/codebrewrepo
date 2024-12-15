@@ -29,18 +29,24 @@ export default function CartPage() {
   }, []);
 
   useEffect(() => {
-    if (profileData && (profileData.staffname)) {
-      const { staffname} = profileData;
-      setCustomer({ staffname});
+    if (profileData && profileData.staffname) {
+      const { staffname } = profileData;
+      setCustomer({ staffname });
     }
   }, [profileData]);
 
-  let subtotal = 0;
-  if (cartProducts) {
-    for (const p of cartProducts) {
-      subtotal += cartProductPrice(p);
+  useEffect(() => {
+    if (cartProducts) {
+      let subtotal = 0;
+      cartProducts.forEach(p => {
+        subtotal += cartProductPrice(p);
+      });
+      if (inputAmount) {
+        const calculatedChange = inputAmount - subtotal;
+        setChange(calculatedChange);
+      }
     }
-  }
+  }, [cartProducts, inputAmount]);
 
   function handleCustomerChange(propName, value) {
     setCustomer(prevCustomer => ({ ...prevCustomer, [propName]: value }));
@@ -56,7 +62,7 @@ export default function CartPage() {
         body: JSON.stringify({
           customer,
           cartProducts,
-          subtotal,
+          subtotal: cartProducts.reduce((total, product) => total + cartProductPrice(product), 0),
           change,
         }),
       }).then(async (response) => {
@@ -93,38 +99,23 @@ export default function CartPage() {
 
   function updateQuantity(index, newQuantity) {
     if (newQuantity < 1) return;
-  
+
     const productStock = cartProducts[index].stock;
-  
-    // Check if the requested quantity exceeds available stock
+
     if (newQuantity > productStock) {
       toast(`You can only purchase up to ${productStock} of this product.`, {
         icon: '⚠️',
-        style: {
-          background: '#fff',
-          color: '#000',
-        },
+        style: { background: '#fff', color: '#000' },
       });
       return;
     }
-  
+
     setCartProducts(prevProducts => {
       const updatedProducts = [...prevProducts];
       updatedProducts[index].quantity = newQuantity;
-  
-      // Recalculate subtotal
-      let newSubtotal = 0;
-      for (const product of updatedProducts) {
-        newSubtotal += cartProductPrice(product);
-      }
-  
-      // Update change based on the new subtotal
-      setChange(inputAmount ? inputAmount - newSubtotal : null);
-  
       return updatedProducts;
     });
   }
-  
 
   if (status === 'unauthenticated') {
     router.push('/login'); 
@@ -140,123 +131,109 @@ export default function CartPage() {
     );
   }
 
+  let subtotal = cartProducts.reduce((total, product) => total + cartProductPrice(product), 0);
+
   return (
     <section className="mt-8 px-4">
       <div className="text-center">
         <SectionHeaders mainHeader="Your Cart" />
       </div>
-  
-      {(!cartProducts || cartProducts.length === 0) ? (
-        <section className="mt-8 text-center space-y-4">
-          <p className="text-gray-500 text-lg">Your cart is currently empty 😔</p>
-          <button 
-            onClick={() => router.push('/menu')}
-            className="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-          >
-            Browse Menu
-          </button>
-        </section>
-      ) : (
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Cart Items */}
-          <div>
-            {cartProducts.map((product, index) => (
-              <div key={index} className="mb-4 flex items-center justify-between border-b pb-4">
-                <CartProduct product={product} index={index} onRemove={removeCartProduct} />
-                <div className="flex items-center space-x-2">
-                  <button
-                    className="bg-gray-200 px-2 py-1 rounded-full hover:bg-gray-300"
-                    onClick={() => updateQuantity(index, product.quantity - 1)}
-                  >
-                    -
-                  </button>
-                  <span className="text-lg font-semibold">{product.quantity}</span>
-                  <button
-                    className="bg-gray-200 px-2 py-1 rounded-full hover:bg-gray-300"
-                    onClick={() => updateQuantity(index, product.quantity + 1)}
-                  >
-                    +
-                  </button>
-                </div>
+
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Cart Items */}
+        <div>
+          {cartProducts.map((product, index) => (
+            <div key={index} className="mb-4 flex items-center justify-between border-b pb-4">
+              <CartProduct product={product} index={index} onRemove={removeCartProduct} />
+              <div className="flex items-center space-x-2">
+                <button
+                  className="bg-gray-200 px-2 py-1 rounded-full hover:bg-gray-300"
+                  onClick={() => updateQuantity(index, product.quantity - 1)}
+                >
+                  -
+                </button>
+                <span className="text-lg font-semibold">{product.quantity}</span>
+                <button
+                  className="bg-gray-200 px-2 py-1 rounded-full hover:bg-gray-300"
+                  onClick={() => updateQuantity(index, product.quantity + 1)}
+                >
+                  +
+                </button>
               </div>
-            ))}
-    
-            <div className="mt-6 flex justify-between items-center text-lg font-semibold">
-              <span>Subtotal:</span>
-              <span>₱{subtotal.toFixed(2)}</span>
             </div>
-          </div>
-    
-          {/* Checkout Form */}
-          <div className="bg-gray-100 p-6 rounded-lg shadow-md space-y-6">
-            <h2 className="text-xl font-bold">Checkout</h2>
-            <form onSubmit={saveReceipt}>
-              <CustomerInputs customerProps={customer} setCustomerProp={handleCustomerChange} />
-              
-              {/* Amount Input */}
-              {/* Amount Input */}
-              <input
-                type="number"
-                value={inputAmount}
-                onChange={(e) => {
-                  const value = parseFloat(e.target.value);
-                  setInputAmount(value);
+          ))}
 
-                  // Ensure valid input and calculate change
-                  if (value && !isNaN(value)) {
-                    const calculatedChange = value - subtotal;
-                    setChange(calculatedChange);
-                  } else {
-                    setChange(null);
-                  }
-                }}
-                placeholder="Enter amount (e.g., 20 pesos)"
-                className="w-full p-2 border border-gray-300 rounded-md"
-              />
-
-              {/* Display Change */}
-              {change !== null && (
-                <div className="mt-2 text-lg font-semibold">
-                  {change >= 0 ? (
-                    <>
-                      <span>Change: </span>
-                      <span>₱{change.toFixed(2)}</span>
-                    </>
-                  ) : (
-                    <span className="text-red-500">Amount entered is insufficient!</span>
-                  )}
-                </div>
-              )}
-
-              
-              <button
-                type="submit"
-                className="w-full mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-              >
-                Save Receipt
-              </button>
-            </form>
-            <button
-              onClick={() => setShowReceipt(true)}
-              className="w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-            >
-              Print Receipt
-            </button>
+          <div className="mt-6 flex justify-between items-center text-lg font-semibold">
+            <span>Subtotal:</span>
+            <span>₱{subtotal.toFixed(2)}</span>
           </div>
         </div>
-      )}
-    
+
+        {/* Checkout Form */}
+        <div className="bg-gray-100 p-6 rounded-lg shadow-md space-y-6">
+          <h2 className="text-xl font-bold">Checkout</h2>
+          <form onSubmit={saveReceipt}>
+            <CustomerInputs customerProps={customer} setCustomerProp={handleCustomerChange} />
+            
+            {/* Amount Input */}
+            <input
+              type="number"
+              value={inputAmount}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value);
+                setInputAmount(value);
+                if (value && !isNaN(value)) {
+                  const calculatedChange = value - subtotal;
+                  setChange(calculatedChange);
+                } else {
+                  setChange(null);
+                }
+              }}
+              placeholder="Enter amount (e.g., 20 pesos)"
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+
+            {/* Display Change */}
+            {change !== null && (
+              <div className="mt-2 text-lg font-semibold">
+                {change >= 0 ? (
+                  <>
+                    <span>Change: </span>
+                    <span>₱{change.toFixed(2)}</span>
+                  </>
+                ) : (
+                  <span className="text-red-500">Amount entered is insufficient!</span>
+                )}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="w-full mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+            >
+              Save Receipt
+            </button>
+          </form>
+          <button
+            onClick={() => setShowReceipt(true)}
+            className="w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+          >
+            Print Receipt
+          </button>
+        </div>
+      </div>
+
       {/* Receipt Modal */}
       {showReceipt && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
-          <Receipt 
-            customer={customer} 
-            cartProducts={cartProducts} 
-            subtotal={subtotal} 
-            change={change} 
-            createdAt={new Date().toLocaleString()} 
-          />
+            <Receipt 
+              customer={customer} 
+              cartProducts={cartProducts} 
+              subtotal={subtotal} 
+              change={change} 
+              createdAt={new Date().toLocaleString()} 
+            />
 
             <div className="mt-4 flex justify-between">
               <button

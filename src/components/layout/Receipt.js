@@ -1,10 +1,8 @@
-//Print dito Receipt.js
+//Receipt.js
 'use client';
 import React from 'react';
 import Image from 'next/image';
 import {cartProductPrice} from "@/components/AppContext";
-
-
 
 const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0, createdAt }) => {
   const { staffname } = customer; 
@@ -24,7 +22,7 @@ const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0, createdAt }) 
         <p>Contact: 0927-368-5006 | Block 10 Lot 23 Long Road</p>
       </div>
 
-      {/* Customer Information */}
+      {/* Staff Information */}
       <div className="mt-4">
         <h3 className="font-semibold text-gray-700">Staff Information</h3>
         <p>Name: <span className="font-medium">{staffname || "No Name"}</span></p>

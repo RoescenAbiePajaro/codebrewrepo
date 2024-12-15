@@ -13,9 +13,7 @@ const ReceiptModal = ({ isOpen, onClose, receipt }) => {
   const staffName = receipt.customer?.staffname || "No Name"; // Default to "No Name" if staffname is undefined
   const cartProducts = receipt.cartProducts || []; // Default to an empty array if cartProducts is undefined
   const createdAt = receipt.createdAt || null;
-
-  // Debugging logs to check data
-  console.log('Cart Products:', cartProducts);
+  const change = typeof receipt.change === "number" ? receipt.change : null; // Ensure change is a valid number
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
@@ -62,11 +60,19 @@ const ReceiptModal = ({ isOpen, onClose, receipt }) => {
           </ul>
         </div>
 
-        {/* Subtotal and Total */}
+        {/* Subtotal */}
         <div className="mt-4 flex justify-between font-bold text-gray-800">
           <span>Total:</span>
           <span>₱{safeSubtotal.toFixed(2)}</span>
         </div>
+
+        {/* Change Section */}
+        {change !== null && (
+          <div className="mt-2 flex justify-between font-semibold text-gray-800">
+            <span>Change:</span>
+            <span>₱{change.toFixed(2)}</span>
+          </div>
+        )}
 
         {/* Thank You Note */}
         <div className="mt-4 border-t pt-4 text-center text-gray-600">

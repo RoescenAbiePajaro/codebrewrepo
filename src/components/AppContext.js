@@ -39,10 +39,12 @@ export function AppProvider({ children }) {
       }
   
       if (Array.isArray(storedCart)) {
-        setTimeout(() => setCartProducts(storedCart), 0);
+        // Defer the update to ensure it doesn't interfere with the render phase
+        requestAnimationFrame(() => setCartProducts(storedCart));
       }
     }
   }, [ls]);
+  
   
 
   function clearCart() {
