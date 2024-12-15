@@ -17,7 +17,7 @@ function AuthLinks({ status, userName }) {
         <button
           onClick={() =>
             signOut({
-              callbackUrl: '/login', // Redirect to login page after logging out
+              callbackUrl: '/https://tealerinmilktea.onrender.com/', // Redirect to login page after logging out
             })
           }
           className="bg-green-500 rounded-full text-white px-8 py-2"
