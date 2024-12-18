@@ -117,7 +117,7 @@ const StocksPage = () => {
           placeholder="Search stocks..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className=" rounded p-2 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4  border focus:outline-black"
+          className="rounded p-2 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 border focus:outline-black"
         />
         <div className="flex flex-col sm:flex-row justify-between mb-4">
           <label>
@@ -136,10 +136,10 @@ const StocksPage = () => {
           <table className="min-w-full bg-white border border-gray-300">
             <thead>
               <tr>
-                <th className="border-b p-2">Name</th>
-                <th className="border-b p-2">Base Price</th>
-                <th className="border-b p-2">Stock</th>
-                <th className="border-b p-2">Action</th>
+                <th className="border-b p-2 text-left">Name</th>
+                <th className="border-b p-2 text-right">Base Price</th>
+                <th className="border-b p-2 text-right">Stock</th>
+                <th className="border-b p-2 text-center">Action</th>
               </tr>
             </thead>
             <tbody>
