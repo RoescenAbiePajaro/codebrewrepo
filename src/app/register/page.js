@@ -15,7 +15,7 @@ export default function RegisterPage() {
     setIsLoading(true);
     setError("");
   
-    const response = await fetch("/api/register", {
+    const response = await fetch("https://tealerinmilktea.onrender.com/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),

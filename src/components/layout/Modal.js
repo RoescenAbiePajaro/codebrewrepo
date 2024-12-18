@@ -30,7 +30,7 @@ export default function Modal({ user, isOpen, onClose }) {
     };
 
     try {
-      const response = await fetch("/api/modal", {
+      const response = await fetch("https://tealerinmilktea.onrender.com/api/modal", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedUser),

@@ -13,7 +13,7 @@ export default function MenuItemsPage() {
   const { loading, data } = useProfile();
 
   useEffect(() => {
-    fetch('/api/menu-items').then(res => {
+    fetch('https://tealerinmilktea.onrender.com/api/menu-items').then(res => {
       res.json().then(menuItems => {
         setMenuItems(menuItems);
       });
