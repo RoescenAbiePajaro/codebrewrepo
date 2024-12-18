@@ -111,7 +111,6 @@ const StocksPage = () => {
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
       <div className="mt-8">
-        <h1 className="text-xl font-bold mb-4 text-center">Manage Stocks</h1>
         <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
           <input
             type="text"

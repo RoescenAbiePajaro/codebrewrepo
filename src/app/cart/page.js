@@ -95,6 +95,7 @@ export default function CartPage() {
       success: 'Receipt saved and stock updated!',
       error: (err) => err.message || 'Something went wrong... Please try again later',
     });
+    setShowReceipt(true);
   }
 
   function updateQuantity(index, newQuantity) {

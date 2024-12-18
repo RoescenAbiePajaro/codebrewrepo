@@ -39,17 +39,16 @@ export default function MenuPage() {
 
   if (profileLoading) {
     return (
-                 <div className="flex justify-center items-center min-h-screen">
-                   <CircularProgress size={60} />
-                 </div>
-               );
+      <div className="flex justify-center items-center min-h-screen">
+        <CircularProgress size={60} />
+      </div>
+    );
   }
 
   if (!profileData?.admin) {
     return 'Not an admin';
   }
 
-  
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       {/* User Tabs Section */}
@@ -80,7 +79,7 @@ export default function MenuPage() {
         />
         <button
           onClick={() => setSearchQuery('')}
-          className="ml-27 px-4 py-2 bg-green-500 text-white rounded "
+          className="ml-27 px-4 py-2 bg-green-500 text-white rounded"
         >
           Clear
         </button>
@@ -114,10 +113,10 @@ export default function MenuPage() {
 
       {!hasSearchQuery && (
         categories.map(category => (
-          selectedCategory === null || selectedCategory === category._id ? (
+          selectedCategory === '' || selectedCategory === category._id ? (
             <div key={category._id}>
               <div className="text-center">
-                {/* Removed SectionHeaders for category title */}
+                <SectionHeaders mainHeader={category.name} />
               </div>
               <div className="grid grid-cols-2 gap-4 mt-6 mb-12">
                 {menuItems
@@ -130,8 +129,6 @@ export default function MenuPage() {
           ) : null
         ))
       )}
-
-      
     </section>
   );
 }

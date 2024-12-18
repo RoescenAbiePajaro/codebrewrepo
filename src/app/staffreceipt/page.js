@@ -60,11 +60,7 @@ const ReceiptPage = () => {
   };
 
   if (loading) {
-    return (
-              <div className="flex justify-center items-center min-h-screen">
-                <CircularProgress size={60} />
-              </div>
-            );
+    return 'Loading user info...';
   }
   
   if (!session?.user) {
@@ -113,9 +109,7 @@ const ReceiptPage = () => {
         page={page}
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={handleChangePerPage}
-
-        sx={{ backgroundColor: 'white' }}
+        onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </section>
   );

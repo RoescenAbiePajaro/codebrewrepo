@@ -72,7 +72,7 @@ div.tabs > *.active {
 }
 
 .fixed {
-    @apply bg-white;
+    
     @apply shadow-md;
     @apply z-10;
     @apply overflow-x-auto;

@@ -17,7 +17,7 @@ const ReceiptModal = ({ isOpen, onClose, receipt }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg p-6 w-11/12 max-w-md">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md mx-auto">
         {/* Company Information */}
         <div className="text-center mb-6">
           <Image
@@ -61,28 +61,18 @@ const ReceiptModal = ({ isOpen, onClose, receipt }) => {
         </div>
 
         {/* Subtotal */}
-        <div className="mt-4 flex justify-between font-bold text-gray-800">
+        <div className="mt-4 flex flex-col md:flex-row justify-between font-bold text-gray-800">
           <span>Total:</span>
           <span>₱{safeSubtotal.toFixed(2)}</span>
         </div>
 
         {/* Change Section */}
         {change !== null && (
-          <div className="mt-2 flex justify-between font-semibold text-gray-800">
+          <div className="mt-2 flex flex-col md:flex-row justify-between font-semibold text-gray-800">
             <span>Change:</span>
             <span>₱{change.toFixed(2)}</span>
           </div>
         )}
-
-        {/* Thank You Note */}
-        <div className="mt-4 border-t pt-4 text-center text-gray-600">
-          <p>Thank you for your purchase!</p>
-          <p>Visit us again!</p>
-          <p>
-            Please note that this is a non-refundable amount. For any assistance, please email 
-            <b> paolonavarrosa@gmail.com</b>.
-          </p>
-        </div>
 
         {/* Close Button */}
         <button
