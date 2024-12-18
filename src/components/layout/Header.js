@@ -17,7 +17,7 @@ function AuthLinks({ status, userName }) {
         <button
           onClick={() =>
             signOut({
-              callbackUrl: '/login', // Redirect to login page after logging out
+              callbackUrl: 'https://tealerinmilktea.onrender.com/login', // Redirect to login page after logging out
             })
           }
           className="bg-green-500 rounded-full text-white px-8 py-2"
@@ -83,6 +83,8 @@ export default function Header() {
         <div
           onClick={() => setMobileNavOpen(false)}
           className="md:hidden p-4 bg-gray-200 rounded-lg mt-2 flex flex-col gap-2 text-center">
+          <Link href={'/menu-notadmin'}>Staff Menu</Link>
+          <Link href={'/menu-list'}>Menu</Link>
           <AuthLinks status={status} userName={userName} />
         </div>
       )}
@@ -93,6 +95,12 @@ export default function Header() {
           <Link className="text-green font-semibold text-2xl" href={'/'}>
             Tealerin Milktea
           </Link>
+          {status === 'authenticated' && (
+            <>
+              <Link href={'/menu-notadmin'}>Staff Menu</Link>
+              <Link href={'/menu-list'}>Menu</Link>
+            </>
+          )}
         </nav>
 
         <nav className="flex items-center gap-4 text-gray-500 font-semibold">
