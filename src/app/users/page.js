@@ -161,8 +161,8 @@ export default function UsersPage() {
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-
-          sx={{ backgroundColor: 'white' }}
+          
+          sx={{ backgroundColor: 'white', overflow: 'hidden' }}
         />
       </div>
       {selectedUser && (

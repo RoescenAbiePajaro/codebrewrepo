@@ -40,7 +40,7 @@ export default function UserTabs({ isAdmin, isNewUser }) {
           </Link>
           
           <Link className={`flex-1 text-center flex items-center justify-center ${path === '/staffreceipt' ? 'active' : ''}`} href={'/staffreceipt'}>
-            <FaReceipt />
+            <TbReceipt  />
           </Link>
         </>
       )}

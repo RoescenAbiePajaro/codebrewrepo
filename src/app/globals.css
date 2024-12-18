@@ -65,6 +65,7 @@ div.tabs > * {
 } 
 div.tabs > *.active {
     @apply text-white;
+    @apply bg-green-500;
 }
 
 .flying-button-parent button {

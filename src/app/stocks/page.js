@@ -108,9 +108,9 @@ const StocksPage = () => {
   }
 
   return (
-    <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <section className="mt-8 max-w-full mx-auto p-4 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
-      <div className="mt-8">
+      <div className="mt-4">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
           <input
             type="text"
@@ -131,56 +131,58 @@ const StocksPage = () => {
             </select>
           </label>
         </div>
-        {filteredStocks.length > 0 ? (
-          <table className="min-w-full bg-white border border-gray-300">
-            <thead>
-              <tr>
-                <th className="border-b p-2 text-left">Name</th>
-                <th className="border-b p-2 text-right">Base Price</th>
-                <th className="border-b p-2 text-right">Stock</th>
-                <th className="border-b p-2 text-center">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredStocks.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
-                <tr key={item._id} className="hover:bg-gray-100">
-                  <td className="border-b p-2 text-left">{item.name}</td>
-                  <td className="border-b p-2 text-right">{item.basePrice ? `₱${item.basePrice.toFixed(2)}` : '₱0.00'}</td>
-                  <td className="border-b p-2 text-right">
-                    {item.stock > 0 ? (
-                      <input
-                        type="number"
-                        value={isNaN(item.stock) ? 0 : item.stock}
-                        onChange={(e) => {
-                          const newValue = parseInt(e.target.value);
-                          if (!isNaN(newValue)) {
-                            handleUpdateStock(item._id, newValue);
-                          }
-                        }}
-                        className="border rounded p-1 w-20"
-                        disabled={updateLoading[item._id]} 
-                      />
-                    ) : (
-                      <span className="text-red-500 font-bold cursor-pointer">
-                        Sold Out
-                      </span>
-                    )}
-                  </td>
-                  <td className="border-b p-2 text-center">
-                    <button
-                      onClick={() => openModal(item)}
-                      className="bg-green-500 text-white rounded px-2 py-1"
-                    >
-                      Update
-                    </button>
-                  </td>
+        <div className="overflow-x-auto">
+          {filteredStocks.length > 0 ? (
+            <table className="min-w-full bg-white border border-gray-300">
+              <thead>
+                <tr>
+                  <th className="border-b p-2 text-left">Name</th>
+                  <th className="border-b p-2 text-right">Base Price</th>
+                  <th className="border-b p-2 text-right">Stock</th>
+                  <th className="border-b p-2 text-center">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p className="text-gray-500 text-center">No stocks found.</p>
-        )}
+              </thead>
+              <tbody>
+                {filteredStocks.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
+                  <tr key={item._id} className="hover:bg-gray-100">
+                    <td className="border-b p-2 text-left">{item.name}</td>
+                    <td className="border-b p-2 text-right">{item.basePrice ? `₱${item.basePrice.toFixed(2)}` : '₱0.00'}</td>
+                    <td className="border-b p-2 text-right">
+                      {item.stock > 0 ? (
+                        <input
+                          type="number"
+                          value={isNaN(item.stock) ? 0 : item.stock}
+                          onChange={(e) => {
+                            const newValue = parseInt(e.target.value);
+                            if (!isNaN(newValue)) {
+                              handleUpdateStock(item._id, newValue);
+                            }
+                          }}
+                          className="border rounded p-1 w-20"
+                          disabled={updateLoading[item._id]} 
+                        />
+                      ) : (
+                        <span className="text-red-500 font-bold cursor-pointer">
+                          Sold Out
+                        </span>
+                      )}
+                    </td>
+                    <td className="border-b p-2 text-center">
+                      <button
+                        onClick={() => openModal(item)}
+                        className="bg-green-500 text-white rounded px-2 py-1"
+                      >
+                        Update
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className="text-gray-500 text-center">No stocks found.</p>
+          )}
+        </div>
       </div>
       <StockModal 
         isOpen={isModalOpen} 

@@ -109,8 +109,7 @@ const ReceiptPage = () => {
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
       <div className="flex justify-between items-center mt-8">
-        <h2 className="text-xl font-bold">Receipts</h2>
-        
+        {/* <h2 className="text-xl font-bold">Receipts</h2> */}
       </div>
       <button
           onClick={handleDownloadExcel}
@@ -158,7 +157,7 @@ const ReceiptPage = () => {
                     className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
                     disabled={deleteLoading}
                   >
-                    {deleteLoading ? "Deleting..." : "Delete"}
+                    {deleteLoading ? "" : "Delete"}
                   </button>
                 </div>
               </div>
@@ -179,8 +178,7 @@ const ReceiptPage = () => {
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-
-        sx={{ backgroundColor: 'white' }}
+        sx={{ backgroundColor: 'white', overflow: 'hidden' }}
       />
     </section>
   );

@@ -62,7 +62,7 @@ export default function MenuItemsPage() {
 
       <div>
         <h2 className="text-sm text-gray-500 mt-8">Edit menu item:</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
+        <div className="grid grid-cols-2 gap-4 mt-4">
           {filteredMenuItems?.length > 0 && filteredMenuItems.map(item => (
             <Link
               key={item._id}
