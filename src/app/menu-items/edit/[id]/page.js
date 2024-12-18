@@ -9,6 +9,7 @@ import Link from "next/link";
 import {redirect, useParams} from "next/navigation";
 import {useEffect, useState} from "react";
 import toast from "react-hot-toast";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function EditMenuItemPage() {
 
@@ -76,7 +77,11 @@ export default function EditMenuItemPage() {
   }
 
   if (loading) {
-    return 'Loading user info...';
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <CircularProgress size={60} />
+      </div>
+    );
   }
 
   if (!data.admin) {
@@ -84,17 +89,17 @@ export default function EditMenuItemPage() {
   }
 
   return (
-    <section className="mt-8">
+    <section className="mt-4 px-4">
       <UserTabs isAdmin={true} />
-      <div className="max-w-2xl mx-auto mt-8">
-        <Link href={'/menu-items'} className="buttonssi">
+      <div className="max-w-2xl mx-auto mt-4">
+        <Link href={'/menu-items'} className="button flex items-center gap-2 w-full justify-center md:w-auto">
           <Left />
           <span>Show all menu items</span>
         </Link>
       </div>
       <MenuItemForm menuItem={menuItem} onSubmit={handleFormSubmit} />
       <div className="max-w-md mx-auto mt-2">
-        <div className="max-w-xs ml-auto pl-4">
+        <div className="max-w-xs mx-auto md:ml-auto md:mr-0">
           <DeleteButton
             label="Delete this menu item"
             onDelete={handleDeleteClick}
