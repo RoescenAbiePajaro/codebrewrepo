@@ -114,7 +114,7 @@ export default function UsersPage() {
       <div className="mt-8">
         {loading ? (
           <div className="flex justify-center items-center">
-            <CircularProgress size={50} />
+            <CircularProgress size={60} />
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

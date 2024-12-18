@@ -74,7 +74,7 @@ export default function ProfilePage() {
   if (status === 'loading' || !profileFetched || loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <CircularProgress /> {/* Show spinner while loading */}
+        <CircularProgress size={60} /> {/* Show spinner while loading */}
       </div>
     );
   }
