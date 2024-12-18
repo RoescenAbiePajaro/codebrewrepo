@@ -197,6 +197,8 @@ const StocksPage = () => {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+
+        sx={{ backgroundColor: 'white' }}
       />
     </section>
   );

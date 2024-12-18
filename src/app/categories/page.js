@@ -164,6 +164,8 @@ export default function CategoriesPage() {
           setRowsPerPage(parseInt(event.target.value, 10));
           setPage(0);
         }}
+
+        sx={{ backgroundColor: 'white' }}
       />
     </section>
   );

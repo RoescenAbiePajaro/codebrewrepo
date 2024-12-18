@@ -179,6 +179,8 @@ const ReceiptPage = () => {
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+
+        sx={{ backgroundColor: 'white' }}
       />
     </section>
   );

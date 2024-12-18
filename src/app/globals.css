@@ -61,41 +61,34 @@ button[type="submit"]:disabled, .submit:disabled {
 
 /* Usertabs */
 div.tabs > * {
-    @apply bg-gray-300 text-gray-700 rounded-full py-2 px-4;
+    @apply text-gray-700;
 } 
 div.tabs > *.active {
-    @apply bg-green-500 text-white;
+    @apply text-white;
 }
 
 .flying-button-parent button {
     @apply border-green-500 bg-green-500 text-white rounded-full;
 }
 
-.category-button {
-    @apply px-4 py-2 rounded transition duration-200 ease-in-out;
+.fixed {
+    @apply bg-white;
+    @apply shadow-md;
+    @apply z-10;
+    @apply overflow-x-auto;
+    @apply whitespace-nowrap;
 }
 
-.category-button:hover {
-    @apply bg-blue-700; /* Darker blue on hover */
+.fixed a {
+    @apply text-gray-700;
+    @apply px-4 py-2;
+    @apply transition-colors duration-200;
 }
 
-.category-button.selected {
-    @apply bg-blue-500 text-white; /* Style for selected category */
+.fixed a:hover {
+    @apply bg-green-500 text-white;
 }
 
-/* Small Category Button Style */
-.small-category-button {
-    @apply px-4 py-2 text-sm; /* Added text-sm for smaller font size */
-}
-
-.small-category-button:hover {
-    @apply bg-green-600 text-white; /* Change background to a darker green on hover */
-}
-
-.small-category-button.selected {
-    @apply bg-green-500 text-white; /* Style for selected category */
-}
-
-.menu-item-tile {
-    @apply w-1/2 max-w-xs; /* Set width to half for two items per row and max width */
+.fixed a.active {
+    @apply text-gray-700;
 }

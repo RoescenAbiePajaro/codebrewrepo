@@ -3,6 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import {FaReceipt, FaChartBar, FaBox } from 'react-icons/fa'; // Importing icons
+import { VscAccount } from "react-icons/vsc";
+import { MdOutlineRestaurantMenu } from "react-icons/md";
+import { RiFunctionAddFill } from "react-icons/ri";
+import { FaBoxOpen } from "react-icons/fa";
+import { TbReceipt } from "react-icons/tb";
+import { FaUserEdit } from "react-icons/fa";
+import { IoIosAddCircle } from "react-icons/io";
 
 export default function UserTabs({ isAdmin, isNewUser }) {
   const path = usePathname();
@@ -18,21 +26,21 @@ export default function UserTabs({ isAdmin, isNewUser }) {
   };
 
   return (
-    <div className="flex mx-auto gap-2 tabs justify-center flex-wrap">
+    <div className="fixed bottom-0 left-0 right-0 bg-white shadow-md z-10 flex justify-around py-2 flex-wrap">
       {/* Always accessible routes */}
-      <Link className={path === '/profile' ? 'active' : ''} href={'/profile'}>
-        Profile
+      <Link className={`flex-1 text-center flex items-center justify-center ${path === '/profile' ? 'active' : ''}`} href={'/profile'}>
+        <VscAccount />
       </Link>
 
       {/* Staff-only links */}
       {!isAdmin && (
         <>
-          <Link className={path === '/menu-notadmin' ? 'active' : ''} href={'/menu-notadmin'}>
-            Staff Menu Here
+          <Link className={`flex-1 text-center flex items-center justify-center ${path === '/menu-notadmin' ? 'active' : ''}`} href={'/menu-notadmin'}>
+            <MdOutlineRestaurantMenu />
           </Link>
           
-          <Link className={path === '/staffreceipt' ? 'active' : ''} href={'/staffreceipt'}>
-            Staff Receipt
+          <Link className={`flex-1 text-center flex items-center justify-center ${path === '/staffreceipt' ? 'active' : ''}`} href={'/staffreceipt'}>
+            <FaReceipt />
           </Link>
         </>
       )}
@@ -40,27 +48,27 @@ export default function UserTabs({ isAdmin, isNewUser }) {
       {/* Admin-only routes */}
       {isAdmin && (
         <>
-          <Link className={path === '/menu-list' ? 'active' : ''} href={'/menu-list'}>
-            Menu Here
+          <Link className={`flex-1 text-center flex items-center justify-center ${path === '/menu-list' ? 'active' : ''}`} href={'/menu-list'}>
+            <MdOutlineRestaurantMenu />
           </Link>
 
-          <Link href={'/categories'} className={path === '/categories' ? 'active' : ''}>
-            Categories
+          <Link className={`flex-1 text-center flex items-center justify-center ${path === '/categories' ? 'active' : ''}`} href={'/categories'}>
+            <RiFunctionAddFill />
           </Link>
-          <Link href={'/menu-items'} className={path.includes('menu-items') ? 'active' : ''}>
-            Add Items
+          <Link className={`flex-1 text-center flex items-center justify-center ${path.includes('menu-items') ? 'active' : ''}`} href={'/menu-items'}>
+            <IoIosAddCircle />
           </Link>
-          <Link className={path.includes('/users') ? 'active' : ''} href={'/users'} onClick={handleClickUsersTab}>
-            Users
+          <Link className={`flex-1 text-center flex items-center justify-center ${path.includes('/users') ? 'active' : ''}`} href={'/users'} onClick={handleClickUsersTab}>
+            <FaUserEdit />
           </Link>
-          <Link className={path.includes('/sales') ? 'active' : ''} href={'/sales'}>
-            Sales
+          <Link className={`flex-1 text-center flex items-center justify-center ${path.includes('/sales') ? 'active' : ''}`} href={'/sales'}>
+            <FaChartBar />
           </Link>
-          <Link className={path.includes('/receipt') ? 'active' : ''} href={'/receipt'}>
-            Receipt
+          <Link className={`flex-1 text-center flex items-center justify-center ${path.includes('/receipt') ? 'active' : ''}`} href={'/receipt'}>
+            < TbReceipt  />
           </Link>
-          <Link className={path.includes('/stocks') ? 'active' : ''} href={'/stocks'}>
-            Stocks
+          <Link className={`flex-1 text-center flex items-center justify-center ${path.includes('/stocks') ? 'active' : ''}`} href={'/stocks'}>
+            <FaBoxOpen  />
           </Link>
         </>
       )}

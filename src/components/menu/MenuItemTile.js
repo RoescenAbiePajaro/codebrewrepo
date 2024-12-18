@@ -25,23 +25,22 @@ export default function MenuItemTile({ onAddToCart, stock, ...item }) {
   const isAvailable = stock > 0;
 
   return (
-    <div className="menu-item-tile bg-gray-200 p-1 rounded-lg text-center group hover:bg-white hover:shadow-md hover:shadow-black/25 transition-all">
+    <div className="menu-item-tile bg-gray-100 p-4 rounded-lg text-center group hover:bg-gray-200 transition-all w-full">
       <div className="text-center">
         {image ? (
-          // Using Next.js Image component for better image optimization
           <Image
             src={image}
             alt={name}
-            className="max-h-16 block mx-auto"
-            width={64} // Reduced width for smaller tiles
-            height={64} // Reduced height for smaller tiles
+            className="max-h-32 block mx-auto"
+            width={128}
+            height={128}
           />
         ) : (
-          <div className="max-h-16 block mx-auto bg-gray-300 rounded" /> // Placeholder for missing image
+          <div className="max-h-32 block mx-auto bg-gray-300 rounded" />
         )}
       </div>
-      <h4 className="font-semibold text-sm my-1">{name}</h4> {/* Smaller font size for mobile */}
-      <p className="text-gray-600 text-xs">{description}</p> {/* Keep smaller font size */}
+      <h4 className="font-semibold text-lg my-2">{name}</h4>
+      <p className="text-gray-600 text-sm">{description}</p>
       <p className={`text-sm font-semibold flex items-center justify-center space-x-1`}>
         {isAvailable ? (
           <span className="text-green-600">Available</span>
@@ -52,9 +51,9 @@ export default function MenuItemTile({ onAddToCart, stock, ...item }) {
       <AddToCartButton
         image={image}
         hasSizesOrExtras={hasSizesOrExtras}
-        onClick={handleAddToCart} // Use the modified handleAddToCart function
+        onClick={handleAddToCart}
         basePrice={basePrice}
-        disabled={isAdding || !isAvailable} // Disable button if sold out
+        disabled={isAdding || !isAvailable}
       />
     </div>
   );
