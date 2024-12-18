@@ -25,7 +25,7 @@ export default function MenuItemTile({ onAddToCart, stock, ...item }) {
   const isAvailable = stock > 0;
 
   return (
-    <div className="bg-gray-200 p-2 rounded-lg text-center group hover:bg-white hover:shadow-md hover:shadow-black/25 transition-all">
+    <div className="menu-item-tile bg-gray-200 p-1 rounded-lg text-center group hover:bg-white hover:shadow-md hover:shadow-black/25 transition-all">
       <div className="text-center">
         {image ? (
           // Using Next.js Image component for better image optimization
@@ -40,9 +40,9 @@ export default function MenuItemTile({ onAddToCart, stock, ...item }) {
           <div className="max-h-16 block mx-auto bg-gray-300 rounded" /> // Placeholder for missing image
         )}
       </div>
-      <h4 className="font-semibold text-lg my-2">{name}</h4> {/* Smaller font size */}
-      <p className="text-gray-600 text-xs">{description}</p> {/* Smaller font size */}
-      <p className={`text-base font-semibold flex items-center justify-center space-x-2`}>
+      <h4 className="font-semibold text-sm my-1">{name}</h4> {/* Smaller font size for mobile */}
+      <p className="text-gray-600 text-xs">{description}</p> {/* Keep smaller font size */}
+      <p className={`text-sm font-semibold flex items-center justify-center space-x-1`}>
         {isAvailable ? (
           <span className="text-green-600">Available</span>
         ) : (

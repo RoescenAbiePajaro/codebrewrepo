@@ -25,7 +25,7 @@ const StocksPage = () => {
 
   const fetchStocks = async () => {
     try {
-      const response = await axios.get('https://tealerinmilktea.onrender.com/api/menu-items');
+      const response = await axios.get('/api/menu-items');
       console.log('Fetched stocks:', response.data);
       setStocks(response.data);
     } catch (error) {
@@ -50,7 +50,7 @@ const StocksPage = () => {
     setUpdateLoading((prev) => ({ ...prev, [id]: true }));
 
     try {
-      const response = await axios.put('https://tealerinmilktea.onrender.com/api/menu-items', { _id: id, stock: newStock });
+      const response = await axios.put('/api/menu-items', { _id: id, stock: newStock });
 
       if (response.status === 200) {
         setStocks((prev) =>
@@ -111,16 +111,16 @@ const StocksPage = () => {
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
       <div className="mt-8">
-        <h1 className="text-xl font-bold mb-4">Manage Stocks</h1>
-        <input
-          type="text"
-          placeholder="Search stocks..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="rounded p-2 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 border focus:outline-black"
-        />
-        <div className="flex flex-col sm:flex-row justify-between mb-4">
-          <label>
+        <h1 className="text-xl font-bold mb-4 text-center">Manage Stocks</h1>
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
+          <input
+            type="text"
+            placeholder="Search stocks..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="rounded p-2 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 border focus:outline-black"
+          />
+          <label className="ml-0 sm:ml-4">
             <select
               value={filterOption}
               onChange={(e) => setFilterOption(e.target.value)}
@@ -180,7 +180,7 @@ const StocksPage = () => {
             </tbody>
           </table>
         ) : (
-          <p className="text-gray-500">No stocks found.</p>
+          <p className="text-gray-500 text-center">No stocks found.</p>
         )}
       </div>
       <StockModal 

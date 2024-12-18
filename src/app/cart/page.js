@@ -56,7 +56,7 @@ export default function CartPage() {
     ev.preventDefault();
 
     const promise = new Promise((resolve, reject) => {
-      fetch('https://tealerinmilktea.onrender.com/api/receipt', {
+      fetch('/api/receipt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -72,7 +72,7 @@ export default function CartPage() {
           // After saving the receipt, update stock for each cart item
           await Promise.all(cartProducts.map(async (product) => {
             const updatedStock = product.stock - product.quantity;
-            await fetch('https://tealerinmilktea.onrender.com/api/menu-items', {
+            await fetch('/api/menu-items', {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ _id: product._id, stock: updatedStock }),

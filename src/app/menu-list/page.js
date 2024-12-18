@@ -14,13 +14,14 @@ export default function MenuPage() {
   const [categories, setCategories] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   // Fetch categories and menu items
   useEffect(() => {
-    fetch('https://tealerinmilktea.onrender.com/api/categories').then(res => {
+    fetch('/api/categories').then(res => {
       res.json().then(categories => setCategories(categories));
     });
-    fetch('https://tealerinmilktea.onrender.com/api/menu-items').then(res => {
+    fetch('/api/menu-items').then(res => {
       res.json().then(menuItems => setMenuItems(menuItems));
     });
   }, []);
@@ -55,11 +56,22 @@ export default function MenuPage() {
       <UserTabs isAdmin={true} />
 
       {/* Search Bar */}
-      <div className="text-center mb-8">
+      <div className="text-center mb-8 p-2 rounded-lg">
+        <div className="flex overflow-x-auto mt-2 space-x-2">
+          {categories.map(category => (
+            <button
+              key={category._id}
+              onClick={() => setSelectedCategory(category._id)}
+              className={`small-category-button bg-green-500 ${selectedCategory === category._id ? 'selected' : ''} rounded-none px-2 py-1`}
+            >
+              {category.name}
+            </button>
+          ))}
+        </div>
         <input
           type="text"
           placeholder="Search products or categories..."
-          className="p-2 w-full rounded-lg border focus:outline-black"
+          className="p-2 w-full rounded-lg border focus:outline-black mb-2 mt-4"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
@@ -73,12 +85,14 @@ export default function MenuPage() {
 
       {hasSearchQuery && (
         <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4">Search Results</h2>
+          {/* Removed Search Results heading */}
+          {/* <h2 className="text-xl font-bold mb-4">Search Results</h2> */}
           {/* Show matched categories */}
           {filteredCategories.length > 0 && (
             <div className="mb-6">
-              <h3 className="text-lg font-semibold">Categories</h3>
-              <ul className="list-disc list-inside">
+              {/* Removed Categories heading */}
+              {/* <h3 className="text-lg font-semibold">Categories</h3> */}
+              <ul className="list-none list-inside">
                 {filteredCategories.map(category => (
                   <li key={category._id} className="mt-1">{category.name}</li>
                 ))}
@@ -99,21 +113,25 @@ export default function MenuPage() {
         </div>
       )}
 
-      {!hasSearchQuery &&
+      {!hasSearchQuery && (
         categories.map(category => (
-          <div key={category._id}>
-            <div className="text-center">
-              <SectionHeaders mainHeader={category.name} />
+          selectedCategory === null || selectedCategory === category._id ? (
+            <div key={category._id}>
+              <div className="text-center">
+                {/* Removed SectionHeaders for category title */}
+                {/* <SectionHeaders mainHeader={category.name} /> */}
+              </div>
+              <div className="grid sm:grid-cols-3 gap-4 mt-6 mb-12">
+                {menuItems
+                  .filter(item => item.category === category._id)
+                  .map(item => (
+                    <MenuItem key={item._id} {...item} />
+                  ))}
+              </div>
             </div>
-            <div className="grid sm:grid-cols-3 gap-4 mt-6 mb-12">
-              {menuItems
-                .filter(item => item.category === category._id)
-                .map(item => (
-                  <MenuItem key={item._id} {...item} />
-                ))}
-            </div>
-          </div>
-        ))}
+          ) : null
+        ))
+      )}
     </section>
   );
 }

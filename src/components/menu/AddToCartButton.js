@@ -15,29 +15,16 @@ export default function AddToCartButton({
     setIsAdding(false); // Re-enable button
   };
 
-  if (!hasSizesOrExtras || isDisabled) {
-    return (
-      <div className="mt-4">
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          className={`w-full ${isDisabled ? 'bg-gray-500' : 'bg-green-500'} text-white rounded-full px-8 py-2`}
-          disabled={isDisabled}
-        >
-          <span>{`Add to cart`}</span>
-        </button>
-      </div>
-    );
-  }
-
   return (
-    <button
-      type="button"
-      onClick={handleAddToCart}
-      className={`mt-4 ${isDisabled ? 'bg-gray-500' : 'bg-green-500'} text-white rounded-full px-8 py-2`}
-      disabled={isDisabled}
-    >
-      <span>{`Add to cart`}</span>
-    </button>
+    <div className="mt-2">
+      <button
+        type="button"
+        onClick={handleAddToCart}
+        className={`w-full ${isDisabled ? 'bg-gray-500' : 'bg-green-500'} text-white rounded px-4 py-1`}
+        disabled={isDisabled}
+      >
+        <span>{`Add to cart`}</span>
+      </button>
+    </div>
   );
 }

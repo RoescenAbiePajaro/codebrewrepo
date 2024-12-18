@@ -70,3 +70,32 @@ div.tabs > *.active {
 .flying-button-parent button {
     @apply border-green-500 bg-green-500 text-white rounded-full;
 }
+
+.category-button {
+    @apply px-4 py-2 rounded transition duration-200 ease-in-out;
+}
+
+.category-button:hover {
+    @apply bg-blue-700; /* Darker blue on hover */
+}
+
+.category-button.selected {
+    @apply bg-blue-500 text-white; /* Style for selected category */
+}
+
+/* Small Category Button Style */
+.small-category-button {
+    @apply px-4 py-2 text-sm; /* Added text-sm for smaller font size */
+}
+
+.small-category-button:hover {
+    @apply bg-green-600 text-white; /* Change background to a darker green on hover */
+}
+
+.small-category-button.selected {
+    @apply bg-green-500 text-white; /* Style for selected category */
+}
+
+.menu-item-tile {
+    @apply w-1/2 max-w-xs; /* Set width to half for two items per row and max width */
+}
