@@ -33,7 +33,10 @@ export default function MenuItemForm({ onSubmit, menuItem }) {
     }
 
     if (!image) {
-      alert("Please upload an image.");
+      toast(`Please upload an image`, {
+        icon: '⚠️',
+        style: { background: '#fff', color: '#000' },
+      });
       return;
     }
 
