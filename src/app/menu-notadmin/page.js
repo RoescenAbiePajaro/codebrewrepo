@@ -1,5 +1,5 @@
 'use client';
-
+import CircularProgress from "@mui/material/CircularProgress";
 import SectionHeaders from "@/components/layout/SectionHeaders";
 import MenuItem from "@/components/menu/MenuItem";
 import UserTabs from "../../components/layout/UserTabs";
@@ -38,7 +38,11 @@ export default function MenuPage() {
   const hasSearchQuery = searchQuery.trim().length > 0;
 
   if (profileLoading) {
-    return 'Loading user info...';
+    return (
+                 <div className="flex justify-center items-center min-h-screen">
+                   <CircularProgress size={60} />
+                 </div>
+               );
   }
 
   if (!session?.user) {

@@ -1,4 +1,5 @@
 'use client'; 
+import CircularProgress from "@mui/material/CircularProgress";
 import React, { useState, useEffect } from 'react';
 import {
   Chart as ChartJS,
@@ -130,7 +131,11 @@ const SalesPage = () => {
   };
 
   if (profileLoading) {
-    return 'Loading user info...';
+     return (
+                  <div className="flex justify-center items-center min-h-screen">
+                    <CircularProgress size={60} />
+                  </div>
+                );
   }
 
   if (!profileData?.admin) {

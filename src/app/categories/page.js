@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useProfile } from "@/components/UseProfile";
 import toast from "react-hot-toast";
 import TablePagination from '@mui/material/TablePagination'; // Make sure to import this
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function CategoriesPage() {
   const [categoryName, setCategoryName] = useState('');
@@ -70,7 +71,11 @@ export default function CategoriesPage() {
   }
 
   if (profileLoading) {
-    return 'Loading user info...';
+     return (
+                  <div className="flex justify-center items-center min-h-screen">
+                    <CircularProgress size={60} />
+                  </div>
+                );
   }
 
   if (!profileData?.admin) {

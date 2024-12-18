@@ -9,6 +9,7 @@ import Link from "next/link";
 import {redirect} from "next/navigation";
 import {useState} from "react";
 import toast from "react-hot-toast";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function NewMenuItemPage() {
 
@@ -43,7 +44,11 @@ export default function NewMenuItemPage() {
   }
 
   if (loading) {
-    return 'Loading user info...';
+     return (
+                  <div className="flex justify-center items-center min-h-screen">
+                    <CircularProgress size={60} />
+                  </div>
+                );
   }
 
   if (!data.admin) {

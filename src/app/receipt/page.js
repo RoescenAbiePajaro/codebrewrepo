@@ -94,7 +94,11 @@ const ReceiptPage = () => {
   };
 
   if (profileLoading) {
-    return 'Loading user info...';
+     return (
+                  <div className="flex justify-center items-center min-h-screen">
+                    <CircularProgress size={60} />
+                  </div>
+                );
   }
 
   if (!profileData?.admin) {

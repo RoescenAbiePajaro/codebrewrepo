@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { useProfile } from "@/components/UseProfile";
 import StockModal from "@/components/layout/StockModal"; 
 import TablePagination from '@mui/material/TablePagination';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const StocksPage = () => {
   const [stocks, setStocks] = useState([]);
@@ -95,7 +96,11 @@ const StocksPage = () => {
   };
 
   if (profileLoading) {
-    return 'Loading user info...';
+    return (
+          <div className="flex justify-center items-center min-h-screen">
+            <CircularProgress size={60} />
+          </div>
+        );
   }
 
   if (!profileData?.admin) {
