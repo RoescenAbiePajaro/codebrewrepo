@@ -1,7 +1,7 @@
-//CartProduct.js
 import { cartProductPrice } from "@/components/AppContext";
 import Trash from "@/components/icons/Trash";
 import Image from "next/image";
+import DeleteButton from "../DeleteButton";
 
 export default function CartProduct({ product, onRemove, index }) {
   // Format price in PHP currency
@@ -44,13 +44,10 @@ export default function CartProduct({ product, onRemove, index }) {
       </div>
       {!!onRemove && (
         <div className="ml-2">
-          <button
-            type="button"
-            onClick={() => onRemove(index)} // Pass index here
-            className="p-2"
-          >
-            <Trash />
-          </button>
+          <DeleteButton
+            label={<Trash />}
+            onDelete={() => onRemove(index)} // Pass the index for deletion
+          />
         </div>
       )}
     </div>
