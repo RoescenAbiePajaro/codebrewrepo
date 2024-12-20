@@ -20,7 +20,7 @@ export default function EditMenuItemPage() {
   const {loading, data} = useProfile();
 
   useEffect(() => {
-    fetch('https://tealerinmilktea.onrender.com/api/menu-items').then(res => {
+    fetch('/api/menu-items').then(res => {
       res.json().then(items => {
         const item = items.find(i => i._id === id);
         setMenuItem(item);
@@ -32,7 +32,7 @@ export default function EditMenuItemPage() {
     ev.preventDefault();
     data = {...data, _id:id};
     const savingPromise = new Promise(async (resolve, reject) => {
-      const response = await fetch('https://tealerinmilktea.onrender.com/api/menu-items', {
+      const response = await fetch('/api/menu-items', {
         method: 'PUT',
         body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json' },
@@ -54,7 +54,7 @@ export default function EditMenuItemPage() {
 
   async function handleDeleteClick() {
     const promise = new Promise(async (resolve, reject) => {
-      const res = await fetch('https://tealerinmilktea.onrender.com/api/menu-items?_id='+id, {
+      const res = await fetch('/api/menu-items?_id='+id, {
         method: 'DELETE',
       });
       if (res.ok)

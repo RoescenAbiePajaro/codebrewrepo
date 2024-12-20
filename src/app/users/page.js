@@ -24,7 +24,7 @@ export default function UsersPage() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://tealerinmilktea.onrender.com/api/users');
+      const response = await fetch('/api/users');
       if (!response.ok) throw new Error('Failed to fetch users');
       const usersData = await response.json();
       setUsers(usersData);
@@ -39,7 +39,7 @@ export default function UsersPage() {
   const handleDelete = async (userId) => {
     if (confirm('Are you sure you want to delete this user?')) {
       try {
-        const response = await fetch(`https://tealerinmilktea.onrender.com/api/users?id=${userId}`, { method: 'DELETE' });
+        const response = await fetch(`/api/users?id=${userId}`, { method: 'DELETE' });
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || 'Failed to delete user');
@@ -59,7 +59,7 @@ export default function UsersPage() {
         throw new Error('User ID is required for update');
       }
 
-      const response = await fetch('https://tealerinmilktea.onrender.com/api/users', {
+      const response = await fetch('/api/users', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedUserData),

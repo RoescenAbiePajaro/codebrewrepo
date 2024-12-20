@@ -19,10 +19,10 @@ export default function MenuPage() {
 
   // Fetch categories and menu items
   useEffect(() => {
-    fetch('https://tealerinmilktea.onrender.com/api/categories').then(res => {
+    fetch('/api/categories').then(res => {
       res.json().then(categories => setCategories(categories));
     });
-    fetch('https://tealerinmilktea.onrender.com/api/menu-items').then(res => {
+    fetch('/api/menu-items').then(res => {
       res.json().then(menuItems => setMenuItems(menuItems));
     });
   }, []);
