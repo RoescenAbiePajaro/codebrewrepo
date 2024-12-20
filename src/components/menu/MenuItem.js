@@ -13,7 +13,7 @@ export default function MenuItem(menuItem) {
 
   // State hooks
   const [stock] = useState(initialStock); // Track stock but don't modify
-  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedSizes, setSelectedSizes] = useState([]);
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -21,7 +21,7 @@ export default function MenuItem(menuItem) {
 
   // Function to calculate total price
   function calculateTotalPrice() {
-    const sizePrice = selectedSize?.price || 0;
+    const sizePrice = selectedSizes.reduce((total, size) => total + size.price, 0);
     const extrasPrice = selectedExtras.reduce((total, extra) => total + extra.price, 0);
     return (basePrice + sizePrice + extrasPrice) * quantity;
   }
@@ -40,7 +40,7 @@ export default function MenuItem(menuItem) {
     }
 
     // Add item to cart with selected options and quantity
-    addToCart(menuItem, selectedSize, selectedExtras, quantity);
+    addToCart(menuItem, selectedSizes, selectedExtras, quantity);
 
     // Show success message
     toast.success('Item added to cart successfully!');
@@ -90,9 +90,15 @@ export default function MenuItem(menuItem) {
                       key={size._id}
                       className="flex items-center gap-2 p-4 border rounded-md mb-1">
                       <input
-                        type="radio"
-                        onChange={() => setSelectedSize(size)}
-                        checked={selectedSize?._id === size._id}
+                        type="checkbox"
+                        onChange={() => {
+                          if (selectedSizes.some(s => s._id === size._id)) {
+                            setSelectedSizes(prev => prev.filter(s => s._id !== size._id));
+                          } else {
+                            setSelectedSizes(prev => [...prev, size]);
+                          }
+                        }}
+                        checked={selectedSizes.some(s => s._id === size._id)}
                         name="size"
                       />
                       {size.name} ₱{size.price}
@@ -126,7 +132,12 @@ export default function MenuItem(menuItem) {
                 >
                   -
                 </button>
-                <span className="text-lg">{quantity}</span>
+                <input
+                  type="number"
+                  value={quantity}
+                  onChange={e => setQuantity(Math.max(1, Math.min(stock, Number(e.target.value))))} // Ensure quantity is within bounds
+                  className="text-lg w-16 text-center"
+                />
                 <button
                   className="text-gray-700 p-2 border rounded"
                   onClick={() => setQuantity(prev => Math.min(prev + 1, stock))} // Limit to stock

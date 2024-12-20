@@ -9,16 +9,18 @@ import toast from "react-hot-toast";
 import { useRouter } from 'next/navigation';
 import Receipt from "@/components/layout/Receipt";
 import { useSession } from "next-auth/react"; 
+import UserTabs from "@/components/layout/UserTabs";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function CartPage() {
   const { cartProducts, removeCartProduct, setCartProducts, clearCart } = useContext(CartContext);
   const [customer, setCustomer] = useState({});
-  const { data: profileData } = useProfile();
   const [showReceipt, setShowReceipt] = useState(false);
   const [inputAmount, setInputAmount] = useState('');
   const [change, setChange] = useState(null);
   const router = useRouter();
   const { status } = useSession(); 
+  const { loading: profileLoading, data: profileData } = useProfile();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -62,7 +64,7 @@ export default function CartPage() {
         body: JSON.stringify({
           customer,
           cartProducts,
-          subtotal: cartProducts.reduce((total, product) => total + cartProductPrice(product), 0),
+          subtotal: cartProducts.reduce((total, product) => total + cartProductPrice(product) * product.quantity, 0),
           change,
         }),
       }).then(async (response) => {
@@ -126,6 +128,7 @@ export default function CartPage() {
   if (!cartProducts || cartProducts.length === 0) {
     return (
       <section className="mt-8 text-center">
+        <UserTabs isAdmin={true} />
         <SectionHeaders mainHeader="Cart" />
         <p className="mt-4">Cart is empty 😔</p>
       </section>
@@ -134,19 +137,32 @@ export default function CartPage() {
 
   let subtotal = cartProducts.reduce((total, product) => total + cartProductPrice(product), 0);
 
+  if (profileLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <CircularProgress size={60} />
+      </div>
+    );
+  }
+
+  if (!profileData?.admin) {
+    return 'Not an admin';
+  }
+
   return (
-    <section className="mt-8 px-4">
+    <section className="mt-8 px-2 sm:px-4 md:px-8">
+      <UserTabs isAdmin={true} />
       <div className="text-center">
         <SectionHeaders mainHeader="Your Cart" />
       </div>
 
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Cart Items */}
         <div>
           {cartProducts.map((product, index) => (
-            <div key={index} className="mb-4 flex items-center justify-between border-b pb-4">
-              <CartProduct product={product} index={index} onRemove={removeCartProduct} />
-              <div className="flex items-center space-x-2">
+            <div key={index} className="mb-4 flex flex-col md:flex-row items-center justify-between border-b pb-4">
+              <CartProduct product={product} index={index} onRemove={removeCartProduct} quantity={product.quantity} />
+              <div className="flex items-center space-x-2 mt-2 md:mt-0">
                 <button
                   className="bg-gray-200 px-2 py-1 rounded-full hover:bg-gray-300"
                   onClick={() => updateQuantity(index, product.quantity - 1)}
@@ -165,18 +181,17 @@ export default function CartPage() {
           ))}
 
           <div className="mt-6 flex justify-between items-center text-lg font-semibold">
-            <span>Subtotal:</span>
-            <span>₱{subtotal.toFixed(2)}</span>
+            <span>Total Items:</span>
+            <span>{cartProducts.length}</span>
           </div>
         </div>
 
         {/* Checkout Form */}
-        <div className="bg-gray-100 p-6 rounded-lg shadow-md space-y-6">
+        <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-md space-y-6">
           <h2 className="text-xl font-bold">Checkout</h2>
-          <form onSubmit={saveReceipt}>
+          <form onSubmit={saveReceipt} className="space-y-4">
             <CustomerInputs customerProps={customer} setCustomerProp={handleCustomerChange} />
-            
-            {/* Amount Input */}
+
             <input
               type="number"
               value={inputAmount}
@@ -190,24 +205,11 @@ export default function CartPage() {
                   setChange(null);
                 }
               }}
-              placeholder="Enter amount (e.g., 20 pesos)"
+              placeholder="Enter amount"
               className="w-full p-2 border border-gray-300 rounded-md"
             />
 
-            {/* Display Change */}
-            {change !== null && (
-              <div className="mt-2 text-lg font-semibold">
-                {change >= 0 ? (
-                  <>
-                    <span>Change: </span>
-                    <span>₱{change.toFixed(2)}</span>
-                  </>
-                ) : (
-                  <span className="text-red-500">Amount entered is insufficient!</span>
-                )}
-              </div>
-            )}
-
+            
             <button
               type="submit"
               className="w-full mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
@@ -215,14 +217,32 @@ export default function CartPage() {
               Save Receipt
             </button>
           </form>
-          <button
+          {/* Removed Print Button */}
+          {/* <button
             onClick={() => setShowReceipt(true)}
             className="w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
           >
             Print Receipt
-          </button>
+          </button> */}
+
+          {/* Moved Subtotal Display Below Print Button */}
+          <div className="mt-6 flex justify-between items-center text-lg font-semibold">
+            <span>Subtotal:</span>
+            <span>₱{subtotal.toFixed(2)}</span>
+            {change !== null && (
+              <div className="mt-2 text-lg font-semibold">
+                {change >= 0 ? (
+                  <span>Change: ₱{change.toFixed(2)}</span>
+                ) : (
+                  <span className="text-red-500">Amount entered is insufficient!</span>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
+
+      
 
       {/* Receipt Modal */}
       {showReceipt && (
@@ -237,15 +257,6 @@ export default function CartPage() {
             />
 
             <div className="mt-4 flex justify-between">
-              <button
-                onClick={() => {
-                  window.print();
-                  setShowReceipt(false);
-                }}
-                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-              >
-                Print
-              </button>
               <button
                 onClick={() => setShowReceipt(false)}
                 className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"

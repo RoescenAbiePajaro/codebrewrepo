@@ -1,4 +1,4 @@
-//AppContext.js
+// AppContext.js
 'use client';
 
 import { SessionProvider } from "next-auth/react";
@@ -20,9 +20,8 @@ export function cartProductPrice(cartProduct) {
     }
   }
 
-  return price * (cartProduct.quantity || 1); // Multiply by quantity, defaulting to 1 if undefined
+  return price * cartProduct.quantity; // Multiply by quantity, defaulting to 1 if undefined
 }
-
 
 export function AppProvider({ children }) {
   const [cartProducts, setCartProducts] = useState([]);
@@ -44,8 +43,6 @@ export function AppProvider({ children }) {
       }
     }
   }, [ls]);
-  
-  
 
   function clearCart() {
     setCartProducts([]);
@@ -66,34 +63,43 @@ export function AppProvider({ children }) {
       ls.setItem('cart', JSON.stringify(cartProducts));
     }
   }
-
   function addToCart(product, size = null, extras = [], quantity = 1) {
-    const canAddToCart = (product.stock || 0) > 0; // Default stock check
+    // Check if the product can be added (e.g., based on stock or other conditions)
+    const canAddToCart = product.stock > 0; // Example condition
+
     if (!canAddToCart) {
-      toast.error('Cannot add item to cart');
-      return;
+        toast.error('Cannot add item to cart'); // Notify user
+        return; // Prevent adding to cart
     }
 
     setCartProducts((prevProducts) => {
-      const productIndex = prevProducts.findIndex((cartProduct) =>
-        cartProduct._id === product._id &&
-        cartProduct.size?._id === size?._id &&
-        JSON.stringify(cartProduct.extras) === JSON.stringify(extras) // Deep comparison for extras
-      );
+        // Check if the product is already in the cart
+        const productIndex = prevProducts.findIndex(
+            (cartProduct) =>
+                cartProduct._id === product._id &&
+                cartProduct.size?._id === size?._id &&
+                JSON.stringify(cartProduct.extras) === JSON.stringify(extras)
+        );
 
-      if (productIndex !== -1) {
-        const updatedProducts = [...prevProducts];
-        updatedProducts[productIndex].quantity += quantity;
-        saveCartProductsToLocalStorage(updatedProducts);
-        return updatedProducts;
-      } else {
-        const newProduct = { ...product, size, extras, quantity };
-        const newProducts = [...prevProducts, newProduct];
-        saveCartProductsToLocalStorage(newProducts);
-        return newProducts;
-      }
+        if (productIndex !== -1) {
+            // Product exists, update the quantity
+            const updatedProducts = prevProducts.map((cartProduct, index) => 
+                index === productIndex
+                    ? { ...cartProduct, quantity: cartProduct.quantity + quantity }
+                    : cartProduct
+            );
+            saveCartProductsToLocalStorage(updatedProducts);
+            return updatedProducts;
+        } else {
+            // Product doesn't exist, add it to the cart
+            const newProduct = { ...product, size, extras, quantity };
+            const newProducts = [...prevProducts, newProduct];
+            saveCartProductsToLocalStorage(newProducts);
+            return newProducts;
+        }
     });
-  }
+}
+
 
   return (
     <SessionProvider>
