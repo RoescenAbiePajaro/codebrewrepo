@@ -20,7 +20,6 @@ const ReceiptModal = ({ isOpen, onClose, receipt }) => {
     const originalContent = document.body.innerHTML;
     document.body.innerHTML = printContent;
     window.print();
-    document.body.innerHTML = originalContent;
   };
 
   return (
@@ -47,9 +46,9 @@ const ReceiptModal = ({ isOpen, onClose, receipt }) => {
           {/* Products List */}
           <div className="mt-6">
             <h3 className="font-semibold text-gray-700">Products</h3>
-            <ul className="divide-y divide-gray-200">
-              {cartProducts.length > 0 ? (
-                cartProducts.map((product, index) => {
+            {cartProducts.length > 0 ? (
+              <ul className="divide-y divide-gray-200">
+                {cartProducts.map((product, index) => {
                   const totalProductPrice = (product.price * product.quantity).toFixed(2);
                   return (
                     <li key={index} className="flex justify-between py-2">
@@ -57,11 +56,11 @@ const ReceiptModal = ({ isOpen, onClose, receipt }) => {
                       <span className="font-medium">₱{totalProductPrice}</span>
                     </li>
                   );
-                })
-              ) : (
-                <p className="text-gray-500">No products in cart.</p>
-              )}
-            </ul>
+                })}
+              </ul>
+            ) : (
+              <p className="text-gray-500">No products in cart.</p>
+            )}
           </div>
 
           {/* Subtotal */}

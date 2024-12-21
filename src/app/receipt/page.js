@@ -1,7 +1,5 @@
 'use client';
-import UserTabs from "@/components/layout/UserTabs";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useProfile } from "@/components/UseProfile";
 import ReceiptModal from "@/components/layout/ReceiptModal";
@@ -9,19 +7,23 @@ import * as XLSX from "xlsx";
 import TablePagination from "@mui/material/TablePagination";
 import DownloadIcon from "@mui/icons-material/Download";
 import CircularProgress from "@mui/material/CircularProgress";
+import { cartProductPrice } from "@/components/AppContext";
+import UserTabs from "@/components/layout/UserTabs";
+
 
 const ReceiptPage = () => {
   const [receipts, setReceipts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [selectedReceipt, setSelectedReceipt] = useState(null);
-  const { loading: profileLoading, data: profileData } = useProfile();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cartProducts, setCartProducts] = useState([]); // Store cart products
+  const [isModalOpen, setIsModalOpen] = useState(false); // Define isModalOpen state
+
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const router = useRouter();
+  const { loading: profileLoading, data: profileData } = useProfile();
 
   const fetchReceipts = async () => {
     setLoading(true);
@@ -44,9 +46,15 @@ const ReceiptPage = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    if (selectedReceipt) {
+      setCartProducts(selectedReceipt.products || []); // Populate cart products from the selected receipt
+    }
+  }, [selectedReceipt]);
+
   const handleView = (receipt) => {
     setSelectedReceipt(receipt);
-    setIsModalOpen(true);
+    setIsModalOpen(true); // Open modal when a receipt is selected
   };
 
   const handleDelete = async (id) => {
@@ -94,11 +102,11 @@ const ReceiptPage = () => {
   };
 
   if (profileLoading) {
-     return (
-                  <div className="flex justify-center items-center min-h-screen">
-                    <CircularProgress size={60} />
-                  </div>
-                );
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <CircularProgress size={60} />
+      </div>
+    );
   }
 
   if (!profileData?.admin) {
@@ -112,11 +120,11 @@ const ReceiptPage = () => {
         {/* <h2 className="text-xl font-bold">Receipts</h2> */}
       </div>
       <button
-          onClick={handleDownloadExcel}
-          className=" bg-green-500 text-white rounded-md hover:bg-green-600"
-        >
-          <DownloadIcon /> Download Excel
-        </button>
+        onClick={handleDownloadExcel}
+        className=" bg-green-500 text-white rounded-md hover:bg-green-600"
+      >
+        <DownloadIcon /> Download Excel
+      </button>
       <div className="mt-8">
         {loading ? (
           <div className="flex justify-center items-center">
@@ -138,9 +146,17 @@ const ReceiptPage = () => {
                       <span className="italic">No Name</span>
                     )}
                   </div>
+
                   <span className="text-gray-500">
                     ₱{receipt.subtotal.toFixed(2)}
                   </span>
+
+                  {cartProducts.map((product, index) => (
+                    <span key={index} className="text-gray-500">
+                      ₱{(product.price * product.quantity).toFixed(2)}
+                    </span>
+                  ))}
+
                   <span className="text-gray-500 text-sm">
                     {new Date(receipt.createdAt).toLocaleString("en-PH")}
                   </span>
@@ -152,6 +168,7 @@ const ReceiptPage = () => {
                   >
                     View
                   </button>
+
                   <button
                     onClick={() => handleDelete(receipt._id)}
                     className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
@@ -168,10 +185,10 @@ const ReceiptPage = () => {
       </div>
       <ReceiptModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => setIsModalOpen(false)} // Close modal
         receipt={selectedReceipt}
       />
-    <TablePagination
+      <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
         count={receipts.length}
@@ -182,12 +199,11 @@ const ReceiptPage = () => {
           setRowsPerPage(parseInt(event.target.value, 10));
           setPage(0);
         }}
-        sx={{ 
+        sx={{
           backgroundColor: 'white',
           marginBottom: '2rem'
         }}
       />
-
     </section>
   );
 };

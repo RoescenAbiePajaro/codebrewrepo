@@ -2,9 +2,34 @@
 import Receipt from "@/models/Receipt";
 import mongoose from "mongoose";
 
+
 async function connectDB() {
   if (!mongoose.connection.readyState) {
     await mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });
+  }
+}
+
+
+
+export default async function handler(req, res) {
+  if (req.method === "POST") {
+    const { customer, cartProducts, subtotal, change } = req.body;
+    
+    try {
+      const { db } = await connectToDatabase();
+      const receipt = await db.collection("receipts").insertOne({
+        customer,
+        cartProducts,
+        subtotal,
+        change,
+        createdAt: new Date(),
+      });
+
+      res.status(201).json(receipt.ops[0]);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error saving receipt" });
+    }
   }
 }
 
@@ -66,4 +91,3 @@ export async function DELETE(req) {
     return new Response(JSON.stringify({ error: "Failed to delete receipt" }), { status: 500 });
   }
 }
-
