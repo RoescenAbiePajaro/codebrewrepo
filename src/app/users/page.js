@@ -10,6 +10,8 @@ import toast from 'react-hot-toast';
 
 export default function UsersPage() {
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const { loading: profileLoading, data: profileData } = useProfile();
@@ -21,6 +23,16 @@ export default function UsersPage() {
     fetchUsers();
   }, []);
 
+  useEffect(() => {
+    const lowerCaseQuery = searchQuery.toLowerCase();
+    setFilteredUsers(
+      users.filter(user =>
+        user.name?.toLowerCase().includes(lowerCaseQuery) ||
+        user.email?.toLowerCase().includes(lowerCaseQuery)
+      )
+    );
+  }, [searchQuery, users]);
+
   const fetchUsers = async () => {
     setLoading(true);
     try {
@@ -28,6 +40,7 @@ export default function UsersPage() {
       if (!response.ok) throw new Error('Failed to fetch users');
       const usersData = await response.json();
       setUsers(usersData);
+      setFilteredUsers(usersData);
     } catch (error) {
       console.error('Error fetching users:', error);
       toast.error('Failed to load users. Please try again later.');
@@ -45,6 +58,7 @@ export default function UsersPage() {
           throw new Error(errorData.error || 'Failed to delete user');
         }
         setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
+        setFilteredUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
         toast.success('User deleted successfully.');
       } catch (error) {
         console.error('Error deleting user:', error);
@@ -74,11 +88,12 @@ export default function UsersPage() {
       setUsers((prevUsers) =>
         prevUsers.map((user) => (user._id === updatedUser._id ? updatedUser : user))
       );
+      setFilteredUsers((prevUsers) =>
+        prevUsers.map((user) => (user._id === updatedUser._id ? updatedUser : user))
+      );
 
-      const result = await response.json();
-      toast.success("User updated successfully");
-      onClose(); // Close the modal on success
-
+      toast.success('User updated successfully');
+      setIsModalOpen(false);
     } catch (error) {
       console.error('Error updating user:', error);
       toast.error(`An error occurred while updating the user: ${error.message}`);
@@ -112,14 +127,21 @@ export default function UsersPage() {
     <section className="mt-8 max-w-5xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
       <div className="mt-8">
+        <input
+          type="text"
+          placeholder="Search users..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full p-2 border rounded mb-4"
+        />
         {loading ? (
           <div className="flex justify-center items-center">
             <CircularProgress size={60} />
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {users.length > 0 ? (
-              users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
+            {filteredUsers.length > 0 ? (
+              filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
                 <div
                   key={user._id}
                   className="bg-gray-100 shadow-sm rounded-lg p-4 flex flex-col justify-between gap-4"
@@ -155,17 +177,14 @@ export default function UsersPage() {
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={users.length}
+        count={filteredUsers.length}
         rowsPerPage={rowsPerPage}
         page={page}
-        onPageChange={(event, newPage) => setPage(newPage)}
-        onRowsPerPageChange={(event) => {
-          setRowsPerPage(parseInt(event.target.value, 10));
-          setPage(0);
-        }}
-        sx={{ 
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        sx={{
           backgroundColor: 'white',
-          marginBottom: '2rem'
+          marginBottom: '2rem',
         }}
       />
       {selectedUser && (

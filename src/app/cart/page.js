@@ -54,7 +54,7 @@ export default function CartPage() {
   function handleCustomerChange(propName, value) {
     setCustomer(prevCustomer => ({ ...prevCustomer, [propName]: value }));
   }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   async function saveReceipt(ev) {
     ev.preventDefault();
 
@@ -84,7 +84,7 @@ export default function CartPage() {
 
           clearCart();
           resolve(savedReceipt);
-          toast.success('Receipt saved and stock updated!');
+          toast.success('Cart Clear');
         } else {
           reject(new Error('Saving receipt failed'));
         }
@@ -100,6 +100,9 @@ export default function CartPage() {
     });
     setShowReceipt(true);
   }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
   function updateQuantity(index, newQuantity) {
     if (newQuantity < 1) return;
@@ -164,6 +167,7 @@ export default function CartPage() {
           {cartProducts.map((product, index) => (
             <div key={index} className="mb-4 flex flex-col md:flex-row items-center justify-between border-b pb-4">
               <CartProduct product={product} index={index} onRemove={removeCartProduct} quantity={product.quantity} />
+
               <div className="flex items-center space-x-2 mt-2 md:mt-0">
                 <button
                   className="bg-gray-200 px-2 py-1 rounded-full hover:bg-gray-300"

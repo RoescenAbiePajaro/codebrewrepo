@@ -44,27 +44,35 @@ const ReceiptModal = ({ isOpen, onClose, receipt }) => {
             <p>Date: <span className="font-medium">{createdAt ? new Date(createdAt).toLocaleString() : "N/A"}</span></p>
           </div>
 
-          {/* Products List */}
-          <div className="mt-4">
-            <h3 className="font-semibold text-gray-700">Products</h3>
-            <ul className="divide-y divide-gray-200">
-              {cartProducts.length > 0 ? (
-                cartProducts.map((product, index) => {
-                  const productPrice = cartProductPrice(product) || 0; // Default to 0 if cartProductPrice is undefined
-                  const totalProductPrice = (productPrice * product.quantity).toFixed(2);
+        {/* Products List */}
+<div className="mt-4">
+  <h3 className="font-semibold text-gray-700">Products</h3>
+  <ul className="divide-y divide-gray-200">
+    {cartProducts.length > 0 ? (
+      cartProducts.map((product, index) => {
+        const productPrice = cartProductPrice(product) || 0; // Default to 0 if cartProductPrice is undefined
+        const totalProductPrice = (productPrice * product.quantity).toFixed(2);
 
-                  return (
-                    <li key={index} className="flex justify-between py-2">
-                      <span className="text-gray-600">{product.name} (x{product.quantity})</span>
-                      <span className="font-medium">₱{totalProductPrice}</span>
-                    </li>
-                  );
-                })
-              ) : (
-                <p className="text-gray-500">No products in cart.</p>
-              )}
-            </ul>
-          </div>
+        return (
+          <li key={index} className="flex justify-between py-2">
+            <div>
+              <span className="text-gray-600">{product.name} (x{product.quantity})</span>
+              <div className="mt-1 text-gray-500">
+                {product.size && <span>Sizes: {product.size}</span>}
+                {product.size && product.extra && <span className="mx-2">|</span>}
+                {product.extra && <span>Extra: {product.extra}</span>}
+              </div>
+            </div>
+            <span className="font-medium">₱{totalProductPrice}</span>
+          </li>
+        );
+      })
+    ) : (
+      <p className="text-gray-500">No products in cart.</p>
+    )}
+  </ul>
+</div>
+
 
           {/* Subtotal */}
           <div className="mt-4 flex flex-col md:flex-row justify-between font-bold text-gray-800">

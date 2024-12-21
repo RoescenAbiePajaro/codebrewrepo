@@ -76,6 +76,8 @@ const ReceiptPage = () => {
         "Staff Name": receipt.customer?.staffname || "N/A",
         Subtotal: `₱${receipt.subtotal.toFixed(2)}`,
         "Created At": new Date(receipt.createdAt).toLocaleString("en-PH"),
+        Sizes: receipt.sizes?.map((size) => size.name).join(", ") || "N/A",
+        Extras: receipt.extras?.map((extra) => `${extra.name} (₱${extra.price})`).join(", ") || "N/A",
       }))
     );
 
@@ -94,29 +96,28 @@ const ReceiptPage = () => {
   };
 
   if (profileLoading) {
-     return (
-                  <div className="flex justify-center items-center min-h-screen">
-                    <CircularProgress size={60} />
-                  </div>
-                );
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <CircularProgress size={60} />
+      </div>
+    );
   }
 
   if (!profileData?.admin) {
-    return 'Not an admin';
+    return "Not an admin";
   }
 
   return (
     <section className="mt-8 max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
       <div className="flex justify-between items-center mt-8">
-        {/* <h2 className="text-xl font-bold">Receipts</h2> */}
-      </div>
-      <button
+        <button
           onClick={handleDownloadExcel}
-          className=" bg-green-500 text-white rounded-md hover:bg-green-600"
+          className="bg-green-500 text-white rounded-md hover:bg-green-600"
         >
           <DownloadIcon /> Download Excel
         </button>
+      </div>
       <div className="mt-8">
         {loading ? (
           <div className="flex justify-center items-center">
@@ -144,6 +145,16 @@ const ReceiptPage = () => {
                   <span className="text-gray-500 text-sm">
                     {new Date(receipt.createdAt).toLocaleString("en-PH")}
                   </span>
+                  {receipt.sizes?.length > 0 && (
+                    <span className="text-sm">
+                      Sizes: {receipt.sizes.map((size) => size.name).join(", ")}
+                    </span>
+                  )}
+                  {receipt.extras?.length > 0 && (
+                    <span className="text-sm text-gray-500">
+                      Extras: {receipt.extras.map((extra) => `${extra.name} (₱${extra.price})`).join(", ")}
+                    </span>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <button
@@ -178,7 +189,7 @@ const ReceiptPage = () => {
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-        sx={{ backgroundColor: 'white', overflow: 'hidden' }}
+        sx={{ backgroundColor: "white", overflow: "hidden" }}
       />
     </section>
   );
