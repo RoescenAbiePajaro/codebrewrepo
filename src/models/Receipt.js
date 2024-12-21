@@ -1,36 +1,37 @@
-// src\models\Receipt.js
 import mongoose from 'mongoose';
 import moment from 'moment-timezone';
 
 const ReceiptSchema = new mongoose.Schema({
   customer: {
-    staffname: String,
+    staffname: { type: String, required: true },
   },
 
   product: [
     {
-      name: String,
-      price: Number,
-      // other product details
+      name: { type: String, required: true },
+      price: { type: Number, required: true, min: 0 }, // Ensure price is non-negative
+      // Additional product details can be added as needed
     },
   ],
-  total: Number, // Total price for all products
-  // other receipt details
+
   cartProducts: [
     {
-      name: String,
-      price: Number,
-      quantity: Number,
-      change: Number,
+      name: { type: String, required: true },
+      price: { type: Number, required: true, min: 0 }, // Ensure price is non-negative
+      quantity: { type: Number, required: true, min: 1 }, // Quantity must be at least 1
+      change: { type: Number, required: true, min: 0 }, // Change must be non-negative
     },
   ],
-  subtotal: Number,
+
+  total: { type: Number, required: true, min: 0 }, // Total price for all products
+  subtotal: { type: Number, required: true, min: 0 }, // Subtotal before any change
   createdAt: {
     type: Date,
-    default: () => moment.tz("Asia/Manila").toDate(),
+    default: () => moment.tz("Asia/Manila").toDate(), // Sets the default to the current time in Manila timezone
   },
 });
 
+// Check if the model already exists to prevent re-compiling
 const Receipt = mongoose.models.Receipt || mongoose.model('Receipt', ReceiptSchema);
 
 export default Receipt;

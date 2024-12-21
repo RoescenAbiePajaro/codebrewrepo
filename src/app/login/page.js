@@ -36,8 +36,8 @@ export default function LoginPage() {
   };
 
   return (
-    <section className="mt-8 flex justify-center">
-      <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+    <section className="mt-24 flex justify-center px-4 sm:px-6 md:px-8 lg:px-10">
+      <div className="bg-white shadow-lg rounded-lg p-6 sm:p-8 md:p-10 lg:p-12 max-w-md w-full">
         <h1 className="text-center text-green-500 text-4xl mb-4">Login</h1>
         {errorMessage && (
           <p className="text-red-500 text-center mb-4">{errorMessage}</p>
@@ -75,17 +75,9 @@ export default function LoginPage() {
             Register here
           </a>
         </p>
-
+  
         <div className="my-4 text-center text-gray-500"></div>
-        {/* <button
-          type="button"
-          onClick={() => signIn("google", { callbackUrl: "/" })}
-          className="flex items-center justify-center gap-4 w-full py-2 border border-gray-300 rounded hover:bg-gray-100 transition-colors"
-        >
-          <Image src="/google-icon.png" alt="Google icon" width={24} height={24} />
-          Login with Google
-        </button> */}
       </div>
     </section>
   );
-}
+}  

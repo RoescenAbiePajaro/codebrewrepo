@@ -208,9 +208,10 @@ const ChartSection = ({ chartData, pieData }) => (
 // Interpretation section component
 const InterpretationSection = ({ interpretation }) => (
   <div className="mt-8 bg-gray-100 p-6 rounded-lg shadow-xl">
-    <h2 className="text-xl font-semibold mb-4">Sales Interpretation</h2>
-    <p className="whitespace-pre-line">{interpretation}</p>
-  </div>
+  <h2 className="text-xl font-semibold mb-4">Sales Interpretation</h2>
+  <p style={{ paddingBottom: '50px' }} className="whitespace-pre-line">{interpretation}</p>
+</div>
+
 );
 
 export default SalesPage;

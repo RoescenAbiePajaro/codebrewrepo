@@ -32,12 +32,17 @@ export default function RegisterPage() {
   };
 
   return (
-    <section className="mt-8 flex justify-center">
-      <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+    <section className="mt-24 flex justify-center px-4 sm:px-6 md:px-8 lg:px-10">
+      <div className="bg-white shadow-lg rounded-lg p-6 sm:p-8 md:p-10 lg:p-12 max-w-md w-full">
         <h1 className="text-center text-green-500 text-4xl mb-4">Register</h1>
-
+  
         {userCreated ? (
-          <p className="text-center my-4 ">User  created! <Link href="/login" className="text-green-500">Wait for Admin Approval </Link></p>
+          <p className="text-center my-4">
+            User created!{" "}
+            <Link href="/login" className="text-green-500">
+              Wait for Admin Approval
+            </Link>
+          </p>
         ) : (
           <form className="space-y-4" onSubmit={handleSubmit}>
             <input
@@ -65,9 +70,9 @@ export default function RegisterPage() {
             </button>
           </form>
         )}
-
+  
         {error && <p className="text-center text-red-500 my-4">{error}</p>} {/* Display the error message */}
       </div>
     </section>
   );
-}
+}  

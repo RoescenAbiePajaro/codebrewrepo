@@ -13,7 +13,7 @@ export default function MenuItem(menuItem) {
 
   // State hooks
   const [stock] = useState(initialStock); // Track stock but don't modify
-  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [selectedSize, setSelectedSize] = useState(null);
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -21,7 +21,7 @@ export default function MenuItem(menuItem) {
 
   // Function to calculate total price
   function calculateTotalPrice() {
-    const sizePrice = selectedSizes.reduce((total, size) => total + size.price, 0);
+    const sizePrice = selectedSize?.price || 0;
     const extrasPrice = selectedExtras.reduce((total, extra) => total + extra.price, 0);
     return (basePrice + sizePrice + extrasPrice) * quantity;
   }
@@ -40,7 +40,7 @@ export default function MenuItem(menuItem) {
     }
 
     // Add item to cart with selected options and quantity
-    addToCart(menuItem, selectedSizes, selectedExtras, quantity);
+    addToCart(menuItem, selectedSize, selectedExtras, quantity);
 
     // Show success message
     toast.success('Item added to cart successfully!');
@@ -73,7 +73,7 @@ export default function MenuItem(menuItem) {
               className="overflow-y-scroll p-2"
               style={{ maxHeight: 'calc(100vh - 100px)' }}>
               <Image
-                src={image || null} // Check if `image` is empty and set to null if so
+                src={image || null} // Check if image is empty and set to null if so
                 alt={name}
                 width={300}
                 height={200}
@@ -90,15 +90,9 @@ export default function MenuItem(menuItem) {
                       key={size._id}
                       className="flex items-center gap-2 p-4 border rounded-md mb-1">
                       <input
-                        type="checkbox"
-                        onChange={() => {
-                          if (selectedSizes.some(s => s._id === size._id)) {
-                            setSelectedSizes(prev => prev.filter(s => s._id !== size._id));
-                          } else {
-                            setSelectedSizes(prev => [...prev, size]);
-                          }
-                        }}
-                        checked={selectedSizes.some(s => s._id === size._id)}
+                        type="radio"
+                        onChange={() => setSelectedSize(size)}
+                        checked={selectedSize?._id === size._id}
                         name="size"
                       />
                       {size.name} ₱{size.price}

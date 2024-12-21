@@ -171,15 +171,23 @@ const ReceiptPage = () => {
         onClose={() => setIsModalOpen(false)}
         receipt={selectedReceipt}
       />
-      <TablePagination
+    <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
         component="div"
         count={receipts.length}
-        page={page}
-        onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        sx={{ backgroundColor: 'white', overflow: 'hidden' }}
+        page={page}
+        onPageChange={(event, newPage) => setPage(newPage)}
+        onRowsPerPageChange={(event) => {
+          setRowsPerPage(parseInt(event.target.value, 10));
+          setPage(0);
+        }}
+        sx={{ 
+          backgroundColor: 'white',
+          marginBottom: '2rem'
+        }}
       />
+
     </section>
   );
 };

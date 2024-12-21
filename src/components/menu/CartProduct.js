@@ -1,16 +1,20 @@
+//CartProduct.js
 import { cartProductPrice } from "@/components/AppContext";
 import Trash from "@/components/icons/Trash";
 import Image from "next/image";
-import DeleteButton from "../DeleteButton";
 
 export default function CartProduct({ product, onRemove, index }) {
-  // Format price in PHP currency
   const formatToPeso = (price) =>
     new Intl.NumberFormat("en-PH", {
       style: "currency",
       currency: "PHP",
       minimumFractionDigits: 2,
     }).format(price);
+
+    <div className="text-lg font-semibold">
+  {formatToPeso(cartProductPrice(product))}
+</div>
+
 
   return (
     <div className="flex items-center gap-4 border-b py-4">
@@ -24,14 +28,14 @@ export default function CartProduct({ product, onRemove, index }) {
       </div>
       <div className="grow">
         <h3 className="font-semibold">{product.name}</h3>
-        {product.size && (
+        {product.sizes?.length > 0 && (
           <div className="text-sm">
-            Size: <span>{product.size.name}</span>
+            Sizes: {product.sizes.map(size => <span key={size._id}>{size.name}  </span>)}
           </div>
         )}
         {product.extras?.length > 0 && (
           <div className="text-sm text-gray-500">
-            {product.extras.map((extra) => (
+            {product.extras.map(extra => (
               <div key={extra.name}>
                 {extra.name} {formatToPeso(extra.price)}
               </div>
@@ -44,10 +48,13 @@ export default function CartProduct({ product, onRemove, index }) {
       </div>
       {!!onRemove && (
         <div className="ml-2">
-          <DeleteButton
-            label={<Trash />}
-            onDelete={() => onRemove(index)} // Pass the index for deletion
-          />
+          <button
+            type="button"
+            onClick={() => onRemove(index)}
+            className="p-2"
+          >
+            <Trash />
+          </button>
         </div>
       )}
     </div>

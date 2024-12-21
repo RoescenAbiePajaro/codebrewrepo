@@ -9,19 +9,24 @@ export const CartContext = createContext({});
 
 export function cartProductPrice(cartProduct) {
   let price = cartProduct.basePrice || 0; // Default basePrice to 0 if undefined
-  
-  if (cartProduct.size?.price) {
-    price += cartProduct.size.price; // Add size price if it exists
-  }
 
+  if (cartProduct.size && typeof cartProduct.size.price === 'number' && !isNaN(cartProduct.size.price)) {
+    price += cartProduct.size.price; // Add size price if it exists and is a valid number
+  } else {
+    console.log('No valid size price found', cartProduct.size); // Debugging log to check what's being passed
+  }
+  // Add extra prices if they exist
   if (Array.isArray(cartProduct.extras)) {
     for (const extra of cartProduct.extras) {
       price += extra.price || 0; // Add extra price, defaulting to 0 if undefined
     }
   }
 
-  return price * cartProduct.quantity; // Multiply by quantity, defaulting to 1 if undefined
+  // Multiply by quantity
+  return price * (cartProduct.quantity || 1); // Default quantity to 1 if undefined
 }
+
+
 
 export function AppProvider({ children }) {
   const [cartProducts, setCartProducts] = useState([]);

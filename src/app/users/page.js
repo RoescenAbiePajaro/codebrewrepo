@@ -152,19 +152,22 @@ export default function UsersPage() {
           </div>
         )}
       </div>
-      <div className="mt-6">
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={users.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          
-          sx={{ backgroundColor: 'white', overflow: 'hidden' }}
-        />
-      </div>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={users.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={(event, newPage) => setPage(newPage)}
+        onRowsPerPageChange={(event) => {
+          setRowsPerPage(parseInt(event.target.value, 10));
+          setPage(0);
+        }}
+        sx={{ 
+          backgroundColor: 'white',
+          marginBottom: '2rem'
+        }}
+      />
       {selectedUser && (
         <Modal
           user={selectedUser}

@@ -110,15 +110,21 @@ const StocksPage = () => {
   return (
     <section className="mt-8 max-w-full mx-auto p-4 bg-white shadow-lg rounded-lg">
       <UserTabs isAdmin={true} />
-      <div className="mt-4">
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
-          <input
-            type="text"
-            placeholder="Search stocks..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="rounded p-2 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 border focus:outline-black"
-          />
+
+      
+      <div className="mt-8">
+  <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
+    <input
+      type="text"
+      placeholder="Search stocks..."
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      className="rounded p-2 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 border focus:outline-black"
+    />
+
+
+
+
           <label className="ml-0 sm:ml-4">
             <select
               value={filterOption}
@@ -193,13 +199,17 @@ const StocksPage = () => {
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={filteredStocks.length}  // This should be filteredStocks length
+        count={stocks.length}
         rowsPerPage={rowsPerPage}
         page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-
-        sx={{ backgroundColor: 'white' }}
+        onPageChange={(event, newPage) => setPage(newPage)}
+        onRowsPerPageChange={(event) => {
+          setRowsPerPage(parseInt(event.target.value, 10));
+          setPage(0);
+        }}
+        sx={{ 
+          backgroundColor: 'white',
+        }}
       />
     </section>
   );
