@@ -1,3 +1,4 @@
+//cart page
 'use client';
 import { CartContext, cartProductPrice } from "@/components/AppContext";
 import CustomerInputs from "@/components/layout/CustomerInputs"; 
@@ -11,14 +12,13 @@ import Receipt from "@/components/layout/Receipt";
 import { useSession } from "next-auth/react"; 
 import UserTabs from "@/components/layout/UserTabs";
 import CircularProgress from "@mui/material/CircularProgress";
-import AmountInputs from "@/components/layout/AmountInputs"; 
 
 export default function CartPage() {
   const { cartProducts, removeCartProduct, setCartProducts, clearCart } = useContext(CartContext);
   const [customer, setCustomer] = useState({});
   const [showReceipt, setShowReceipt] = useState(false);
   const [inputAmount, setInputAmount] = useState('');
-  const [change, setChangeProp] = useState(null);
+  const [change, setChange] = useState(null);
   const router = useRouter();
   const { status } = useSession(); 
   const { loading: profileLoading, data: profileData } = useProfile();
@@ -46,7 +46,7 @@ export default function CartPage() {
       });
       if (inputAmount) {
         const calculatedChange = inputAmount - subtotal;
-        setChangeProp(calculatedChange);
+        setChange(calculatedChange);
       }
     }
   }, [cartProducts, inputAmount]);
@@ -128,11 +128,12 @@ export default function CartPage() {
 
   if (!cartProducts || cartProducts.length === 0) {
     return (
-      <section className="mt-8 mx-auto p-4 sm:p-6 md:p-8 lg:p-10 max-w-4xl flex flex-col items-center justify-center text-center">
-        <UserTabs isAdmin={true} />
-        <SectionHeaders mainHeader="Cart" />
-        <p className="mt-4">Cart is empty 😔</p>
-      </section>
+     <section className="mt-8 mx-auto p-4 sm:p-6 md:p-8 lg:p-10 max-w-4xl flex flex-col items-center justify-center text-center">
+  <UserTabs isAdmin={true} />
+  <SectionHeaders mainHeader="Cart" />
+  <p className="mt-4">Cart is empty 😔</p>
+</section>
+
     );
   }
 
@@ -188,22 +189,45 @@ export default function CartPage() {
         </div>
 
         {/* Checkout Form */}
-        <div className="bg-gray-100 p-6 sm:p-8 rounded-lg shadow-md space-y-6 m-4">
+        <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-md space-y-6">
           <h2 className="text-xl font-bold">Checkout</h2>
           <form onSubmit={saveReceipt} className="space-y-4">
             <CustomerInputs customerProps={customer} setCustomerProp={handleCustomerChange} />
 
-            <AmountInputs changeProps={change}  setChangeProp={handleCustomerChange} />
+            <input
+              type="number"
+              value={inputAmount}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value);
+                setInputAmount(value);
+                if (value && !isNaN(value)) {
+                  const calculatedChange = value - subtotal;
+                  setChange(calculatedChange);
+                } else {
+                  setChange(null);
+                }
+              }}
+              placeholder="Enter amount"
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
 
+            
             <button
               type="submit"
-              className="w-full mt-4 px-6 py-3 bg-green-500 text-white rounded-md hover:bg-green-600"
+              className="w-full mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
             >
               Save Receipt
             </button>
           </form>
+          {/* Removed Print Button */}
+          {/* <button
+            onClick={() => setShowReceipt(true)}
+            className="w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+          >
+            Print Receipt
+          </button> */}
 
-          {/* Subtotal and Change Display */}
+          {/* Moved Subtotal Display Below Print Button */}
           <div className="mt-6 flex justify-between items-center text-lg font-semibold">
             <span>Subtotal:</span>
             <span>₱{subtotal.toFixed(2)}</span>
@@ -219,6 +243,8 @@ export default function CartPage() {
           </div>
         </div>
       </div>
+
+      
 
       {/* Receipt Modal */}
       {showReceipt && (

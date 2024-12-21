@@ -11,8 +11,6 @@ const ReceiptSchema = new mongoose.Schema({
     {
       name: String,
       price: Number,
-      quantity: Number,
-      change: Number,
       // other product details
     },
   ],
