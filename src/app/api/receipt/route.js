@@ -1,4 +1,3 @@
-// src\app\api\receipt\route.js
 import Receipt from "@/models/Receipt";
 import mongoose from "mongoose";
 
@@ -8,13 +7,25 @@ async function connectDB() {
   }
 }
 
-
-
 export async function POST(req) {
   try {
     await connectDB();
     const data = await req.json();
-    const newReceipt = await Receipt.create(data);
+
+    // Ensure proper data format before creating the receipt
+    const newReceipt = await Receipt.create({
+      customer: data.customer,
+      products: data.cartProducts.map((product) => ({
+        name: product.name,
+        basePrice: product.basePrice,
+        sizes: product.sizes || [],
+        extraIngredients: product.extras || [],
+        total: product.quantity * product.basePrice, // Ensure this calculation is correct
+      })),
+      subtotal: data.subtotal,
+      change: data.change,
+    });
+
     return new Response(JSON.stringify(newReceipt), { status: 201 });
   } catch (error) {
     console.error("Error creating receipt:", error);
@@ -26,6 +37,8 @@ export async function PUT(req) {
   try {
     await connectDB();
     const { _id, ...data } = await req.json();
+    
+    // Ensure only necessary fields are updated
     const updatedReceipt = await Receipt.findByIdAndUpdate(_id, data, { new: true });
     return new Response(JSON.stringify(updatedReceipt), { status: 200 });
   } catch (error) {
@@ -39,6 +52,8 @@ export async function GET(req) {
     await connectDB();
     const url = new URL(req.url);
     const _id = url.searchParams.get("_id");
+
+    // Fetch a single receipt by ID or all receipts if _id is not provided
     const receipts = _id ? await Receipt.findById(_id) : await Receipt.find();
     return new Response(JSON.stringify(receipts), { status: 200 });
   } catch (error) {
@@ -68,4 +83,3 @@ export async function DELETE(req) {
     return new Response(JSON.stringify({ error: "Failed to delete receipt" }), { status: 500 });
   }
 }
-

@@ -54,10 +54,10 @@ export default function CartPage() {
   function handleCustomerChange(propName, value) {
     setCustomer(prevCustomer => ({ ...prevCustomer, [propName]: value }));
   }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   async function saveReceipt(ev) {
     ev.preventDefault();
-
+  
     const promise = new Promise((resolve, reject) => {
       fetch('/api/receipt', {
         method: 'POST',
@@ -71,20 +71,28 @@ export default function CartPage() {
       }).then(async (response) => {
         if (response.ok) {
           const savedReceipt = await response.json();
-
+  
           // After saving the receipt, update stock for each cart item
-          await Promise.all(cartProducts.map(async (product) => {
-            const updatedStock = product.stock - product.quantity;
-            await fetch('/api/menu-items', {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ _id: product._id, stock: updatedStock }),
-            });
-          }));
-
-          clearCart();
-          resolve(savedReceipt);
-          toast.success('Cart Clear');
+          try {
+            await Promise.all(cartProducts.map(async (product) => {
+              const updatedStock = product.stock - product.quantity;
+              const stockResponse = await fetch('/api/menu-items', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ _id: product._id, stock: updatedStock }),
+              });
+  
+              if (!stockResponse.ok) {
+                throw new Error(`Failed to update stock for product ${product.name}`);
+              }
+            }));
+  
+            clearCart();
+            resolve(savedReceipt);
+            toast.success('Cart Cleared');
+          } catch (error) {
+            reject(new Error('Stock update failed: ' + error.message));
+          }
         } else {
           reject(new Error('Saving receipt failed'));
         }
@@ -92,18 +100,16 @@ export default function CartPage() {
         reject(error);
       });
     });
-
+  
     await toast.promise(promise, {
       loading: 'Saving your receipt...',
       success: 'Receipt saved and stock updated!',
       error: (err) => err.message || 'Something went wrong... Please try again later',
     });
+  
     setShowReceipt(true);
   }
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+  
   function updateQuantity(index, newQuantity) {
     if (newQuantity < 1) return;
 
@@ -223,13 +229,6 @@ export default function CartPage() {
               Save Receipt
             </button>
           </form>
-          {/* Removed Print Button */}
-          {/* <button
-            onClick={() => setShowReceipt(true)}
-            className="w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-          >
-            Print Receipt
-          </button> */}
 
           {/* Moved Subtotal Display Below Print Button */}
           <div className="mt-6 flex justify-between items-center text-lg font-semibold">

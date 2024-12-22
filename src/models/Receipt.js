@@ -6,25 +6,27 @@ const ReceiptSchema = new mongoose.Schema({
   customer: {
     staffname: String,
   },
-
-  product: [
+  products: [
     {
       name: String,
-      price: Number,
-      // other product details
-    },
+      basePrice: Number,
+      sizes: [
+        {
+          name: String,
+          price: Number,
+        }
+      ],
+      extraIngredients: [
+        {
+          name: String,
+          price: Number,
+        }
+      ],
+      total: Number,  // The calculated total for this product
+    }
   ],
-  total: Number, // Total price for all products
-  // other receipt details
-  cartProducts: [
-    {
-      name: String,
-      price: Number,
-      quantity: Number,
-      change: Number,
-    },
-  ],
-  subtotal: Number,
+  subtotal: Number,  // The sum of the total for all products
+  change: Number,  // Change to be given to the customer
   createdAt: {
     type: Date,
     default: () => moment.tz("Asia/Manila").toDate(),

@@ -1,3 +1,4 @@
+// src\models\MenuItem.js
 import mongoose, { Schema } from "mongoose";
 
 // Define the schema for extra prices
