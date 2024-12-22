@@ -24,7 +24,11 @@ export default function CartProduct({ product, onRemove, index }) {
         <h3 className="font-semibold">{product.name}</h3>
         {product.sizes?.length > 0 && (
           <div className="text-sm">
-            Sizes: {product.sizes.map(size => <span key={size._id}>{size.name} {formatToPeso(size.price) </span>)}
+            Sizes: {product.sizes.map(sizes => (
+              <span key={sizes._id}>
+                {sizes.name} {formatToPeso(sizes.price)}
+              </span>
+            ))}
           </div>
         )}
         {product.extras?.length > 0 && (
