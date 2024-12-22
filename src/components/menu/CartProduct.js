@@ -31,15 +31,18 @@ export default function CartProduct({ product, onRemove, index }) {
             ))}
           </div>
         )}
-        {product.extras?.length > 0 && (
-          <div className="text-sm text-gray-500">
-            {product.extras.map(extra => (
-              <div key={extra.name}>
-                {extra.name} {formatToPeso(extra.price)}
-              </div>
-            ))}
-          </div>
-        )}
+
+        
+       {product.extras?.length > 0 && (
+  <div className="text-sm text-gray-500">
+    {product.extras.map((extra) => (
+      <span key={extra.name}>
+        Extras: {extra.name} {formatToPeso(extra.price)}
+      </span>
+    ))}
+  </div>
+)}
+
         {/* Add base price below extra ingredients */}
         <div className="text-sm text-gray-500 mt-2">
           Base Price: {formatToPeso(product.basePrice)}

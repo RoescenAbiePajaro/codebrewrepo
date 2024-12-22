@@ -54,7 +54,7 @@ export default function CartPage() {
   function handleCustomerChange(propName, value) {
     setCustomer(prevCustomer => ({ ...prevCustomer, [propName]: value }));
   }
-
+//////////////////////////////////////////////////////////////
   async function saveReceipt(ev) {
     ev.preventDefault();
   
@@ -213,21 +213,23 @@ export default function CartPage() {
             <CustomerInputs customerProps={customer} setCustomerProp={handleCustomerChange} />
 
             <input
-              type="number"
-              value={inputAmount}
-              onChange={(e) => {
-                const value = parseFloat(e.target.value);
-                setInputAmount(value);
-                if (value && !isNaN(value)) {
-                  const calculatedChange = value - subtotal;
-                  setChange(calculatedChange);
-                } else {
-                  setChange(null);
-                }
-              }}
-              placeholder="Enter amount"
-              className="w-full p-2 border border-gray-300 rounded-md"
-            />
+  type="number"
+  value={inputAmount}
+  onChange={(e) => {
+    const value = parseFloat(e.target.value);
+    setInputAmount(value);
+    if (value && !isNaN(value)) {
+      const calculatedChange = value - subtotal;
+      setChange(calculatedChange);
+    } else {
+      setChange(null);
+    }
+  }}
+  placeholder="Enter amount"
+  className="w-full p-2 border border-gray-300 rounded-md"
+  required
+/>
+
 
             
             <button
