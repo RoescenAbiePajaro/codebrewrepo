@@ -1,3 +1,4 @@
+// src\components\layout\ReceiptModal.js
 import React from "react";
 import Image from "next/image";
 
@@ -67,9 +68,10 @@ const ReceiptModal = ({ isOpen, onClose, receipt }) => {
                 {product.sizes && product.sizes.length > 0 && (
                   <div>Sizes: {product.sizes.map(size => `${size.name} (₱${size.price.toFixed(2)})`).join(', ')}</div>
                 )}
-                {product.extraIngredients && product.extraIngredients.length > 0 && (
-                  <div>Extras: {product.extraIngredients.map(extra => `${extra.name} (₱${extra.price.toFixed(2)})`).join(', ')}</div>
-                )}
+               {product.extraIngredients && product.extraIngredients.length > 0 && (
+  <div>Extras: {product.extraIngredients.map(extra => `${extra.name} (₱${extra.price.toFixed(2)})`).join(', ')}</div>
+)}
+
                 {/* Add base price to display */}
                 <div className="mt-1 text-gray-500">
                   Base Price: ₱{product.basePrice.toFixed(2)}
