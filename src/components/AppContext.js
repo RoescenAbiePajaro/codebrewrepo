@@ -10,11 +10,20 @@ export const CartContext = createContext({});
 export function cartProductPrice(cartProduct) {
   let price = cartProduct.basePrice || 0; // Default basePrice to 0 if undefined
 
+  // Add size price if it exists and is a valid number
   if (cartProduct.size && typeof cartProduct.size.price === 'number' && !isNaN(cartProduct.size.price)) {
-    price += cartProduct.size.price; // Add size price if it exists and is a valid number
+    price += cartProduct.size.price;
   } else {
     console.log('No valid size price found', cartProduct.size); // Debugging log to check what's being passed
   }
+
+  // Add extra ingredients prices if they exist
+  if (Array.isArray(cartProduct.extraIngredients)) {
+    for (const extra of cartProduct.extraIngredients) {
+      price += extra.price || 0; // Add extra ingredient price, defaulting to 0 if undefined
+    }
+  }
+
   // Add extra prices if they exist
   if (Array.isArray(cartProduct.extras)) {
     for (const extra of cartProduct.extras) {

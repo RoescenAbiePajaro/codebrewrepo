@@ -1,4 +1,3 @@
-//CartProduct.js
 import { cartProductPrice } from "@/components/AppContext";
 import Trash from "@/components/icons/Trash";
 import Image from "next/image";
@@ -10,11 +9,6 @@ export default function CartProduct({ product, onRemove, index }) {
       currency: "PHP",
       minimumFractionDigits: 2,
     }).format(price);
-
-    <div className="text-lg font-semibold">
-  {formatToPeso(cartProductPrice(product))}
-</div>
-
 
   return (
     <div className="flex items-center gap-4 border-b py-4">
@@ -30,7 +24,7 @@ export default function CartProduct({ product, onRemove, index }) {
         <h3 className="font-semibold">{product.name}</h3>
         {product.sizes?.length > 0 && (
           <div className="text-sm">
-            Sizes: {product.sizes.map(size => <span key={size._id}>{size.name}  </span>)}
+            Sizes: {product.sizes.map(size => <span key={size._id}>{size.name} {formatToPeso(size.price) </span>)}
           </div>
         )}
         {product.extras?.length > 0 && (
@@ -42,6 +36,10 @@ export default function CartProduct({ product, onRemove, index }) {
             ))}
           </div>
         )}
+        {/* Add base price below extra ingredients */}
+        <div className="text-sm text-gray-500 mt-2">
+          Base Price: {formatToPeso(product.basePrice)}
+        </div>
       </div>
       <div className="text-lg font-semibold">
         {formatToPeso(cartProductPrice(product))}

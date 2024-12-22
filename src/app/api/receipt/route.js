@@ -1,3 +1,5 @@
+// src\app\api\receipt\route.js
+
 import Receipt from "@/models/Receipt";
 import mongoose from "mongoose";
 
@@ -15,13 +17,40 @@ export async function POST(req) {
     // Ensure proper data format before creating the receipt
     const newReceipt = await Receipt.create({
       customer: data.customer,
-      products: data.cartProducts.map((product) => ({
-        name: product.name,
-        basePrice: product.basePrice,
-        sizes: product.sizes || [],
-        extraIngredients: product.extras || [],
-        total: product.quantity * product.basePrice, // Ensure this calculation is correct
-      })),
+      cartProducts: data.cartProducts.map((product) => {
+        // Calculate the product total by adding the basePrice, size price, and extraIngredients price
+        let productTotal = product.basePrice || 0;
+
+        // Add size price if it exists
+        if (product.size && typeof product.size.price === 'number' && !isNaN(product.size.price)) {
+          productTotal += product.size.price;
+        }
+
+        // Add extra ingredients prices if they exist
+        if (Array.isArray(product.extraIngredients)) {
+          product.extraIngredients.forEach((extra) => {
+            productTotal += extra.price || 0;
+          });
+        }
+
+        // Add extras prices if they exist
+        if (Array.isArray(product.extras)) {
+          product.extras.forEach((extra) => {
+            productTotal += extra.price || 0;
+          });
+        }
+
+        // Calculate the total based on quantity
+        const total = productTotal * (product.quantity || 1); // Default quantity to 1 if undefined
+
+        return {
+          name: product.name,
+          basePrice: product.basePrice,
+          sizes: product.sizes || [],
+          extraIngredients: product.extraIngredients || [],
+          total, // Use calculated total
+        };
+      }),
       subtotal: data.subtotal,
       change: data.change,
     });
@@ -32,6 +61,7 @@ export async function POST(req) {
     return new Response(JSON.stringify({ error: "Failed to create receipt" }), { status: 500 });
   }
 }
+
 
 export async function PUT(req) {
   try {

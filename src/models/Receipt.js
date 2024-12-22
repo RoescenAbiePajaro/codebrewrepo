@@ -6,7 +6,7 @@ const ReceiptSchema = new mongoose.Schema({
   customer: {
     staffname: String,
   },
-  products: [
+  cartProducts: [
     {
       name: String,
       basePrice: Number,

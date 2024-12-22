@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import { cartProductPrice } from "@/components/AppContext";
 
 const ReceiptModal = ({ isOpen, onClose, receipt }) => {
   if (!isOpen) return null;
@@ -8,6 +7,13 @@ const ReceiptModal = ({ isOpen, onClose, receipt }) => {
   if (!receipt) {
     return <p>No receipt data available.</p>;
   }
+
+  // Updated cartProductPrice function with validation
+  const cartProductPrice = (product) => {
+    const basePrice = product.basePrice || 0; // Default to 0 if basePrice is undefined
+    const quantity = product.quantity || 0; // Default to 0 if quantity is undefined
+    return basePrice * quantity;
+  };
 
   const safeSubtotal = receipt.subtotal || 0; // Default to 0 if subtotal is not defined
   const staffName = receipt.customer?.staffname || "No Name"; // Default to "No Name" if staffname is undefined
@@ -44,35 +50,43 @@ const ReceiptModal = ({ isOpen, onClose, receipt }) => {
             <p>Date: <span className="font-medium">{createdAt ? new Date(createdAt).toLocaleString() : "N/A"}</span></p>
           </div>
 
-        {/* Products List */}
-<div className="mt-4">
-  <h3 className="font-semibold text-gray-700">Products</h3>
-  <ul className="divide-y divide-gray-200">
-    {cartProducts.length > 0 ? (
-      cartProducts.map((product, index) => {
-        const productPrice = cartProductPrice(product) || 0; // Default to 0 if cartProductPrice is undefined
-        const totalProductPrice = (productPrice * product.quantity).toFixed(2);
+          {/* Products List */}
+          <div className="mt-4">
+            <h3 className="font-semibold text-gray-700">Products</h3>
+            <ul className="divide-y divide-gray-200">
+              {cartProducts.length > 0 ? (
+                cartProducts.map((product, index) => {
+                  const productPrice = cartProductPrice(product) || 0; // Default to 0 if cartProductPrice is undefined
+                  const totalProductPrice = productPrice.toFixed(2);
 
-        return (
-          <li key={index} className="flex justify-between py-2">
-            <div>
-              <span className="text-gray-600">{product.name} (x{product.quantity})</span>
-              <div className="mt-1 text-gray-500">
-                {product.size && <span>Sizes: {product.size}</span>}
-                {product.size && product.extra && <span className="mx-2">|</span>}
-                {product.extra && <span>Extra: {product.extra}</span>}
-              </div>
-            </div>
-            <span className="font-medium">₱{totalProductPrice}</span>
-          </li>
-        );
-      })
-    ) : (
-      <p className="text-gray-500">No products in cart.</p>
-    )}
-  </ul>
-</div>
-
+                  return (
+                    <li key={index} className="flex justify-between py-2">
+                      <div>
+                        <span className="text-gray-600">{product.name} (x{product.quantity})</span>
+                        <div className="mt-1 text-gray-500">
+                          {product.sizes && product.sizes.length > 0 && (
+                            <span>Sizes: {product.sizes.map(size => size.name).join(', ')}</span>
+                          )}
+                          {product.sizes?.length > 0 && product.extras?.length > 0 && <span className="mx-2">|</span>}
+                          {product.extras && product.extras.length > 0 && (
+                            <span>Extras: {product.extras.map(extra => extra.name).join(', ')}</span>
+                          )}
+                          {/* Add base price to display */}
+                          <div className="mt-1 text-gray-500">
+                            Base Price: ₱{product.basePrice.toFixed(2)}
+                          </div>
+                        </div>
+                      </div>
+                      {/* Here, you can choose between showing the base price or the total */}
+                      <span className="font-medium">₱{totalProductPrice}</span>
+                    </li>
+                  );
+                })
+              ) : (
+                <p className="text-gray-500">No products in cart.</p>
+              )}
+            </ul>
+          </div>
 
           {/* Subtotal */}
           <div className="mt-4 flex flex-col md:flex-row justify-between font-bold text-gray-800">

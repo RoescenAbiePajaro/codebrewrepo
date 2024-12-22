@@ -64,11 +64,17 @@ export default function CartPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           customer,
-          cartProducts,
+          cartProducts: cartProducts.map(product => ({
+            ...product, // Keep all product properties (including basePrice, sizes, and extraIngredients)
+            basePrice: product.basePrice,
+            sizes: product.sizes,
+            extraIngredients: product.extraIngredients,
+          })),
           subtotal: cartProducts.reduce((total, product) => total + cartProductPrice(product) * product.quantity, 0),
           change,
         }),
-      }).then(async (response) => {
+      })
+      .then(async (response) => {
         if (response.ok) {
           const savedReceipt = await response.json();
   
@@ -96,7 +102,8 @@ export default function CartPage() {
         } else {
           reject(new Error('Saving receipt failed'));
         }
-      }).catch((error) => {
+      })
+      .catch((error) => {
         reject(error);
       });
     });
@@ -109,6 +116,7 @@ export default function CartPage() {
   
     setShowReceipt(true);
   }
+////////////////////////////////////////////////////////////////// 
   
   function updateQuantity(index, newQuantity) {
     if (newQuantity < 1) return;
