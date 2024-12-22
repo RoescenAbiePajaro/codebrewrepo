@@ -20,7 +20,7 @@ export default function CartProduct({ product, onRemove, index }) {
           alt={"productssimage"}
         />
       </div>
-      <div className="grow">
+      <div className="grow text-gray-500">
         <h3 className="font-semibold">{product.name}</h3>
         {product.sizes?.length > 0 && (
           <div className="text-sm">
