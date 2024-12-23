@@ -46,7 +46,7 @@ export async function POST(req) {
         return {
           name: product.name,
           basePrice: product.basePrice,
-          sizes: product.sizes || [],
+          sizes: product.size || [],
           extraIngredients: product.extras || [],
           total, // Use calculated total
         };

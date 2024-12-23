@@ -92,7 +92,7 @@ export function AppProvider({ children }) {
             (cartProduct) =>
                 cartProduct._id === product._id &&
                 cartProduct.size?._id === size?._id &&
-                JSON.stringify(cartproduct.extras) === JSON.stringify(extras)
+                JSON.stringify(cartProduct.extras) === JSON.stringify(extras)
         );
 
         if (productIndex !== -1) {

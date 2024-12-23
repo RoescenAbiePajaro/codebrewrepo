@@ -75,7 +75,7 @@ const ReceiptPage = () => {
       receipts.map((receipt) => {
         const basePrices = receipt.cartProducts?.map((product) => `₱${product.basePrice.toFixed(2)}`).join(", ");
         const sizes = receipt.cartProducts?.map((product) =>
-          product.sizes?.map((size) => `${size.name} (₱${size.price.toFixed(2)})`).join(", ")
+          product.size?.map((size) => `${size.name} (₱${size.price.toFixed(2)})`).join(", ")
         ).join(", ") || "N/A";
         const extras = receipt.cartProducts?.map((product) =>
           product.extras?.map((extra) => `${extra.name} (₱${extra.price.toFixed(2)})`).join(", ")
@@ -86,8 +86,8 @@ const ReceiptPage = () => {
   
         const total = receipt.cartProducts.reduce((acc, product) => {
           let productTotal = product.basePrice;
-          if (product.sizes) {
-            productTotal += product.sizes.reduce((sum, size) => sum + size.price, 0);
+          if (product.size) {
+            productTotal += product.size.reduce((sum, size) => sum + size.price, 0);
           }
           if (product.extras) {
             productTotal += product.extras.reduce((sum, extra) => sum + extra.price, 0);

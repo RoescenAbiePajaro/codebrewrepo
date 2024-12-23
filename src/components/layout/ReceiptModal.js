@@ -68,7 +68,7 @@ const ReceiptModal = ({ isOpen, onClose, receipt }) => {
               <span className="text-gray-600">{product.name} (x{product.quantity})</span>
               <div className="mt-1 text-gray-500">
                 {product.sizes && product.sizes.length > 0 && (
-                  <div>Sizes: {product.sizes.map(size => `${size.name} (₱${size.price.toFixed(2)})`).join(', ')}</div>
+                  <div>Sizes: {product.sizes.map(size=> `${size.name} (₱${size.price.toFixed(2)})`).join(', ')}</div>
                 )}
 
                {product.extraIngredients && product.extraIngredients.length > 0 && (
