@@ -65,26 +65,59 @@ const ReceiptPage = () => {
       setDeleteLoading(false);
     }
   };
-
   const handleDownloadExcel = () => {
     if (receipts.length === 0) {
       toast.error("No data available for download.");
       return;
     }
+  
     const worksheet = XLSX.utils.json_to_sheet(
-      receipts.map((receipt) => ({
-        "Staff Name": receipt.customer?.staffname || "N/A",
-        Subtotal: `₱${receipt.subtotal.toFixed(2)}`,
-        "Created At": new Date(receipt.createdAt).toLocaleString("en-PH"),
-        Sizes: receipt.sizes?.map((size) => size.name).join(", ") || "N/A",
-        Extras: receipt.extras?.map((extra) => `${extra.name} (₱${extra.price})`).join(", ") || "N/A",
-      }))
+      receipts.map((receipt) => {
+        const basePrices = receipt.cartProducts?.map((product) => `₱${product.basePrice.toFixed(2)}`).join(", ");
+        const sizes = receipt.cartProducts?.map((product) =>
+          product.sizes?.map((size) => `${size.name} (₱${size.price.toFixed(2)})`).join(", ")
+        ).join(", ") || "N/A";
+        const extras = receipt.cartProducts?.map((product) =>
+          product.extraIngredients?.map((extra) => `${extra.name} (₱${extra.price.toFixed(2)})`).join(", ")
+        ).join(", ") || "N/A";
+        const extraIngredients = receipt.cartProducts?.map((product) =>
+          product.extraIngredients?.map((ingredient) => ingredient.name).join(", ")
+        ).join(", ") || "N/A";
+  
+        const total = receipt.cartProducts.reduce((acc, product) => {
+          let productTotal = product.basePrice;
+          if (product.sizes) {
+            productTotal += product.sizes.reduce((sum, size) => sum + size.price, 0);
+          }
+          if (product.extraIngredients) {
+            productTotal += product.extraIngredients.reduce((sum, extra) => sum + extra.price, 0);
+          }
+          return acc + productTotal;
+          
+        }, 0);
+  
+        return {
+          "Staff Name": receipt.customer?.staffname || "N/A",
+          Subtotal: `₱${total.toFixed(2)}`, // Use total instead of subtotal
+          "Created At": new Date(receipt.createdAt).toLocaleString("en-PH"),
+          Sizes: sizes,
+          Extras: extras,
+          ExtraIngredients: extraIngredients,
+          // Separate BasePrices for each product dynamically
+          ...receipt.cartProducts.reduce((acc, product, index) => {
+            acc[`BasePrice ${index + 1}`] = `₱${product.basePrice.toFixed(2)}`;
+            return acc;
+          }, {}),
+        };
+      })
     );
-
+  
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Receipts");
     XLSX.writeFile(workbook, "receipts.xlsx");
   };
+  
+  
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -142,6 +175,7 @@ const ReceiptPage = () => {
                   <span className="text-gray-500">
                     ₱{receipt.subtotal.toFixed(2)}
                   </span>
+                  
                   <span className="text-gray-500 text-sm">
                     {new Date(receipt.createdAt).toLocaleString("en-PH")}
                   </span>

@@ -1,3 +1,4 @@
+// src\components\menu\MenuItem.js
 'use client';
 import { CartContext } from "@/components/AppContext";
 import MenuItemTile from "@/components/menu/MenuItemTile";
@@ -14,17 +15,26 @@ export default function MenuItem(menuItem) {
   // State hooks
   const [stock] = useState(initialStock); // Track stock but don't modify
   const [selectedSize, setSelectedSize] = useState(null);
-  const [selectedExtras, setSelectedExtras] = useState([]);
+  const [selectedExtras, setSelectedExtras] = useState([]); // To track selected extras (checkboxes)
   const [showPopup, setShowPopup] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useContext(CartContext);
 
-  // Function to calculate total price
   function calculateTotalPrice() {
-    const sizePrice = selectedSize?.price || 0;
-    const extrasPrice = selectedExtras.reduce((total, extra) => total + extra.price, 0);
-    return (basePrice + sizePrice + extrasPrice) * quantity;
+    const sizePrice = selectedSize?.price || 0; // Price based on selected size
+    const extrasPrice = selectedExtras.reduce((total, extra) => total + extra.price, 0); // Price based on selected extras
+    return (basePrice + sizePrice + extrasPrice) * quantity; // Total price including base, size, and extras
   }
+  
+  function handleExtraThingClick(ev, extraThing) {
+    const checked = ev.target.checked;
+    if (checked) {
+      setSelectedExtras(prev => [...prev, extraThing]); // Add extra to selected
+    } else {
+      setSelectedExtras(prev => prev.filter(e => e._id !== extraThing._id)); // Remove extra if unchecked
+    }
+  }
+  
 
   // Function to handle Add to Cart button click
   async function handleAddToCartButtonClick() {
@@ -50,7 +60,7 @@ export default function MenuItem(menuItem) {
     setShowPopup(false);
   }
 
-  // Handle selecting extras
+  // Handle selecting extras (checkboxes)
   function handleExtraThingClick(ev, extraThing) {
     const checked = ev.target.checked;
     if (checked) {
@@ -108,7 +118,7 @@ export default function MenuItem(menuItem) {
                       key={extraThing._id}
                       className="flex items-center gap-2 p-4 border rounded-md mb-1">
                       <input
-                        type="checkbox"
+                        type="checkbox" // Change to checkbox if extras are multiple selections
                         onChange={ev => handleExtraThingClick(ev, extraThing)}
                         checked={selectedExtras.some(e => e._id === extraThing._id)}
                         name={extraThing.name}
@@ -121,7 +131,7 @@ export default function MenuItem(menuItem) {
               <div className="flex justify-between items-center py-2">
                 <button
                   className="text-gray-700 p-2 border rounded"
-                  onClick={() => setQuantity(prev => Math.max(prev - 1, 1))}
+                  onClick={() => setQuantity(prev => Math.max(prev - 1, 1))} 
                   disabled={stock <= 0} // Disable button when sold out
                 >
                   -

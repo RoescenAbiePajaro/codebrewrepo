@@ -1,4 +1,3 @@
-// src\components\menu\CartProduct.js
 import { cartProductPrice } from "@/components/AppContext";
 import Trash from "@/components/icons/Trash";
 import Image from "next/image";
@@ -12,52 +11,61 @@ export default function CartProduct({ product, onRemove, index }) {
     }).format(price);
 
   return (
-    <div className="flex items-center gap-4 border-b py-4">
-      <div className="w-24">
+    <div className="flex items-center gap-6 border-b py-6">
+      <div className="w-24 h-24 overflow-hidden rounded-lg">
         <Image
           width={240}
           height={240}
           src={product.image}
-          alt={"productssimage"}
+          alt={`${product.name} image`}
+          className="object-cover w-full h-full"
         />
       </div>
-      <div className="grow text-gray-500">
-        <h3 className="font-semibold">{product.name}</h3>
-        {product.sizes?.length > 0 && (
-          <div className="text-sm">
-            Sizes: {product.sizes.map(sizes => (
-              <span key={sizes._id}>
-                {sizes.name} {formatToPeso(sizes.price)}
+      <div className="flex-1 text-gray-600">
+        <h3 className="font-semibold text-lg">{product.name}</h3>
+
+        {product.size ? (
+  <div className="text-sm text-gray-400 mt-1">
+    <span className="font-medium">Size: </span>
+    {product.size.name} {formatToPeso(product.size.price)}
+  </div>
+) : (
+  <div className="text-sm text-red-500 mt-1">Size not selected</div> // Debug message
+)}
+
+
+        {/* Display selected extras */}
+        {product.extras?.length > 0 && (
+          <div className="text-sm text-gray-400 mt-1">
+            <span className="font-medium">Extras: </span>
+            {product.extras.map((extra, idx) => (
+              <span key={extra._id}>
+                {extra.name} {formatToPeso(extra.price)}
+                {idx < product.extras.length - 1 && ", "}
               </span>
             ))}
           </div>
         )}
 
-        
-       {product.extras?.length > 0 && (
-  <div className="text-sm text-gray-500">
-    {product.extras.map((extra) => (
-      <span key={extra.name}>
-        Extras: {extra.name} {formatToPeso(extra.price)}
-      </span>
-    ))}
-  </div>
-)}
-
-        {/* Add base price below extra ingredients */}
+        {/* Display base price */}
         <div className="text-sm text-gray-500 mt-2">
-          Base Price: {formatToPeso(product.basePrice)}
+          <span className="font-medium">Base Price: </span>
+          {formatToPeso(product.basePrice)}
         </div>
       </div>
-      <div className="text-lg font-semibold">
+
+      {/* Display total price */}
+      <div className="text-lg font-semibold text-gray-800">
         {formatToPeso(cartProductPrice(product))}
       </div>
+
+      {/* Remove item button */}
       {!!onRemove && (
-        <div className="ml-2">
+        <div className="ml-4">
           <button
             type="button"
             onClick={() => onRemove(index)}
-            className="p-2"
+            className="p-2 hover:bg-gray-200 rounded-full transition"
           >
             <Trash />
           </button>

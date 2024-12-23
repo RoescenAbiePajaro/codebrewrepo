@@ -9,6 +9,7 @@ import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from 'next/navigation';
 import Receipt from "@/components/layout/Receipt";
+
 import { useSession } from "next-auth/react"; 
 import UserTabs from "@/components/layout/UserTabs";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -22,6 +23,9 @@ export default function CartPage() {
   const router = useRouter();
   const { status } = useSession(); 
   const { loading: profileLoading, data: profileData } = useProfile();
+  
+
+  
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -51,71 +55,75 @@ export default function CartPage() {
     }
   }, [cartProducts, inputAmount]);
 
-  function handleCustomerChange(propName, value) {
-    setCustomer(prevCustomer => ({ ...prevCustomer, [propName]: value }));
-  }
-//////////////////////////////////////////////////////////////
-  async function saveReceipt(ev) {
-    ev.preventDefault();
-  
-    const promise = new Promise((resolve, reject) => {
-      fetch('/api/receipt', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          customer,
-          cartProducts: cartProducts.map(product => ({
-            ...product, // Keep all product properties (including basePrice, sizes, and extraIngredients)
-            basePrice: product.basePrice,
-            sizes: product.sizes,
-            extraIngredients: product.extraIngredients,
-          })),
-          subtotal: cartProducts.reduce((total, product) => total + cartProductPrice(product) * product.quantity, 0),
-          change,
-        }),
-      })
-      .then(async (response) => {
-        if (response.ok) {
-          const savedReceipt = await response.json();
-  
-          // After saving the receipt, update stock for each cart item
-          try {
-            await Promise.all(cartProducts.map(async (product) => {
-              const updatedStock = product.stock - product.quantity;
-              const stockResponse = await fetch('/api/menu-items', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ _id: product._id, stock: updatedStock }),
-              });
-  
-              if (!stockResponse.ok) {
-                throw new Error(`Failed to update stock for product ${product.name}`);
-              }
-            }));
-  
-            clearCart();
-            resolve(savedReceipt);
-            toast.success('Cart Cleared');
-          } catch (error) {
-            reject(new Error('Stock update failed: ' + error.message));
-          }
-        } else {
-          reject(new Error('Saving receipt failed'));
+  const handleCustomerChange = (field, value) => {
+    setCustomer(prevState => ({
+      ...prevState,
+      [field]: value,
+    }));
+  };////////////////////////////////////////////////////////
+async function saveReceipt(ev) {
+  ev.preventDefault();
+
+  const promise = new Promise((resolve, reject) => {
+    fetch('/api/receipt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        customer,
+        cartProducts: cartProducts.map(product => ({
+          ...product, // Keep all product properties (including basePrice, sizes, and extraIngredients)
+          basePrice: product.basePrice,
+          sizes: product.sizes,
+          extraIngredients: product.extraIngredients,
+        })),
+        // Fix the subtotal calculation by using cartProductPrice without multiplying by quantity
+        subtotal: cartProducts.reduce((total, product) => total + cartProductPrice(product), 0), // Don't multiply by quantity here
+        change,
+      }),
+    })
+    .then(async (response) => {
+      if (response.ok) {
+        const savedReceipt = await response.json();
+
+        // After saving the receipt, update stock for each cart item
+        try {
+          await Promise.all(cartProducts.map(async (product) => {
+            const updatedStock = product.stock - product.quantity;
+            const stockResponse = await fetch('/api/menu-items', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ _id: product._id, stock: updatedStock }),
+            });
+
+            if (!stockResponse.ok) {
+              throw new Error(`Failed to update stock for product ${product.name}`);
+            }
+          }));
+
+          clearCart();
+          resolve(savedReceipt);
+          toast.success('Cart Cleared');
+        } catch (error) {
+          reject(new Error('Stock update failed: ' + error.message));
         }
-      })
-      .catch((error) => {
-        reject(error);
-      });
+      } else {
+        reject(new Error('Saving receipt failed'));
+      }
+    })
+    .catch((error) => {
+      reject(error);
     });
-  
-    await toast.promise(promise, {
-      loading: 'Saving your receipt...',
-      success: 'Receipt saved and stock updated!',
-      error: (err) => err.message || 'Something went wrong... Please try again later',
-    });
-  
-    setShowReceipt(true);
-  }
+  });
+
+  await toast.promise(promise, {
+    loading: 'Saving your receipt...',
+    success: 'Receipt saved and stock updated!',
+    error: (err) => err.message || 'Something went wrong... Please try again later',
+  });
+
+  setShowReceipt(true);
+}
+
 ////////////////////////////////////////////////////////////////// 
   
   function updateQuantity(index, newQuantity) {
@@ -206,11 +214,17 @@ export default function CartPage() {
           </div>
         </div>
 
+
         {/* Checkout Form */}
         <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-md space-y-6">
           <h2 className="text-xl font-bold">Checkout</h2>
           <form onSubmit={saveReceipt} className="space-y-4">
-            <CustomerInputs customerProps={customer} setCustomerProp={handleCustomerChange} />
+          <CustomerInputs 
+        customerProps={customer}
+        setCustomerProp={handleCustomerChange}
+        userName={profileData?.staffname || ''}  // Pass the existing username as a prop
+      />
+
 
             <input
   type="number"
