@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { useRouter } from 'next/navigation';
 import Receipt from "@/components/layout/Receipt";
 
+
 import { useSession } from "next-auth/react"; 
 import UserTabs from "@/components/layout/UserTabs";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -73,7 +74,7 @@ async function saveReceipt(ev) {
         cartProducts: cartProducts.map(product => ({
           ...product, // Keep all product properties (including basePrice, sizes, and extraIngredients)
           basePrice: product.basePrice,
-          sizes: product.size,
+          sizes: product.sizes,
           extraIngredients: product.extras,
         })),
         // Fix the subtotal calculation by using cartProductPrice without multiplying by quantity

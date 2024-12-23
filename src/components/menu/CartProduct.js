@@ -1,6 +1,7 @@
 import { cartProductPrice } from "@/components/AppContext";
 import Trash from "@/components/icons/Trash";
 import Image from "next/image";
+import DeleteButton from "../DeleteButton";
 
 export default function CartProduct({ product, onRemove, index }) {
   const formatToPeso = (price) =>
@@ -61,17 +62,14 @@ export default function CartProduct({ product, onRemove, index }) {
         {formatToPeso(cartProductPrice(product))}
       </div>
 
-      {/* Remove item button */}
       {!!onRemove && (
-        <div className="ml-4">
-          <button
-            type="button"
-            onClick={() => onRemove(index)}
-            className="p-2 hover:bg-gray-200 rounded-full transition"
-          >
-            <Trash />
-          </button>
-        </div>
+  <div className="ml-4">
+    <DeleteButton
+      label={<Trash />}
+      onDelete={() => onRemove(index)}
+    />
+  </div>
+
       )}
     </div>
   );

@@ -99,7 +99,7 @@ export default function CategoriesPage() {
               value={categoryName}
               onChange={ev => setCategoryName(ev.target.value)}
               placeholder="Enter category name"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-4 py-2 border-black rounded-md"
             />
           </div>
           <div className="flex gap-2">

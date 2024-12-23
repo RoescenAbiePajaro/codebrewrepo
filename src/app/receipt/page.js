@@ -230,3 +230,4 @@ const ReceiptPage = () => {
 };
 
 export default ReceiptPage;
+
