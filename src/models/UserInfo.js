@@ -5,13 +5,13 @@ const UserInfoSchema = new Schema(
     email: { type: String, required: true, unique: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    image: { type: String }, // Optional, no validation
-    admin: { type: Boolean, default: false }, // Default is non-admin
-    isVerified: { type: Boolean, default: false }, // For user email or account verification
-    phone: { type: String }, // Optional phone field
-    streetAddress: { type: String }, // Optional address
+    image: { type: String },
+    admin: { type: Boolean, default: false },
+    isVerified: { type: Boolean, default: false },
+    phone: { type: String },
+    streetAddress: { type: String },
   },
-  { timestamps: true } // Automatically adds createdAt and updatedAt
+  { timestamps: true }
 );
 
 export const UserInfo = models.UserInfo || model("UserInfo", UserInfoSchema);

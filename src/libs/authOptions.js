@@ -1,4 +1,6 @@
 // src/libs/authOptions.js
+//FOR LOGIN!!!!!!!!!!!!!
+
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
@@ -23,6 +25,7 @@ export const authOptions = {
       credentials: {
         email: { label: "Email", type: "email", placeholder: "test@example.com" },
         password: { label: "Password", type: "password" },
+        
       },
 
       async authorize(credentials) {
@@ -30,13 +33,13 @@ export const authOptions = {
           throw new Error("Email and password are required");
         }
       
-        // Validate password is a non-empty string
+        // for Login
         if (typeof credentials.password !== 'string' || credentials.password.trim() === '') {
           throw new Error("Password is required and cannot be empty");
         }
 
 
-    // Check if the email domain is tealerin.com
+    //for login  Check if the email domain is tealerin.com
     const emailDomain = credentials.email.split('@')[1];
     if (emailDomain !== 'tealerin.com') {
       throw new Error("Only users with the domain are allowed to log in");
@@ -48,13 +51,13 @@ export const authOptions = {
           throw new Error("No user found with that email");
         }
       
-        // Verify password using bcrypt
+        // for login Verify password using bcrypt
         const isPasswordValid = await verifyPassword(credentials.password, user.password);
         if (!isPasswordValid) {
           throw new Error("Invalid password");
         }
 
-         // Check if the user is verified
+         //for login Check if the user is verified
   const userInfo = await UserInfo.findOne({ email: credentials.email });
   if (!userInfo || !userInfo.isVerified) {
     throw new Error("Your account is not verified by the admin");

@@ -57,14 +57,18 @@ export default function UserForm({user,onSave}) {
 {/* {check this if correct} */}
         <label>First Name</label>
         <input
-          type="text" placeholder="First Name"
-          value={firstName} onChange={ev => setUserName(ev.target.value)}
+         disabled={true}
+          type="text" placeholder={'firstName'}
+          value={user.firstName} 
+          onChange={ev => setFirstName(ev.target.value)}
         />
 
         <label>Last Name</label>
         <input
-        type="text" placeholder="Last Name"
-        value={lastName} onChange={ev => setUserName(ev.target.value)}
+        disabled={true}
+        type="text" placeholder={'lastName'}
+        value={user.lastName} 
+      
         />
 
 

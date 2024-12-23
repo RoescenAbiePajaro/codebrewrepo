@@ -48,7 +48,7 @@ export default function RegisterPage() {
         ) : (
           <form className="space-y-4" onSubmit={handleSubmit}>
              <input
-              type="firstName"
+              type="text"
               placeholder="First Name"
               value={firstName}
               disabled={isLoading}
@@ -56,7 +56,7 @@ export default function RegisterPage() {
               className="w-full px-4 py-2 border border-gray-300 rounded"
             />
              <input
-              type="lastName"
+              type="text"
               placeholder="Last Name"
               value={lastName}
               disabled={isLoading}

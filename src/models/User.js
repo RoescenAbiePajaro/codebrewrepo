@@ -3,9 +3,9 @@ import { model, models, Schema } from 'mongoose';
 
 const UserSchema = new Schema({
     name: { type: String },
-    firstName: { type: String ,default: 'Anonymous' },
-    lastName: { type: String, default: 'User' },
-    email: { type: String, required: true, unique: true, match: '/^[^\s@]+@[^\s@]+\.[^\s@]+$/' },
+    firstName: { type: String ,required: true  },
+    lastName: { type: String,required: true  },
+    email: { type: String, required: true, unique: true},
     password: { type: String },
     admin: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false }, // New field for verification

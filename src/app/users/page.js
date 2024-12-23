@@ -158,6 +158,8 @@ export default function UsersPage() {
                   <p className="text-sm text-gray-600 break-words">{user.lastName}</p>
                   <p className="text-sm text-gray-600 break-words">{user.email}</p>
                 </div>
+              
+              
 
                   <div className="flex justify-end gap-2">
                     <button

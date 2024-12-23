@@ -10,7 +10,7 @@ export default function AddressInputs({ addressProps, setAddressProp, disabled =
         value={phone || ''}
         onChange={ev => setAddressProp('phone', ev.target.value)}
       />
-      <label>Street address</label>
+      <label>Street Address</label>
       <input
         disabled={disabled}
         type="text"
