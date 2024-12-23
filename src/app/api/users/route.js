@@ -15,7 +15,7 @@ export async function POST(req) {
   await connectToDatabase();
 
   try {
-    const { name, email, password, admin = false, permissions = false, } = await req.json();
+    const { name,firstName,lastName, email, password, admin = false, permissions = false, } = await req.json();
 
     if (!email || !password) {
       return new Response(
@@ -28,6 +28,8 @@ export async function POST(req) {
 
     const newUser = new User({
       name: name || "Unnamed User", // Default name if not provided
+      firstName,
+      lastName,
       email,
       password: hashedPassword,
       admin,
@@ -96,7 +98,7 @@ export async function PUT(req) {
 
   try {
     const data = await req.json();
-    const { _id, name, email, admin, permissions, } = data;
+    const { _id, name,firstName,lastName, email, admin, permissions, } = data;
 
     if (!_id) {
       return new Response(
@@ -114,7 +116,7 @@ export async function PUT(req) {
 
     const updatedUser = await User.findByIdAndUpdate(
       _id,
-      { $set: { name, email, admin, permissions, } },
+      { $set: { name, email,firstName,lastName, admin, permissions, } },
       { new: true } 
     );
 

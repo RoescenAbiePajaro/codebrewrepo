@@ -28,6 +28,8 @@ export default function UsersPage() {
     setFilteredUsers(
       users.filter(user =>
         user.name?.toLowerCase().includes(lowerCaseQuery) ||
+        user.firstName?.toLowerCase().includes(lowerCaseQuery) ||
+        user.lastName?.toLowerCase().includes(lowerCaseQuery) ||
         user.email?.toLowerCase().includes(lowerCaseQuery)
       )
     );
@@ -142,16 +144,21 @@ export default function UsersPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredUsers.length > 0 ? (
               filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
+                
                 <div
-                  key={user._id}
-                  className="bg-gray-100 shadow-sm rounded-lg p-4 flex flex-col justify-between gap-4"
-                >
-                  <div className="flex flex-col">
-                    <h3 className="text-lg font-semibold text-gray-800">
-                      {user.name || <span className="italic text-gray-500">No Name</span>}
-                    </h3>
-                    <p className="text-sm text-gray-600 break-words">{user.email}</p>
-                  </div>
+                key={user._id}
+                className="bg-gray-100 shadow-sm rounded-lg p-4 flex flex-col justify-between gap-4"
+              >
+                <div className="flex flex-col">
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    {user.name ? user.name : <span className="italic text-gray-500">No Name</span>}
+                  </h3>
+              
+                  <p className="text-sm text-gray-600 break-words">{user.firstName}</p>
+                  <p className="text-sm text-gray-600 break-words">{user.lastName}</p>
+                  <p className="text-sm text-gray-600 break-words">{user.email}</p>
+                </div>
+
                   <div className="flex justify-end gap-2">
                     <button
                       onClick={() => handleEdit(user)}

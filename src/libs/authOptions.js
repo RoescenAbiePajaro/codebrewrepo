@@ -60,7 +60,7 @@ export const authOptions = {
     throw new Error("Your account is not verified by the admin");
   }
         // Return the user object with email and name
-        return { email: user.email, name: user.name };
+        return { email: user.email, name: user.name, firstName: user.firstName, lastName: user.lastName };
       }
     })
   ],
@@ -75,12 +75,16 @@ export const authOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.email = user.email;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
         token.name = user.name;
       }
       return token;
     },
     async session({ session, token }) {
       session.email = token.email;
+      session.firstName = token.firstName;
+      session.lastName = token.lastName;
       session.name = token.name;
       return session;
     },

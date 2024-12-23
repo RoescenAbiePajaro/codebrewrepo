@@ -4,12 +4,16 @@ import toast from "react-hot-toast";
 
 export default function Modal({ user, isOpen, onClose }) {
   const [editedName, setEditedName] = useState(user?.name || "");
+  const [editedfirstName, setEditedfirstName] = useState(user?.firstName || "");
+  const [editedlastName, setEditedlastName] = useState(user?.lastName || "");
   const [editedEmail, setEditedEmail] = useState(user?.email || "");
   const [isAdminChecked, setIsAdminChecked] = useState(user?.admin || false);
   const [isVerified, setIsVerified] = useState(user?.isVerified || false); // State for 'Verified'
 
   useEffect(() => {
     setEditedName(user?.name || "");
+    setEditedfirstName(user?.firstName || "");
+    setEditedlastName(user?.lastName || "");
     setEditedEmail(user?.email || "");
     setIsAdminChecked(user?.admin || false);
     setIsVerified(user?.isVerified || false);
@@ -24,6 +28,8 @@ export default function Modal({ user, isOpen, onClose }) {
     const updatedUser = {
       _id: user._id,
       name: editedName,
+      firstName: editedfirstName,
+      lastName: editedlastName,
       email: editedEmail,
       admin: isAdminChecked,
       isVerified, // Include the new state here
@@ -56,7 +62,7 @@ export default function Modal({ user, isOpen, onClose }) {
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-lg font-bold mb-4">Edit User</h2>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Name</label>
+          <label className="block text-sm font-medium text-gray-700">User Name</label>
           <input
             type="text"
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
@@ -64,6 +70,28 @@ export default function Modal({ user, isOpen, onClose }) {
             onChange={(e) => setEditedName(e.target.value)}
           />
         </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">First Name</label>
+          <input
+            type="text"
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            value={editedfirstName}
+            onChange={(e) => setEditedfirstName(e.target.value)}
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Last Name</label>
+          <input
+            type="text"
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            value={editedlastName}
+            onChange={(e) => setEditedlastName(e.target.value)}
+          />
+        </div>
+
+
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">Email</label>
           <input

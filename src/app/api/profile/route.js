@@ -17,7 +17,7 @@ export async function PUT(req) {
 
   try {
     const data = await req.json();
-    const { _id, name, image, ...otherUser } = data;
+    const { _id, name,firstName,lastName, image, ...otherUser } = data;
 
     // Convert specific fields to booleans if they're strings
     const booleanFields = ['isActive', 'admin'];
@@ -43,7 +43,7 @@ export async function PUT(req) {
     // Update main User data
     const updatedUser = await User.findOneAndUpdate(
       filter,
-      { $set: { name, image } }, // Ensure image is updated here
+      { $set: { name,firstName,lastName, image } }, // Ensure image is updated here
       { new: true }
     );
 

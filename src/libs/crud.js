@@ -11,10 +11,10 @@ export async function PUT(req) {
 
   try {
     const data = await req.json();
-    const { _id, name, image, ...otherUser } = data;
+    const { _id, name,firstName,lastName, image, ...otherUser } = data;
 
     // Convert specific fields to booleans if they're strings
-    const booleanFields = ['isActive', 'admin', 'permissions'];
+    const booleanFields = ['isActive', 'admin', 'permissions','firstName','lastName'];
     booleanFields.forEach(field => {
       if (typeof otherUser[field] === 'string') {
         otherUser[field] = otherUser[field].trim() === 'true';
@@ -35,7 +35,7 @@ export async function PUT(req) {
 
     const updatedUser = await User.findOneAndUpdate(
       filter,
-      { $set: { name, image } },
+      { $set: { name,firstName,lastName, image } },
       { new: true }
     );
 
@@ -73,15 +73,15 @@ export async function GET() {
 
 export async function POST(req) {
   try {
-    const { email, password } = await req.json();
+    const { email, password,firstName,lastName } = await req.json();
 
     // Check if email and password are provided
-    if (!email || !password) {
-      return new Response(JSON.stringify({ error: "Email and password are required." }), { status: 400 });
+    if (!email || !password || !firstName || !lastName) {
+      return new Response(JSON.stringify({ error: "Name,Email and password are required." }), { status: 400 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ email, password: hashedPassword });
+    const newUser = new User({ firstName,lastName,email, password: hashedPassword });
     await newUser.save();
 
     return new Response(JSON.stringify({ success: true }), { status: 201 });

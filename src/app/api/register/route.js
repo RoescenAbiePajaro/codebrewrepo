@@ -14,7 +14,7 @@ async function connectDB() {
   
     try {
       const data = await req.json();
-      const { _id, name, image, ...otherUser } = data;
+      const { _id, name,firstName,lastName, image, ...otherUser } = data;
   
       // Convert specific fields to booleans if they're strings
       const booleanFields = ['isActive', 'admin'];
@@ -40,7 +40,7 @@ async function connectDB() {
       // Update main User data
       const updatedUser = await User.findOneAndUpdate(
         filter,
-        { $set: { name, image } }, // Ensure image is updated here
+        { $set: { name,firstName,lastName, image } }, // Ensure image is updated here
         { new: true }
       );
   
@@ -77,11 +77,11 @@ async function connectDB() {
   
   export async function POST(req) {
     try {
-      const { email, password } = await req.json();
+      const { email, password,firstName,lastName } = await req.json();
   
       // Check if email and password are provided
-      if (!email || !password) {
-        return new Response(JSON.stringify({ error: "Email and password are required." }), { status: 400 });
+      if (!email || !password || !firstName || !lastName) {
+        return new Response(JSON.stringify({ error: "First Name,Last Name,Email and password are required." }), { status: 400 });
       }
   
       // Check if the user already exists
@@ -91,7 +91,7 @@ async function connectDB() {
       }
   
       const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser  = new User({ email, password: hashedPassword });
+      const newUser  = new User({ firstName,lastName,email, password: hashedPassword });
       await newUser .save();
   
       return new Response(JSON.stringify({ success: true }), { status: 201 });

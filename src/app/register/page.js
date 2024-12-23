@@ -5,6 +5,8 @@ import Link from "next/link";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
+  const [firstName, setfirstName] = useState("");
+  const [lastName, setlastName] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [userCreated, setUserCreated] = useState(false); // Fixed the variable name
@@ -18,7 +20,7 @@ export default function RegisterPage() {
     const response = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, firstName, lastName }),
     });
   
     if (response.ok) {
@@ -45,6 +47,23 @@ export default function RegisterPage() {
           </p>
         ) : (
           <form className="space-y-4" onSubmit={handleSubmit}>
+             <input
+              type="firstName"
+              placeholder="First Name"
+              value={firstName}
+              disabled={isLoading}
+              onChange={(e) => setfirstName(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded"
+            />
+             <input
+              type="lastName"
+              placeholder="Last Name"
+              value={lastName}
+              disabled={isLoading}
+              onChange={(e) => setlastName(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded"
+            />
+
             <input
               type="email"
               placeholder="Email"

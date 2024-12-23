@@ -9,6 +9,8 @@ export default function UserForm({user,onSave}) {
   const [image, setImage] = useState(user?.image || '');
   const [phone, setPhone] = useState(user?.phone || '');
   const [streetAddress, setStreetAddress] = useState(user?.streetAddress || '');
+  const [firstName, setFirstName] = useState(user?.firstName || '');
+  const [lastName, setLastName] = useState(user?.lastName || '');
 // //   const [postalCode, setPostalCode] = useState(user?.postalCode || '');
 // //   const [city, setCity] = useState(user?.city || '');
 //   const [country, setCountry] = useState(user?.country || '');
@@ -18,6 +20,8 @@ export default function UserForm({user,onSave}) {
   function handleAddressChange(propName, value) {
     if (propName === 'phone') setPhone(value);
     if (propName === 'streetAddress') setStreetAddress(value);
+    if (propName === 'firstName') setFirstName(value);
+    if (propName === 'lastName') setLastName(value);
     // if (propName === 'postalCode') setPostalCode(value);
     // if (propName === 'city') setCity(value);
     // if (propName === 'country') setCountry(value);
@@ -36,19 +40,34 @@ export default function UserForm({user,onSave}) {
         className="grow"
         onSubmit={ev =>
           onSave(ev, {
-            name:userName, image, phone, admin,
+            name:userName,firstName,lastName, image, phone, admin,
             streetAddress, 
             // city, country, postalCode,
           })
         }
       >
         <label>
-          First and last name
+          Username
         </label>
         <input
-          type="text" placeholder="First and last name"
+          type="text" placeholder="Username"
           value={userName} onChange={ev => setUserName(ev.target.value)}
         />
+
+{/* {check this if correct} */}
+        <label>First Name</label>
+        <input
+          type="text" placeholder="First Name"
+          value={firstName} onChange={ev => setUserName(ev.target.value)}
+        />
+
+        <label>Last Name</label>
+        <input
+        type="text" placeholder="Last Name"
+        value={lastName} onChange={ev => setUserName(ev.target.value)}
+        />
+
+
         <label>Email</label>
         <input
           type="email"
@@ -56,6 +75,8 @@ export default function UserForm({user,onSave}) {
           value={user.email}
           placeholder={'email'}
         />
+
+
         <AddressInputs
           addressProps={{phone, streetAddress}}
           setAddressProp={handleAddressChange}

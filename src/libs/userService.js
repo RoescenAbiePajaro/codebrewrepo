@@ -17,9 +17,9 @@ export async function updateUserInfo(userEmail, updatedData) {
   );
 }
 
-export async function createUser({ email, password }) {
+export async function createUser({ firstName,lastName,email, password }) {
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = new User({ email, password: hashedPassword });
+  const newUser = new User({ firstName,lastName,email, password: hashedPassword });
   await newUser.save();
 }
 
