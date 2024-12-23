@@ -17,7 +17,7 @@ const ReceiptModal = ({ isOpen, onClose, receipt }) => {
   };
 
   const safeSubtotal = receipt.subtotal || 0; // Default to 0 if subtotal is not defined
-  const staffName = receipt.customer?.staffname || "No Name"; // Default to "No Name" if staffname is undefined
+  const userName = receipt.name?.userName || "No Name"; // Default to "No Name" if staffname is undefined
   const cartProducts = receipt.cartProducts || []; // Default to an empty array if cartProducts is undefined
   const createdAt = receipt.createdAt || null;
   const change = typeof receipt.change === "number" ? receipt.change : null; // Ensure change is a valid number
@@ -47,7 +47,7 @@ const ReceiptModal = ({ isOpen, onClose, receipt }) => {
           {/* Staff Information */}
           <div className="mt-4">
             <h3 className="font-semibold text-gray-700">Staff Information</h3>
-            <p>Name: <span className="font-medium">{staffName}</span></p>
+            <p>Name: <span className="font-medium">{userName}</span></p>
             <p>Date: <span className="font-medium">{createdAt ? new Date(createdAt).toLocaleString() : "N/A"}</span></p>
           </div>
 

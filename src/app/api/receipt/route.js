@@ -16,7 +16,7 @@ export async function POST(req) {
 
     // Ensure proper data format before creating the receipt
     const newReceipt = await Receipt.create({
-      customer: data.customer,
+      name: data.name,
       cartProducts: data.cartProducts.map((product) => {
         // Calculate the product total by adding the basePrice, size price, and extraIngredients price
         let productTotal = product.basePrice || 0;

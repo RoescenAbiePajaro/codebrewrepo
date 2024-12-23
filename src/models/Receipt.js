@@ -3,9 +3,8 @@ import mongoose from 'mongoose';
 import moment from 'moment-timezone';
 
 const ReceiptSchema = new mongoose.Schema({
-  customer: {
-    staffname: String,
-  },
+  name: String,
+  
   cartProducts: [
     {
       name: String,

@@ -17,7 +17,7 @@ const ReceiptPage = () => {
   const [selectedReceipt, setSelectedReceipt] = useState(null);
   const { loading: profileLoading, data: profileData } = useProfile();
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [userName, setUserName] = useState(user?.name || ''); 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -97,7 +97,7 @@ const ReceiptPage = () => {
         }, 0);
   
         return {
-          "Staff Name": receipt.customer?.staffname || "N/A",
+          "User Name": receipt.name?.userName || "N/A", // receipt.name?.userName //receipt.customer.staffname
           Subtotal: `₱${total.toFixed(2)}`, // Use total instead of subtotal
           "Created At": new Date(receipt.createdAt).toLocaleString("en-PH"),
           Sizes: sizes,
@@ -166,8 +166,8 @@ const ReceiptPage = () => {
               >
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 grow">
                   <div className="text-gray-900">
-                    {receipt.customer ? (
-                      <span>{receipt.customer.staffname}</span>
+                    {receipt.name ? (
+                      <span>{receipt.name.UserName}</span>
                     ) : (
                       <span className="italic">No Name</span>
                     )}

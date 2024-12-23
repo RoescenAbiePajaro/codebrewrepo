@@ -1,6 +1,6 @@
 'use client';
 import { CartContext, cartProductPrice } from "@/components/AppContext";
-import CustomerInputs from "@/components/layout/CustomerInputs";  // Renamed component
+import CustomerInputs from "@/components/layout/UsernameInputs";  // Renamed component
 import SectionHeaders from "@/components/layout/SectionHeaders";
 import CartProduct from "@/components/menu/CartProduct";
 import { useParams } from "next/navigation";

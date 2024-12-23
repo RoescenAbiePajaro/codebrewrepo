@@ -4,8 +4,8 @@ import React from 'react';
 import Image from 'next/image';
 import { cartProductPrice } from "@/components/AppContext";
 
-const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0, createdAt, amountPaid = 0 }) => {
-  const { staffname } = customer;
+const Receipt = ({ name = {}, cartProducts = [], subtotal = 0, createdAt, amountPaid = 0 }) => {
+  const { userName } = name;
   const change = amountPaid - subtotal;
 
   return (
@@ -25,8 +25,8 @@ const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0, createdAt, am
 
       {/* Customer Information */}
       <div className="mt-4">
-        <h3 className="font-semibold text-gray-700">Staff Information</h3>
-        <p>Name: <span className="font-medium">{staffname || "No Name"}</span></p>
+        <h3 className="font-semibold text-gray-700">User Information</h3>
+        <p>Name: <span className="font-medium">{userName || "No Name"}</span></p>
         <p>Date: <span className="font-medium">{createdAt ? new Date(createdAt).toLocaleString() : "N/A"}</span></p>
       </div>
 

@@ -1,7 +1,7 @@
 //cart page
 'use client';
 import { CartContext, cartProductPrice } from "@/components/AppContext";
-import CustomerInputs from "@/components/layout/CustomerInputs"; 
+import  UsernameInputs from "@/components/layout/UsernameInputs"; 
 import SectionHeaders from "@/components/layout/SectionHeaders";
 import CartProduct from "@/components/menu/CartProduct";
 import { useProfile } from "@/components/UseProfile";
@@ -15,9 +15,10 @@ import { useSession } from "next-auth/react";
 import UserTabs from "@/components/layout/UserTabs";
 import CircularProgress from "@mui/material/CircularProgress";
 
-export default function CartPage() {
+export default function CartPage({user}) {
   const { cartProducts, removeCartProduct, setCartProducts, clearCart } = useContext(CartContext);
-  const [customer, setCustomer] = useState({});
+  const [userName, setUserName] = useState(user?.name || '');
+
   const [showReceipt, setShowReceipt] = useState(false);
   const [inputAmount, setInputAmount] = useState('');
   const [change, setChange] = useState(null);
@@ -37,9 +38,9 @@ export default function CartPage() {
   }, []);
 
   useEffect(() => {
-    if (profileData && profileData.staffname) {
-      const { staffname } = profileData;
-      setCustomer({ staffname });
+    if (profileData && profileData.userName) {
+      const { userName } = profileData;
+      setCustomer({ userName });
     }
   }, [profileData]);
 
@@ -56,10 +57,10 @@ export default function CartPage() {
     }
   }, [cartProducts, inputAmount]);
 
-  const handleCustomerChange = (field, value) => {
+  const handleUserNameChange = (user, value) => {
     setCustomer(prevState => ({
       ...prevState,
-      [field]: value,
+      [user]: value,
     }));
   };////////////////////////////////////////////////////////
 async function saveReceipt(ev) {
@@ -70,7 +71,7 @@ async function saveReceipt(ev) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        customer,
+        name:userName,
         cartProducts: cartProducts.map(product => ({
           ...product, // Keep all product properties (including basePrice, sizes, and extraIngredients)
           basePrice: product.basePrice,
@@ -220,12 +221,17 @@ async function saveReceipt(ev) {
         <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-md space-y-6">
           <h2 className="text-xl font-bold">Checkout</h2>
           <form onSubmit={saveReceipt} className="space-y-4">
-          <CustomerInputs 
-        customerProps={customer}
-        setCustomerProp={handleCustomerChange}
-        userName={profileData?.staffname || ''}  // Pass the existing username as a prop
+
+          <UsernameInputs 
+        userNameProps={user}
+        setUserNameProps={handleUserNameChange}
+        user={profileData?.name || ''}
       />
 
+  {/* <AddressInputs
+          addressProps={{phone, streetAddress}}
+          setAddressProp={handleAddressChange}
+        /> nabubura to sa userform */}
 
             <input
   type="number"

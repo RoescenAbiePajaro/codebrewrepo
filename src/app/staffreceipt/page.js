@@ -17,7 +17,7 @@ const ReceiptPage = () => {
   const [selectedReceipt, setSelectedReceipt] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: session } = useSession(); 
-
+  const [userName, setUserName] = useState(''); 
   const isAdmin = session?.user?.isAdmin || false;
 
   // Pagination states
@@ -88,7 +88,7 @@ const ReceiptPage = () => {
             receipts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((receipt) => (
               <div key={receipt._id} className="bg-gray-100 rounded-lg mb-2 p-4 flex items-center gap-4">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 grow">
-                  <div className="text-gray-900">{receipt.customer ? <span>{receipt.customer.staffname}</span> : <span className="italic">No Name</span>}</div>
+                  <div className="text-gray-900">{receipt.name ? <span>{receipt.name.userName}</span> : <span className="italic">No Name</span>}</div>
                   <span className="text-gray-500">₱{receipt.subtotal.toFixed(2)}</span>
                   <span className="text-gray-500 text-sm">{new Date(receipt.createdAt).toLocaleString('en-PH')}</span>
                 </div>
