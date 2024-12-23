@@ -34,8 +34,8 @@ export async function POST(req) {
         }
 
         // Add extras prices if they exist
-        if (Array.isArray(product.extras)) {
-          product.extras.forEach((extra) => {
+        if (Array.isArray(product.extraIngredients)) {
+          product.extraIngredients.forEach((extra) => {
             productTotal += extra.price || 0;
           });
         }

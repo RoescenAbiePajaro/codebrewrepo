@@ -61,13 +61,16 @@ const ReceiptModal = ({ isOpen, onClose, receipt }) => {
         const totalProductPrice = productPrice.toFixed(2);
 
         return (
+
           <li key={index} className="flex justify-between py-2">
             <div>
+
               <span className="text-gray-600">{product.name} (x{product.quantity})</span>
               <div className="mt-1 text-gray-500">
                 {product.sizes && product.sizes.length > 0 && (
                   <div>Sizes: {product.sizes.map(size => `${size.name} (₱${size.price.toFixed(2)})`).join(', ')}</div>
                 )}
+
                {product.extraIngredients && product.extraIngredients.length > 0 && (
   <div>Extras: {product.extraIngredients.map(extra => `${extra.name} (₱${extra.price.toFixed(2)})`).join(', ')}</div>
 )}

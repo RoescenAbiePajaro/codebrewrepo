@@ -25,8 +25,8 @@ export function cartProductPrice(cartProduct) {
   }
 
   // Add extra prices if they exist
-  if (Array.isArray(cartProduct.extras)) {
-    for (const extra of cartProduct.extras) {
+  if (Array.isArray(cartproduct.extraIngredients)) {
+    for (const extra of cartproduct.extraIngredients) {
       price += extra.price || 0; // Add extra price, defaulting to 0 if undefined
     }
   }
@@ -92,7 +92,7 @@ export function AppProvider({ children }) {
             (cartProduct) =>
                 cartProduct._id === product._id &&
                 cartProduct.size?._id === size?._id &&
-                JSON.stringify(cartProduct.extras) === JSON.stringify(extras)
+                JSON.stringify(cartproduct.extraIngredients) === JSON.stringify(extras)
         );
 
         if (productIndex !== -1) {
