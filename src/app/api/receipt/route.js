@@ -27,15 +27,15 @@ export async function POST(req) {
         }
 
         // Add extra ingredients prices if they exist
-        if (Array.isArray(product.extraIngredients)) {
-          product.extraIngredients.forEach((extra) => {
+        if (Array.isArray(product.extras)) {
+          product.extras.forEach((extra) => {
             productTotal += extra.price || 0;
           });
         }
 
         // Add extras prices if they exist
-        if (Array.isArray(product.extraIngredients)) {
-          product.extraIngredients.forEach((extra) => {
+        if (Array.isArray(product.extras)) {
+          product.extras.forEach((extra) => {
             productTotal += extra.price || 0;
           });
         }
@@ -47,7 +47,7 @@ export async function POST(req) {
           name: product.name,
           basePrice: product.basePrice,
           sizes: product.sizes || [],
-          extraIngredients: product.extraIngredients || [],
+          extraIngredients: product.extras || [],
           total, // Use calculated total
         };
       }),

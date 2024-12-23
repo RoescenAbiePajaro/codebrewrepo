@@ -74,7 +74,7 @@ async function saveReceipt(ev) {
           ...product, // Keep all product properties (including basePrice, sizes, and extraIngredients)
           basePrice: product.basePrice,
           sizes: product.sizes,
-          extraIngredients: product.extraIngredients,
+          extraIngredients: product.extras,
         })),
         // Fix the subtotal calculation by using cartProductPrice without multiplying by quantity
         subtotal: cartProducts.reduce((total, product) => total + cartProductPrice(product), 0), // Don't multiply by quantity here

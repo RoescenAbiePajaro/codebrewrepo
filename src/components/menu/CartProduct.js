@@ -35,13 +35,13 @@ export default function CartProduct({ product, onRemove, index }) {
 
 
         {/* Display selected extras */}
-{product.extraIngredients?.length > 0 ? (
+{product.extras?.length > 0 ? (
   <div className="text-sm text-gray-400 mt-1">
     <span className="font-medium">Extras: </span>
-    {product.extraIngredients.map((extra, idx) => (
+    {product.extras.map((extra, idx) => (
       <span key={extra._id}>
         {extra.name} {formatToPeso(extra.price)}
-        {idx < product.extraIngredients.length - 1 && ", "}
+        {idx < product.extras.length - 1 && ", "}
       </span>
     ))}
   </div>

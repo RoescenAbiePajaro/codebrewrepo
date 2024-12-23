@@ -55,9 +55,9 @@ const Receipt = ({ customer = {}, cartProducts = [], subtotal = 0, createdAt, am
                   )}
 
                   {/* Extras Details */}
-                  {product.extraIngredients?.length > 0 && (
+                  {product.extras?.length > 0 && (
                     <div className="ml-4 text-sm text-gray-500">
-                      {product.extraIngredients.map((extra) => (
+                      {product.extras.map((extra) => (
                         <div key={extra.name}>
                           <span>{extra.name}</span> - <span>₱{extra.price}</span>
                         </div>

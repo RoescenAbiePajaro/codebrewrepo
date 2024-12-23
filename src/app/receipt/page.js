@@ -78,10 +78,10 @@ const ReceiptPage = () => {
           product.sizes?.map((size) => `${size.name} (₱${size.price.toFixed(2)})`).join(", ")
         ).join(", ") || "N/A";
         const extras = receipt.cartProducts?.map((product) =>
-          product.extraIngredients?.map((extra) => `${extra.name} (₱${extra.price.toFixed(2)})`).join(", ")
+          product.extras?.map((extra) => `${extra.name} (₱${extra.price.toFixed(2)})`).join(", ")
         ).join(", ") || "N/A";
         const extraIngredients = receipt.cartProducts?.map((product) =>
-          product.extraIngredients?.map((ingredient) => ingredient.name).join(", ")
+          product.extras?.map((ingredient) => ingredient.name).join(", ")
         ).join(", ") || "N/A";
   
         const total = receipt.cartProducts.reduce((acc, product) => {
@@ -89,8 +89,8 @@ const ReceiptPage = () => {
           if (product.sizes) {
             productTotal += product.sizes.reduce((sum, size) => sum + size.price, 0);
           }
-          if (product.extraIngredients) {
-            productTotal += product.extraIngredients.reduce((sum, extra) => sum + extra.price, 0);
+          if (product.extras) {
+            productTotal += product.extras.reduce((sum, extra) => sum + extra.price, 0);
           }
           return acc + productTotal;
           

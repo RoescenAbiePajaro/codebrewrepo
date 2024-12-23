@@ -18,15 +18,15 @@ export function cartProductPrice(cartProduct) {
   }
 
   // Add extra ingredients prices if they exist
-  if (Array.isArray(cartProduct.extraIngredients)) {
-    for (const extra of cartProduct.extraIngredients) {
+  if (Array.isArray(cartProduct.extras)) {
+    for (const extra of cartProduct.extras) {
       price += extra.price || 0; // Add extra ingredient price, defaulting to 0 if undefined
     }
   }
 
   // Add extra prices if they exist
-  if (Array.isArray(cartproduct.extraIngredients)) {
-    for (const extra of cartproduct.extraIngredients) {
+  if (Array.isArray(cartProduct.extraIngredients)) {
+    for (const extra of cartProduct.extraIngredients) {
       price += extra.price || 0; // Add extra price, defaulting to 0 if undefined
     }
   }
@@ -92,7 +92,7 @@ export function AppProvider({ children }) {
             (cartProduct) =>
                 cartProduct._id === product._id &&
                 cartProduct.size?._id === size?._id &&
-                JSON.stringify(cartproduct.extraIngredients) === JSON.stringify(extras)
+                JSON.stringify(cartproduct.extras) === JSON.stringify(extras)
         );
 
         if (productIndex !== -1) {
